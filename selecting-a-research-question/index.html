@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>ernogolya - Data Management & Visualization: Selecting a Research Question</title>
+    <meta name="description" content="">
+    <meta name="author" content="Ernő Gólya">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="https://ernogolya.github.io/theme/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="https://ernogolya.github.io/theme/bootstrap.min.css" rel="stylesheet">
+    <link href="https://ernogolya.github.io/theme/bootstrap.min.responsive.css" rel="stylesheet">
+    <link href="https://ernogolya.github.io/theme/local.css" rel="stylesheet">
+    <link href="https://ernogolya.github.io/theme/pygments.css" rel="stylesheet">
+
+    <!-- So Firefox can bookmark->"abo this site" -->
+
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="navbar-inner">
+    <div class="container">
+
+         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+         </a>
+
+        <a class="brand" href="https://ernogolya.github.io">ernogolya</a>
+
+        <div class="nav-collapse">
+        <ul class="nav">
+            
+            <li><a href="https://ernogolya.github.io/pages/about/">About</a></li>
+        </ul>
+        </div>
+        
+    </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="content">
+    <div class="row">
+
+        <div class="span9">
+    <div class='article'>
+        <div class="content-title">
+            <h1>Data Management & Visualization: Selecting a Research Question</h1>
+h 18 július 2016
+
+by <a class="url fn" href="https://ernogolya.github.io/author/erno-golya.html">Ernő Gólya</a>
+ 
+
+
+        </div>
+	
+        <div><h3>STEP 1. Choose a data set</h3>
+<p>After studying the the list of indicators in Gapminder World
+(https://www.gapminder.org/data/), I have decided to make cross-country
+comparisons in regards to the mortality of children under the age of 5.</p>
+<p>As the indicators are in different data files I will have to merge the
+relevant data into one dataset and modify some of the original variable
+names.
+ </p>
+<h3>STEP 2. Identify a specific topic of interest</h3>
+<p>Research question: What is the correlation between child mortality and
+female education?
+ </p>
+<h3>STEP 3. Prepare a codebook</h3>
+<p>My codebook contains the following Gapminder variables:</p>
+<p><em>Indicator name:</em> <strong>Under Five Mortality</strong><br />
+<em>Description of Indicator (by Unicef):</em> The probability that a child
+born in a specific year will die before reaching the age of five if
+subject to current age-specific mortality rates. Expressed as a rate per
+1,000 live births (2010).<br />
+<em>Source organization(s):</em> CME info estimates, Human Mortality Database,
+Estimated from Gapminder's IMR series, Data extrapolated back to 1800
+based on Gapminder Life Expectancy combined with model life tables,
+Other guesstimates</p>
+<p><em>Indicator name:</em> <strong>Mean years in school (women of reproductive age, 15
+to 44)</strong><br />
+<em>Description of Indicator:</em> The average number of years of school
+attended by all people in the age and gender group specified, including
+primary, secondary and tertiary education (2009).<br />
+<em>Source organization(s):</em> Institute for Health Metrics and Evaluation
+ </p>
+<h3>STEP 4. Identify a second topic</h3>
+<p>I also want to look at other variables that may affect child mortality
+rates of different countries. Does it depend on other factors such as
+total expenditure on health? Is GDP reflecting the anticipated level of
+child mortality?
+ </p>
+<h3>STEP 5. Additions to my personal codebook</h3>
+<p><em>Indicator name:</em> <strong>incomeperperson</strong><br />
+<em>Description of Indicator:</em> 2010 Gross Domestic Product per capita in
+constant 2000 US\$. The inflation but not the differences in the cost of
+living between countries has been taken into account.<br />
+<em>Source organization(s):</em> World Bank Work Development Indicators</p>
+<p><em>Indicator name:</em> <strong>Per capita total expenditure on health at average
+exchange rate (US\$)</strong><br />
+<em>Description of Indicator:</em> Per capita total expenditure on health
+expressed at average exchange rate for that year in US\$. Current prices
+(2010).<br />
+<em>Source organization(s):</em> World Health Organization
+ </p>
+<h3>STEP 6. Literature Review</h3>
+<p><strong>Search strings:</strong> child mortality, under-5, child survival, maternal
+education, health expenditures</p>
+<p>„With declining poverty and increasing knowledge and service in the
+health sector, child mortality around the world is declining very
+rapidly… Over the last decade this improvement has been happening faster
+than ever before. Rising prosperity, rising education and the spread of
+health care around the globe are the major drivers of this progress.”<br />
+„As one would expect, income level of the country is extremely
+correlated with child mortality rate. The poorest countries have the
+highest levels of child mortality, and the countries with the highest
+income have the lowest rates.” [1]</p>
+<p>Gakidou et al. find that over half the decline seen in child mortality
+globally between 1970-2010 can be explained by improvements in the
+education of women. They also find that economic growth (GDP) can only
+explain a very small amount of the reduction in child mortality. [2]</p>
+<p>In their publication in the American Economic Journal the authors report
+that improved access to medical services could improve the large
+disparities in infant mortality rates both across and within countries.
+[3]</p>
+<p>According to Filmer and Pritchett health spending is not a powerful
+determinant of mortality, 95% of cross-national variation in mortality
+can be explained by a country’s income per capita, inequality of income
+distribution, extent of female education, level of ethnic fragmentation,
+and predominant religion. [4]</p>
+<h3>References:</h3>
+<p>​1. Max Roser (2016) – ‘Child Mortality’. <em>Published online at
+OurWorldInData.org.</em> Retrieved from:
+<a href="https://ourworldindata.org/child-mortality/">https://ourworldindata.org/child-mortality/</a> [Online Resource]</p>
+<p>​2. Emmanuela Gakidou, Krycia Cowling, Rafael Lozano, Christopher JL
+Murray (2010) – <a href="http://can-mnch.ca/wp-content/uploads/2012/06/5.-EducationandChildSurvivalLancet.pdf">Increased educational attainment and its effect on
+child mortality in 175 countries between 1970 and 2009: a systematic
+analysis</a>,
+The Lancet, Volume 376, Issue 9745, 18–24 September 2010, Pages 959-974,
+ISSN 0140-6736, http://dx.doi.org/10.1016/S0140-6736(10)61257-3.</p>
+<p>​3. Gruber, Jonathan, Nathaniel Hendren, and Robert M. Townsend (2014) –
+“<a href="http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3998713/">The Great Equalizer: Health Care Access and Infant Mortality in
+Thailand</a>.”
+American Economic Journal: Applied Economics, 6(1): 91-107.</p>
+<p>​4. <a href="http://www.sciencedirect.com/science/article/pii/S027795369900489X">Filmer, D., Pritchett, L., 1999. The impact of public spending on
+health: does money matter? Social Science &amp; Medicine 49,
+1309–1323</a><br />
+<em>Social Science &amp; Medicine</em>, <em>Volume 50, Issue 10</em>, <em>16 May 2000</em>,
+<em>Pages 1517-1518</em></p>
+<h3>STEP 7. Develop a hypothesis</h3>
+<p><strong>My hypothesis:</strong> greater education for women is an important factor in
+reducing the rate of death among children younger than five. Women with more education tend to have smaller families, have better
+employment opportunities and more knowledge about parenatal care,
+hygiene, nutrition.</p>
+<p>I am curious to find out whether public spending on health really has a
+significant effect, and how the income level of countries correlates
+with child mortality.</p></div>
+	
+        <hr>
+
+    </div>
+        </div>
+        
+        <div class="span3">
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Site
+                </li>
+            
+                <li><a href="https://ernogolya.github.io/archives.html">Archives</a>
+                <li><a href="https://ernogolya.github.io/tags.html">Tags</a>
+
+
+
+
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Categories
+                </li>
+                
+                <li><a href="https://ernogolya.github.io/category/data-science.html">Data Science</a></li>
+                   
+            </ul>
+            </div>
+
+
+
+
+
+        </div>  
+    </div>     </div> 
+<footer>
+<br />
+<p><a href="https://ernogolya.github.io">ernogolya</a> &copy; Ernő Gólya 2016</p>
+</footer>
+
+</div> <!-- /container -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="https://ernogolya.github.io/theme/bootstrap-collapse.js"></script>
+ 
+</body>
+</html>

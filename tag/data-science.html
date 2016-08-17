@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>ernogolya - data science</title>
+    <meta name="description" content="">
+    <meta name="author" content="Ernő Gólya">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="https://ernogolya.github.io/theme/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="https://ernogolya.github.io/theme/bootstrap.min.css" rel="stylesheet">
+    <link href="https://ernogolya.github.io/theme/bootstrap.min.responsive.css" rel="stylesheet">
+    <link href="https://ernogolya.github.io/theme/local.css" rel="stylesheet">
+    <link href="https://ernogolya.github.io/theme/pygments.css" rel="stylesheet">
+
+    <!-- So Firefox can bookmark->"abo this site" -->
+
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="navbar-inner">
+    <div class="container">
+
+         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+         </a>
+
+        <a class="brand" href="https://ernogolya.github.io">ernogolya</a>
+
+        <div class="nav-collapse">
+        <ul class="nav">
+            
+            <li><a href="https://ernogolya.github.io/pages/about/">About</a></li>
+        </ul>
+        </div>
+        
+    </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="content">
+    <div class="row">
+
+        <div class="span9">
+        
+
+        
+
+
+    <div class='article'>
+        <div class="content-title">
+            <a href="https://ernogolya.github.io/basic_linear_regression/"><h1>Regression Modeling in Practice: Basic Linear Regression Model</h1></a>
+h 15 augusztus 2016
+
+by <a class="url fn" href="https://ernogolya.github.io/author/erno-golya.html">Ernő Gólya</a>
+ 
+
+
+ 
+        </div>
+        
+        <div><p>So far, in the <a href="https://www.coursera.org/specializations/data-analysis">Data Analysis and Interpretation Specialization</a> courses by Wesleyan University, I have statistically tested the association between the level of female education (primary explanatory variable) and under-five child mortality rate (response variable). </p>
+<p>This time I will test and interpret this relationship using basic linear regression analysis for the two variable.</p>
+<p>Simple linear regression is a statistical method that allows us to describe data and explain the relationship between two quantitative variables:
+1. It might be used to identify the strength of the effect that the independent variable have on a dependent variable.
+2. It can be used to forecast effects or impacts of changes. Regression analysis can help us to understand how much will the dependent variable change, when we change the independent variable.
+3. Regression analysis predicts trends and future values, and can be used to get value estimates.</p>
+<p>Just like in my previous assignments, I use a dataset compiled from the data available at the <a href="https://gapminder.org">Gapminder</a> site. I have a quantitative explanatory variable (mean years in school for women), which I will center so that the mean = 0 (or actually really close to 0 due to the floating-point number representation in Python) by subtracting the mean from each “mean years” value. Then I will test a linear regression model and briefly summarize the results.</p>
+<p>My basic hypothesis is that providing higher education level for women in a country is an important factor in reducing the rate of death among children younger than five.
+Null hypothesis: there is no significant association between the two variables.</p>
+<h2>Output of my code</h2>
+<div class="highlight"><pre>    Mean of women mean years in school: 9.011039
+
+    Dataframe before centering Mean years in school
+           under5mort  womenschool
+    count  154.000000   154.000000
+    mean    39.708442     9.011039
+    std     41.935490     3.483417
+    min      2.400000     1.300000
+    25%      8.350000     6.225000
+    50%     19.500000     9.900000
+    75%     62.750000    11.900000
+    max    208.800000    14.700000 
+
+    Dataframe after centering Mean years in school
+           under5mort   womenschool
+    count  154.000000  1.540000e+02
+    mean    39.708442 -2.231981e-15
+    std     41.935490  3.483417e+00
+    min      2.400000 -7.711039e+00
+    25%      8.350000 -2.786039e+00
+    50%     19.500000  8.889610e-01
+    75%     62.750000  2.888961e+00
+    max    208.800000  5.688961e+00
+</pre></div>
+
+
+<div class="highlight"><pre>OLS regression model for the association between schooling of women and child mortality rate
+                                OLS Regression Results                            
+    ==============================================================================
+    Dep. Variable:             under5mort   R-squared:                       0.617
+    Model:                            OLS   Adj. R-squared:                  0.615
+    Method:                 Least Squares   F-statistic:                     245.2
+    Date:                Mon, 15 Aug 2016   Prob (F-statistic):           1.63e-33
+    Time:                        11:34:07   Log-Likelihood:                -719.43
+    No. Observations:                 154   AIC:                             1443.
+    Df Residuals:                     152   BIC:                             1449.
+    Df Model:                           1                                         
+    Covariance Type:            nonrobust                                         
+    ===============================================================================
+                      coef    std err          t      P&gt;|t|      [95.0% Conf. Int.]
+    -------------------------------------------------------------------------------
+    Intercept      39.7084      2.097     18.932      0.000        35.565    43.852
+    womenschool    -9.4584      0.604    -15.657      0.000       -10.652    -8.265
+    ==============================================================================
+    Omnibus:                       65.182   Durbin-Watson:                   2.158
+    Prob(Omnibus):                  0.000   Jarque-Bera (JB):              264.144
+    Skew:                           1.547   Prob(JB):                     4.38e-58
+    Kurtosis:                       8.621   Cond. No.                         3.47
+    ==============================================================================
+
+    Warnings:
+    [1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+</pre></div>
+
+
+<h2>Describing my results</h2>
+<p>Scatterplot for the relationship in question follows below, including fitted regression line, drawn by  seaborn’s regplot() function. It shows the distribution of the response variable after the centering of the explanatory variable.
+The graph shows a strong negative linear relationship between the indicators: in countries with more advanced female education (measured in average years women spend in schools) the under-five child mortality rate is lower.
+The regression line shown in the plot above can be modeled with the ordinary least squares function, which I already used in the analysis of variance (ANOVA) test.</p>
+<p><img alt="scatterplot" src="https://ernogolya.github.io/images/RegressionModeling/regmod_w2.png" /></p>
+<p>The results of the linear regression model indicates that mean years of school for women (F=245.2, p&lt;0.0001) is significantly and negatively associated with the number of children dying under the age of five (per 1,000 live births). The F-statistic value is very high, showing that the variance between the two variables is a lot higher than the variance within each variable. The p value is considerably smaller than 0.05 which tells us that we can reject the null hypothesis of no association between child mortality rate and mean years in school for women.
+Coefficient for mean years in school: Beta=-9.45, and the Intercept is 39.7.<br />
+Equation for the best fit line of the graph is: <code>under5mort = 39.7 -9.45 * womenschool</code> could theoretically be used to predict new values. This formula implies that increasing the average schooling of women in a country by one year, we can expect the decrease of child mortality rate by more than 9.</p>
+<p>This is statistically significant in the model due to the F and p values previously addressed. Also given mean years in school as the only explanatory variable, this model concludes that the variability in female education level accounts for about 61.7% of the variability we have seen in child mortality rate (R2=0.617, proportion of the variance in the response variable that can be explained by the explanatory variable) </p>
+<h2>Python code</h2>
+<div class="highlight"><pre><span class="c"># -*- coding: utf-8 -*-</span>
+<span class="c"># Created on 14/08/2016</span>
+<span class="c"># Author Ernő Gólya</span>
+
+<span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+<span class="c"># Import libraries</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">seaborn</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">statsmodels.formula.api</span> <span class="kn">as</span> <span class="nn">smf</span>
+<span class="c">#import statsmodels.stats.multicomp as multi</span>
+
+<span class="c"># Read in data file</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">&#39;custom_gapminder_2.csv&#39;</span><span class="p">,</span> <span class="n">low_memory</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+<span class="c"># Set variables to numeric</span>
+<span class="n">data</span><span class="p">[</span><span class="s">&quot;incomeperperson&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;incomeperperson&quot;</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;coerce&#39;</span><span class="p">)</span>
+<span class="n">data</span><span class="p">[</span><span class="s">&quot;under5mort&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;under5mort&quot;</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;coerce&#39;</span><span class="p">)</span>
+<span class="n">data</span><span class="p">[</span><span class="s">&quot;womenschool&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;womenschool&quot;</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;coerce&#39;</span><span class="p">)</span>
+<span class="n">data</span><span class="p">[</span><span class="s">&quot;healthexpend&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;healthexpend&quot;</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;coerce&#39;</span><span class="p">)</span>
+
+<span class="c"># Remove observations with NaN values in any variables of interest</span>
+<span class="c"># Describe function returns NaN for percentiles if dataset contains NaN</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+
+<span class="c"># Create subgrup for child mortality and mean years in school</span>
+<span class="n">sub1</span> <span class="o">=</span> <span class="n">data</span><span class="p">[[</span><span class="s">&#39;under5mort&#39;</span><span class="p">,</span> <span class="s">&#39;womenschool&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="c"># Center mean years in school (explanatory variable)</span>
+<span class="n">sub1</span><span class="p">[</span><span class="s">&#39;womenschool&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;womenschool&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;womenschool&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+
+<span class="c"># Mean of womenscool</span>
+<span class="n">women_mean</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;womenschool&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+
+<span class="c"># Print dataframe before and after centering</span>
+<span class="k">print</span> <span class="s">&quot;Mean of women mean years in school: </span><span class="si">%f</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span><span class="n">women_mean</span>
+<span class="k">print</span> <span class="s">&quot;Dataframe before centering Mean years in school&quot;</span>
+<span class="k">print</span> <span class="n">data</span><span class="p">[[</span><span class="s">&#39;under5mort&#39;</span><span class="p">,</span> <span class="s">&#39;womenschool&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">describe</span><span class="p">(),</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span>
+
+<span class="k">print</span> <span class="s">&quot;Dataframe after centering Mean years in school&quot;</span>
+<span class="k">print</span> <span class="n">sub1</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+
+<span class="c"># Regression model for schooling of women and child mortality</span>
+<span class="k">print</span> <span class="s">&quot;OLS regression model for the association between schooling of women and child mortality rate&quot;</span>
+<span class="n">model1</span> <span class="o">=</span> <span class="n">smf</span><span class="o">.</span><span class="n">ols</span><span class="p">(</span><span class="s">&#39;under5mort ~ womenschool&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">sub1</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="k">print</span> <span class="n">model1</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+
+<span class="c"># scatterplot</span>
+<span class="n">fig</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span> <span class="mi">80</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">)</span>
+<span class="n">seaborn</span><span class="o">.</span><span class="n">regplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s">&#39;womenschool&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s">&#39;under5mort&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">sub1</span><span class="p">,</span> <span class="n">scatter</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;Mean years of schooling for women&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;Under-five mortality rate (per 1,000 live births)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Scatterplot for the association between Child mortality rate and Mean years of schooling for women&#39;</span><span class="p">);</span>
+</pre></div></div>
+        <hr />
+    </div>
+		
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="https://ernogolya.github.io/describing_data/"><h2>Regression Modeling in Practice: Describing Data</h2></a>
+        <div class= "well small"> v 07 augusztus 2016
+
+by <a class="url fn" href="https://ernogolya.github.io/author/erno-golya.html">Ernő Gólya</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>The data set I use for the <a href="https://www.coursera.org/specializations/data-analysis">Data Analysis and Interpretation Specialization</a> courses by Wesleyan University is an excerpt of the data available at the <a href="https://www.gapminder.org">Gapminder</a> site.<br />
+Gapminder is a non-profit foundation promoting sustainable global development and achievement of the United Nations Millennium Development Goals. The indicators collected here provide ...</p> <a class="btn btn-info xsmall" href="https://ernogolya.github.io/describing_data/">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="https://ernogolya.github.io/creating-graphs-for-your-data/"><h2>Data Management & Visualization: Creating Graphs for Your Data</h2></a>
+        <div class= "well small"> cs 28 július 2016
+
+by <a class="url fn" href="https://ernogolya.github.io/author/erno-golya.html">Ernő Gólya</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>After implementing useful data management decisions, it is time to create visual representations of our data that help us better display our findings by graphing the variables we study. According to this week's assignment I use visual tools to display the variables and the relationships between them.</p> <a class="btn btn-info xsmall" href="https://ernogolya.github.io/creating-graphs-for-your-data/">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="https://ernogolya.github.io/making-data-management-decisions/"><h2>Data Management & Visualization: Making Data Management Decisions</h2></a>
+        <div class= "well small"> k 26 július 2016
+
+by <a class="url fn" href="https://ernogolya.github.io/author/erno-golya.html">Ernő Gólya</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>The following Python code is an example of how to make and implement data management decisions. In the previous assignment I already created categories for the relevant variables, as the dataset I study mostly have continuous data. I revise and alter some of the categories to be more similar to those used by World Bank and WHO.</p> <a class="btn btn-info xsmall" href="https://ernogolya.github.io/making-data-management-decisions/">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="https://ernogolya.github.io/refining-research-question/"><h2>Data Management & Visualization: Refining Research Question by Selecting Rows</h2></a>
+        <div class= "well small"> szo 23 július 2016
+
+by <a class="url fn" href="https://ernogolya.github.io/author/erno-golya.html">Ernő Gólya</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>This is an example of narrowing down the original dataframe to a subset of rows that meet a certain criteria. In this case the frequency analysis revealed that 68.86% of the countries in the dataframe fell into the lowest (artificial) category of the Income per person variable.</p> <a class="btn btn-info xsmall" href="https://ernogolya.github.io/refining-research-question/">read more</a></div>
+    </div>	
+				
+<div class="pagination">
+<ul>
+    <li class="prev disabled"><a href="#">&larr; Previous</a></li>
+
+    <li class="active"><a href="https://ernogolya.github.io/tag/data-science.html">1</a></li>
+    <li class=""><a href="https://ernogolya.github.io/tag/data-science2.html">2</a></li>
+
+    <li class="next"><a href="https://ernogolya.github.io/tag/data-science2.html">Next &rarr;</a></li>
+
+</ul>
+</div>
+ 
+  
+        </div>
+        
+        <div class="span3">
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Site
+                </li>
+            
+                <li><a href="https://ernogolya.github.io/archives.html">Archives</a>
+                <li><a href="https://ernogolya.github.io/tags.html">Tags</a>
+
+
+
+
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Categories
+                </li>
+                
+                <li><a href="https://ernogolya.github.io/category/data-science.html">Data Science</a></li>
+                   
+            </ul>
+            </div>
+
+
+
+
+
+        </div>  
+    </div>     </div> 
+<footer>
+<br />
+<p><a href="https://ernogolya.github.io">ernogolya</a> &copy; Ernő Gólya 2016</p>
+</footer>
+
+</div> <!-- /container -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="https://ernogolya.github.io/theme/bootstrap-collapse.js"></script>
+ 
+</body>
+</html>

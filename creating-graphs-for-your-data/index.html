@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>ernogolya - Data Management & Visualization: Creating Graphs for Your Data</title>
+    <meta name="description" content="">
+    <meta name="author" content="Ernő Gólya">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="https://ernogolya.github.io/theme/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="https://ernogolya.github.io/theme/bootstrap.min.css" rel="stylesheet">
+    <link href="https://ernogolya.github.io/theme/bootstrap.min.responsive.css" rel="stylesheet">
+    <link href="https://ernogolya.github.io/theme/local.css" rel="stylesheet">
+    <link href="https://ernogolya.github.io/theme/pygments.css" rel="stylesheet">
+
+    <!-- So Firefox can bookmark->"abo this site" -->
+
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="navbar-inner">
+    <div class="container">
+
+         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+         </a>
+
+        <a class="brand" href="https://ernogolya.github.io">ernogolya</a>
+
+        <div class="nav-collapse">
+        <ul class="nav">
+            
+            <li><a href="https://ernogolya.github.io/pages/about/">About</a></li>
+        </ul>
+        </div>
+        
+    </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="content">
+    <div class="row">
+
+        <div class="span9">
+    <div class='article'>
+        <div class="content-title">
+            <h1>Data Management & Visualization: Creating Graphs for Your Data</h1>
+cs 28 július 2016
+
+by <a class="url fn" href="https://ernogolya.github.io/author/erno-golya.html">Ernő Gólya</a>
+ 
+
+
+        </div>
+	
+        <div><p>This is part of my coursework for Data Management and Visualization
+course by Wesleyan University on Coursera.</p>
+<p>After implementing useful data management decisions, it is time to
+create visual representations of our data that help us better display
+our findings by graphing the variables we study.
+My research goal is to verify there is a relationship between child
+mortality under 5 years of age and the average amount of time (years)
+women spend in schools. I also want to look at other variables that may
+affect child mortality rates of different countries. Does it depend on
+other factors such as income level and total expenditure on health?<br />
+Based on what I read in several publications on this topic I developed
+the following hypothesis: better education of women reduces the rate of
+death among children younger than five. Of course there are many other
+factors that may or may not have a significant effect on child mortality
+(e.g., total spending on health, income level of the country etc.).</p>
+<p>According to this week's assignment I use visual tools to display the
+variables and the relationships between them.</p>
+<p>Selected variables:</p>
+<p><code>under5mort</code>, <code>womenschool</code>, <code>healthexpend</code>, <code>incomeperperson</code>  </p>
+<h2>Plotting univariate distributions</h2>
+<h3>Child mortality</h3>
+<h4>Description of the under5mort variable</h4>
+<div class="highlight"><pre>Describe child mortality under 5
+count    154.000000
+mean      39.708442
+std       41.935490
+min        2.400000
+25%        8.350000
+50%       19.500000
+75%       62.750000
+max      208.800000
+Name: under5mort, dtype: float64
+</pre></div>
+
+
+<h4>Univariate graph for child mortality</h4>
+<p><img alt="1b" src="https://ernogolya.github.io/images/DataManagVisualization/1b.png" /></p>
+<p>Spread: range from 2.4 to 208.8 (under-five mortality per 1,000 live
+births). The mean of the variable is 39.708442 with a high standard
+deviation of 41.935490.</p>
+<p>This graph is unimodal, with its highest peak at the lowest category of
+1-20. The graph is strongly skewed to the right as most of the
+observations are located in the lowest category with fewer observations
+in the other categories.</p>
+<h3>Mean years in school</h3>
+<h4>Description of the womenschool variable</h4>
+<div class="highlight"><pre>Describe mean years in school
+count    154.000000
+mean       9.011039
+std        3.483417
+min        1.300000
+25%        6.225000
+50%        9.900000
+75%       11.900000
+max       14.700000
+Name: womenschool, dtype: float64
+</pre></div>
+
+
+<h4>Univariate graph for mean years of schooling for women</h4>
+<p><img alt="2b" src="https://ernogolya.github.io/images/DataManagVisualization/2b.png" /></p>
+<p>Spread: range from 1.3 to 14.7 years. The mean is 9.011039, standard
+deviation is 3.483417.</p>
+<p>The unimodal graph has a peak at 10-12 years. It's skewed-left
+distribution showing a tendency of increasing frequency from lower to
+higher categories.</p>
+<h3>Health expenditure</h3>
+<h4>Description of the healthexpend variable</h4>
+<div class="highlight"><pre>Describe health expenditures
+count     154.000000
+mean     1026.758235
+std      1781.976820
+min        11.903500
+25%        73.886563
+50%       270.191643
+75%       859.051710
+max      8361.732117
+Name: healthexpend, dtype: float64
+</pre></div>
+
+
+<h4>Univariate graph for total expenditure on health</h4>
+<p><img alt="3b" src="https://ernogolya.github.io/images/DataManagVisualization/3b.png" /></p>
+<p>Spread: range from 11.903500 to 8361.732117 (per capita US$). The mean
+of the variable is 1026.758235 with a high standard deviation of
+1781.976820.</p>
+<p>The unimodal graph shows an extreme skewed-right distribution with a
+peak at around 1-300 US$.</p>
+<h3>Income per person</h3>
+<h4>Description of the incomeperperson variable</h4>
+<div class="highlight"><pre>Describe income per person
+count      154.000000
+mean      7082.552210
+std      10429.868464
+min        103.775857
+25%        726.172683
+50%       2288.445126
+75%       8020.798175
+max      52301.587179
+Name: incomeperperson, dtype: float64
+</pre></div>
+
+
+<h4>Univariate graph for income per person</h4>
+<p><img alt="4b" src="https://ernogolya.github.io/images/DataManagVisualization/4b.png" /></p>
+<p>Spread: range from 103.775857 to 52301.587179 (per capita US$). The
+mean of the variable is 7082.552210 with a standard deviation of
+10429.868464.</p>
+<p>This graph is unimodal, with its highest peak at the first bin of Income
+per Person. It is skewed to the right as most countries are located at
+the low – lower middle income levels.</p>
+<h2>Plotting bivariate distributions</h2>
+<h3>Female education and child mortality</h3>
+<p><img alt="5" src="https://ernogolya.github.io/images/DataManagVisualization/5.png" /></p>
+<p>The bivariate analysis of under5mort (response variable) as compared to
+womenschool (explanatory variable) shows a negative relationship between
+the two variables. In the scatterplot we can see that a higher
+educational realization by mothers is associated with lower child
+mortality rates within countries. So, my original hypothesis ”...more
+education for women is an important factor in reducing the rate of death
+among children...” seems to be supported by this data.</p>
+<h3>Health care and child mortality</h3>
+<p><img alt="6" src="https://ernogolya.github.io/images/DataManagVisualization/6.png" /></p>
+<p>The second analysis is a comparison of health expenditure and child
+mortality. The graph shows a negative relationship between the
+variables: high expenditure on health more generally comes along with
+lower levels of child mortality. According to the previous frequency
+analysis in 75.44% of the studied countries the per capita expenditure
+on health is below 1000 US$. Further examination of this group could
+reveal more details about the discussed correlation.</p>
+<h3>Income per person and child mortality</h3>
+<p><img alt="7" src="https://ernogolya.github.io/images/DataManagVisualization/7.png" /></p>
+<p>Income level of the country shows negative relationship with child
+mortality rate: the poorest countries have the highest levels of child
+mortality, and the countries with the highest income have the lowest
+rates.</p>
+<p>The two bar graphs below show that in the African region, where the per
+capita income is the lowest, child mortality is at an extremely high
+level compared to the other regions. Of course there are many factors
+other than GDP per capita that contribute to this result, but those
+variables are beyond the scope of this brief study.</p>
+<h3>Child mortality by WHO Regions</h3>
+<p><img alt="8" src="https://ernogolya.github.io/images/DataManagVisualization/8.png" /></p>
+<h3>Per capita income by WHO Regions</h3>
+<p><img alt="9" src="https://ernogolya.github.io/images/DataManagVisualization/9.png" /></p>
+<h2>Python code</h2>
+<div class="highlight"><pre>    <span class="c"># -*- coding: utf-8 -*-</span>
+    <span class="c"># Created on 28/07/2016</span>
+    <span class="c"># Author Ernő Gólya</span>
+
+    <span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+    <span class="c"># Import libraries</span>
+    <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+    <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+    <span class="kn">import</span> <span class="nn">seaborn</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+
+    <span class="c"># Reading in data file</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">&#39;custom_gapminder_2.csv&#39;</span><span class="p">,</span> <span class="n">low_memory</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+    <span class="c">#Set PANDAS to show all columns in DataFrame</span>
+    <span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s">&#39;display.max_columns&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+    <span class="c">#Set PANDAS to show all rows in DataFrame</span>
+    <span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s">&#39;display.max_rows&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+
+    <span class="c"># bug fix for display formats to avoid run time errors</span>
+    <span class="c">#pd.set_option(&#39;display.float_format&#39;, lambda x:&#39;%f&#39;%x)</span>
+
+    <span class="c"># Setting variables to numeric</span>
+    <span class="n">data</span><span class="p">[</span><span class="s">&quot;incomeperperson&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;incomeperperson&quot;</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;coerce&#39;</span><span class="p">)</span>
+    <span class="n">data</span><span class="p">[</span><span class="s">&quot;under5mort&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;under5mort&quot;</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;coerce&#39;</span><span class="p">)</span>
+    <span class="n">data</span><span class="p">[</span><span class="s">&quot;womenschool&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;womenschool&quot;</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;coerce&#39;</span><span class="p">)</span>
+    <span class="n">data</span><span class="p">[</span><span class="s">&quot;healthexpend&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;healthexpend&quot;</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;coerce&#39;</span><span class="p">)</span>
+
+    <span class="c"># Remove observations with NaN values in any variables of interest</span>
+    <span class="c"># Describe function returns NaN for percentiles if dataset contains NaN</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+
+    <span class="c"># Creating categories for quantitative variables</span>
+    <span class="n">data</span><span class="p">[</span><span class="s">&quot;incomeperperson_cat&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">incomeperperson</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">4000</span><span class="p">,</span> <span class="mi">12000</span><span class="p">,</span> <span class="mi">65000</span><span class="p">],</span>   
+                                        <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;Low&quot;</span><span class="p">,</span> <span class="s">&quot;Lower middle&quot;</span><span class="p">,</span> <span class="s">&quot;Upper middle&quot;</span><span class="p">,</span> <span class="s">&quot;High&quot;</span> <span class="p">])</span>
+    <span class="n">data</span><span class="p">[</span><span class="s">&quot;under5mort_cat&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">under5mort</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="mi">220</span><span class="p">],</span> 
+                                    <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;0-40&quot;</span><span class="p">,</span><span class="s">&quot;40-80&quot;</span><span class="p">,</span> <span class="s">&quot;80-120&quot;</span><span class="p">,</span> <span class="s">&quot;120-160&quot;</span><span class="p">,</span> <span class="s">&quot;160-220&quot;</span><span class="p">])</span>
+    <span class="n">data</span><span class="p">[</span><span class="s">&quot;womenschool_cat&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">womenschool</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">16</span><span class="p">],</span>  
+                                    <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;0-4 years&quot;</span><span class="p">,</span> <span class="s">&quot;4-8 years&quot;</span><span class="p">,</span> <span class="s">&quot;8-12 years&quot;</span><span class="p">,</span> <span class="s">&quot;12-16 years&quot;</span><span class="p">])</span>
+    <span class="n">data</span><span class="p">[</span><span class="s">&quot;healthexpend_cat&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">healthexpend</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span> <span class="mi">5000</span><span class="p">,</span> <span class="mi">9000</span><span class="p">],</span>
+                                         <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;1-500&quot;</span><span class="p">,</span> <span class="s">&quot;500-1000&quot;</span><span class="p">,</span> <span class="s">&quot;1000-2000&quot;</span><span class="p">,</span> <span class="s">&quot;2000-5000&quot;</span><span class="p">,</span> <span class="s">&quot;5000-9000&quot;</span><span class="p">])</span>
+
+    <span class="c"># Descriptive statistics for quantitative variables</span>
+    <span class="n">desc1</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&quot;under5mort&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+    <span class="n">desc2</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&quot;womenschool&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+    <span class="n">desc3</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&quot;healthexpend&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+    <span class="n">desc4</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&quot;incomeperperson&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+    <span class="k">print</span> <span class="s">&quot;Describe child mortality under 5&quot;</span>
+    <span class="k">print</span> <span class="n">desc1</span>
+    <span class="k">print</span> <span class="s">&quot;&quot;</span>
+    <span class="k">print</span> <span class="s">&quot;Describe mean years in school&quot;</span>
+    <span class="k">print</span> <span class="n">desc2</span>
+    <span class="k">print</span> <span class="s">&quot;&quot;</span>
+    <span class="k">print</span> <span class="s">&quot;Describe health expenditures&quot;</span>
+    <span class="k">print</span> <span class="n">desc3</span>
+    <span class="k">print</span> <span class="s">&quot;&quot;</span>
+    <span class="k">print</span> <span class="s">&quot;Describe income per person&quot;</span>
+    <span class="k">print</span> <span class="n">desc4</span>
+</pre></div>
+
+
+<div class="highlight"><pre>    <span class="c"># Univariate bar graph for categorical variable - not printed</span>
+    <span class="n">fig</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span> <span class="mi">80</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">)</span>
+    <span class="n">seaborn</span><span class="o">.</span><span class="n">countplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s">&quot;under5mort_cat&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">);</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;Under-five mortality rate (per 1,000 live births) categories&#39;</span><span class="p">);</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;Number of countries&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Child mortality under the age of 5 - frequency distribution&#39;</span><span class="p">);</span>
+
+    <span class="c"># Univariate histogram for quantitative variable</span>
+    <span class="n">fig</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span> <span class="mi">80</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">)</span>
+    <span class="n">seaborn</span><span class="o">.</span><span class="n">distplot</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;under5mort&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">(),</span> <span class="n">kde</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">rug</span><span class="o">=</span><span class="bp">False</span><span class="p">);</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;Under-five mortality rate (per 1,000 live births)&#39;</span><span class="p">);</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;Number of countries&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Child mortality under the age of 5 - frequency distribution&#39;</span><span class="p">);</span>
+
+    <span class="c"># Univariate bar graph for categorical variable - not printed</span>
+    <span class="n">fig</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span> <span class="mi">80</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">)</span>
+    <span class="n">seaborn</span><span class="o">.</span><span class="n">countplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s">&quot;womenschool_cat&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">);</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;Number of countries&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;Mean years of schooling for women categories&#39;</span><span class="p">);</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Mean years of schooling for women of reproductive age, 15 to 44 - frequency distribution&#39;</span><span class="p">);</span>
+
+    <span class="c"># Univariate histogram for quantitative variable</span>
+    <span class="n">fig</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span> <span class="mi">80</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">)</span>
+    <span class="n">seaborn</span><span class="o">.</span><span class="n">distplot</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;womenschool&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">(),</span> <span class="n">kde</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">rug</span><span class="o">=</span><span class="bp">False</span><span class="p">);</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;Number of countries&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;Mean years of schooling for women&#39;</span><span class="p">);</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Mean years of schooling for women of reproductive age, 15 to 44 - frequency distribution&#39;</span><span class="p">);</span>
+
+    <span class="c"># Univariate bar graph for categorical variable - not printed</span>
+    <span class="n">fig</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span> <span class="mi">80</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">)</span>
+    <span class="n">seaborn</span><span class="o">.</span><span class="n">countplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s">&quot;healthexpend_cat&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">);</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;Number of countries&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;Per capita total expenditure on health (US$) categories&#39;</span><span class="p">);</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Per capita total expenditure on health expressed at average exchange rate in US$ - frequency distribution&#39;</span><span class="p">);</span>
+
+    <span class="c"># Univariate histogram for quantitative variable</span>
+    <span class="n">fig</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span> <span class="mi">80</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">)</span>
+    <span class="n">seaborn</span><span class="o">.</span><span class="n">distplot</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;healthexpend&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">(),</span> <span class="n">kde</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">rug</span><span class="o">=</span><span class="bp">False</span><span class="p">);</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;Number of countries&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;Per capita total expenditure on health (US$)&#39;</span><span class="p">);</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Per capita total expenditure on health expressed at average exchange rate in US$ - frequency distribution&#39;</span><span class="p">);</span>
+
+    <span class="c"># Univariate bar graph for categorical variable - not printed</span>
+    <span class="n">fig</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span> <span class="mi">80</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">)</span>
+    <span class="n">seaborn</span><span class="o">.</span><span class="n">countplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s">&quot;incomeperperson_cat&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">);</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;Number of countries&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;Income per person (US$) level&#39;</span><span class="p">);</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;2010 Gross Domestic Product per capita in constant 2000 US$ - frequency distribution&#39;</span><span class="p">);</span>
+
+    <span class="c"># Univariate histogram for quantitative variable</span>
+    <span class="n">fig</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span> <span class="mi">80</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">)</span>
+    <span class="n">seaborn</span><span class="o">.</span><span class="n">distplot</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;incomeperperson&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">(),</span> <span class="n">kde</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">rug</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">15</span><span class="p">);</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;Number of countries&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;Income per person (US$)&#39;</span><span class="p">);</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;2010 Gross Domestic Product per capita in constant 2000 US$ - frequency distribution&#39;</span><span class="p">);</span>
+
+    <span class="c"># basic scatterplot:  Q-&gt;Q</span>
+    <span class="n">fig</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span> <span class="mi">80</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">)</span>
+    <span class="n">scat1</span> <span class="o">=</span> <span class="n">seaborn</span><span class="o">.</span><span class="n">regplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s">&#39;womenschool&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s">&#39;under5mort&#39;</span><span class="p">,</span> <span class="n">fit_reg</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;Mean years of schooling for women&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;Children dying before the age of 5 per 1,000 live births&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Association between mean years of schooling for women (age 15 to 44) and child mortality&#39;</span><span class="p">);</span>
+
+    <span class="c"># basic scatterplot:  Q-&gt;Q</span>
+    <span class="n">fig</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span> <span class="mi">80</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">)</span>
+    <span class="n">scat2</span> <span class="o">=</span> <span class="n">seaborn</span><span class="o">.</span><span class="n">regplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s">&#39;healthexpend&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s">&#39;under5mort&#39;</span><span class="p">,</span> <span class="n">fit_reg</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;Per capita expenditure on health (US$)&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;Children dying before the age of 5 per 1,000 live births&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Association between per capita total expenditure on health and child mortality&#39;</span><span class="p">);</span>
+
+    <span class="c"># basic scatterplot:  Q-&gt;Q</span>
+    <span class="n">fig</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span> <span class="mi">80</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">)</span>
+    <span class="n">scat3</span> <span class="o">=</span> <span class="n">seaborn</span><span class="o">.</span><span class="n">regplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s">&#39;incomeperperson&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s">&#39;under5mort&#39;</span><span class="p">,</span> <span class="n">fit_reg</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;2010 GDP per capita (US$)&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;Children dying before the age of 5 per 1,000 live births&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Association between income per person (US$) and child mortality&#39;</span><span class="p">);</span>
+
+    <span class="c"># bivariate bar graph C-&gt;Q</span>
+    <span class="n">seaborn</span><span class="o">.</span><span class="n">factorplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s">&#39;who_region&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s">&#39;under5mort&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s">&#39;bar&#39;</span><span class="p">,</span> <span class="n">ci</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">aspect</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;WHO Regions&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;Under-five mortality rate (per 1,000 live births)&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Average child mortality rate by WHO Regions&#39;</span><span class="p">);</span>
+
+    <span class="c"># bivariate bar graph C-&gt;Q</span>
+    <span class="n">seaborn</span><span class="o">.</span><span class="n">factorplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s">&#39;who_region&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s">&#39;incomeperperson&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s">&#39;bar&#39;</span><span class="p">,</span> <span class="n">ci</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">aspect</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;WHO Regions&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;2010 GDP per capita (US$)&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Average per capita income by WHO Regions&#39;</span><span class="p">);</span>
+</pre></div></div>
+	
+        <hr>
+
+    </div>
+        </div>
+        
+        <div class="span3">
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Site
+                </li>
+            
+                <li><a href="https://ernogolya.github.io/archives.html">Archives</a>
+                <li><a href="https://ernogolya.github.io/tags.html">Tags</a>
+
+
+
+
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Categories
+                </li>
+                
+                <li><a href="https://ernogolya.github.io/category/data-science.html">Data Science</a></li>
+                   
+            </ul>
+            </div>
+
+
+
+
+
+        </div>  
+    </div>     </div> 
+<footer>
+<br />
+<p><a href="https://ernogolya.github.io">ernogolya</a> &copy; Ernő Gólya 2016</p>
+</footer>
+
+</div> <!-- /container -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="https://ernogolya.github.io/theme/bootstrap-collapse.js"></script>
+ 
+</body>
+</html>

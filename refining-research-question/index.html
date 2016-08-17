@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>ernogolya - Data Management & Visualization: Refining Research Question by Selecting Rows</title>
+    <meta name="description" content="">
+    <meta name="author" content="Ernő Gólya">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="https://ernogolya.github.io/theme/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="https://ernogolya.github.io/theme/bootstrap.min.css" rel="stylesheet">
+    <link href="https://ernogolya.github.io/theme/bootstrap.min.responsive.css" rel="stylesheet">
+    <link href="https://ernogolya.github.io/theme/local.css" rel="stylesheet">
+    <link href="https://ernogolya.github.io/theme/pygments.css" rel="stylesheet">
+
+    <!-- So Firefox can bookmark->"abo this site" -->
+
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="navbar-inner">
+    <div class="container">
+
+         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+         </a>
+
+        <a class="brand" href="https://ernogolya.github.io">ernogolya</a>
+
+        <div class="nav-collapse">
+        <ul class="nav">
+            
+            <li><a href="https://ernogolya.github.io/pages/about/">About</a></li>
+        </ul>
+        </div>
+        
+    </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="content">
+    <div class="row">
+
+        <div class="span9">
+    <div class='article'>
+        <div class="content-title">
+            <h1>Data Management & Visualization: Refining Research Question by Selecting Rows</h1>
+szo 23 július 2016
+
+by <a class="url fn" href="https://ernogolya.github.io/author/erno-golya.html">Ernő Gólya</a>
+ 
+
+
+        </div>
+	
+        <div><p>This is an example of narrowing down the original dataframe to a subset
+of rows that meet a certain criteria.</p>
+<p>In this case the frequency analysis revealed that 68.86% of the
+countries in the dataframe fell into the lowest (artificial) category of
+the Income per person variable.</p>
+<p>The subset below contains those countries where the value of this
+indicator is below 6,000, while the Per capita total expenditure on
+health is under 1,000 and Child mortality under 5 years is less than 20
+per 1,000 live births.</p>
+<div class="highlight"><pre><span class="c"># Create subset of countries with the lowest Income per person and Health expenditure per person values</span>
+<span class="n">sub1</span> <span class="o">=</span> <span class="n">data</span><span class="p">[(</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;incomeperperson&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">6000</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;healthexpend&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">1000</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;under5mort&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">20</span><span class="p">)]</span>
+<span class="n">sub2</span> <span class="o">=</span> <span class="n">sub1</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">sub2</span><span class="p">[[</span><span class="s">&#39;country&#39;</span><span class="p">,</span><span class="s">&#39;under5mort&#39;</span><span class="p">,</span><span class="s">&#39;womenschool&#39;</span><span class="p">,</span><span class="s">&#39;healthexpend&#39;</span><span class="p">,</span><span class="s">&#39;incomeperperson&#39;</span><span class="p">]]</span>
+<span class="c"># Number of countries in subset</span>
+<span class="k">print</span> <span class="nb">len</span><span class="p">(</span><span class="n">sub2</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+</pre></div>
+
+
+<h3>Subset of countries</h3>
+<table border="1">
+<thead>
+<tr>
+<th>
+</th>
+<th>
+country
+</th>
+<th>
+under5mort
+</th>
+<th>
+womenschool
+</th>
+<th>
+healthexpend
+</th>
+<th>
+incomeperperson
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+1
+</th>
+<td>
+Albania
+</td>
+<td>
+16.6
+</td>
+<td>
+10.7
+</td>
+<td>
+240.824785
+</td>
+<td>
+1914.996551
+</td>
+</tr>
+<tr>
+<th>
+6
+</th>
+<td>
+Armenia
+</td>
+<td>
+18.0
+</td>
+<td>
+11.4
+</td>
+<td>
+133.476761
+</td>
+<td>
+1326.741757
+</td>
+</tr>
+<tr>
+<th>
+13
+</th>
+<td>
+Belarus
+</td>
+<td>
+6.1
+</td>
+<td>
+12.4
+</td>
+<td>
+319.640401
+</td>
+<td>
+2737.670379
+</td>
+</tr>
+<tr>
+<th>
+15
+</th>
+<td>
+Belize
+</td>
+<td>
+19.0
+</td>
+<td>
+9.4
+</td>
+<td>
+238.823592
+</td>
+<td>
+3545.652174
+</td>
+</tr>
+<tr>
+<th>
+18
+</th>
+<td>
+Bosnia and Herzegovina
+</td>
+<td>
+7.5
+</td>
+<td>
+9.7
+</td>
+<td>
+499.207872
+</td>
+<td>
+2183.344867
+</td>
+</tr>
+<tr>
+<th>
+20
+</th>
+<td>
+Brazil
+</td>
+<td>
+16.7
+</td>
+<td>
+9.0
+</td>
+<td>
+990.394075
+</td>
+<td>
+4699.411262
+</td>
+</tr>
+<tr>
+<th>
+21
+</th>
+<td>
+Bulgaria
+</td>
+<td>
+13.0
+</td>
+<td>
+12.4
+</td>
+<td>
+434.893145
+</td>
+<td>
+2549.558474
+</td>
+</tr>
+<tr>
+<th>
+30
+</th>
+<td>
+China
+</td>
+<td>
+15.7
+</td>
+<td>
+8.5
+</td>
+<td>
+220.876645
+</td>
+<td>
+2425.471293
+</td>
+</tr>
+<tr>
+<th>
+31
+</th>
+<td>
+Colombia
+</td>
+<td>
+18.5
+</td>
+<td>
+8.4
+</td>
+<td>
+472.152223
+</td>
+<td>
+3233.423780
+</td>
+</tr>
+<tr>
+<th>
+35
+</th>
+<td>
+Costa Rica
+</td>
+<td>
+10.2
+</td>
+<td>
+10.4
+</td>
+<td>
+811.438052
+</td>
+<td>
+5188.900935
+</td>
+</tr>
+<tr>
+<th>
+38
+</th>
+<td>
+Cuba
+</td>
+<td>
+6.6
+</td>
+<td>
+12.2
+</td>
+<td>
+607.027219
+</td>
+<td>
+4495.046262
+</td>
+</tr>
+<tr>
+<th>
+54
+</th>
+<td>
+Georgia
+</td>
+<td>
+16.6
+</td>
+<td>
+12.7
+</td>
+<td>
+271.625472
+</td>
+<td>
+1258.762596
+</td>
+</tr>
+<tr>
+<th>
+64
+</th>
+<td>
+Hungary
+</td>
+<td>
+6.6
+</td>
+<td>
+12.1
+</td>
+<td>
+942.344999
+</td>
+<td>
+5634.003948
+</td>
+</tr>
+<tr>
+<th>
+67
+</th>
+<td>
+Iran
+</td>
+<td>
+19.2
+</td>
+<td>
+8.2
+</td>
+<td>
+316.925387
+</td>
+<td>
+2161.546510
+</td>
+</tr>
+<tr>
+<th>
+72
+</th>
+<td>
+Jamaica
+</td>
+<td>
+18.1
+</td>
+<td>
+11.6
+</td>
+<td>
+247.279979
+</td>
+<td>
+3665.348369
+</td>
+</tr>
+<tr>
+<th>
+79
+</th>
+<td>
+Latvia
+</td>
+<td>
+9.4
+</td>
+<td>
+12.3
+</td>
+<td>
+717.580855
+</td>
+<td>
+5011.219456
+</td>
+</tr>
+<tr>
+<th>
+83
+</th>
+<td>
+Lithuania
+</td>
+<td>
+6.8
+</td>
+<td>
+12.6
+</td>
+<td>
+781.419680
+</td>
+<td>
+5332.238591
+</td>
+</tr>
+<tr>
+<th>
+85
+</th>
+<td>
+Macedonia, FYR
+</td>
+<td>
+9.9
+</td>
+<td>
+11.2
+</td>
+<td>
+316.870773
+</td>
+<td>
+2221.185664
+</td>
+</tr>
+<tr>
+<th>
+88
+</th>
+<td>
+Malaysia
+</td>
+<td>
+8.3
+</td>
+<td>
+11.2
+</td>
+<td>
+367.918603
+</td>
+<td>
+5184.709328
+</td>
+</tr>
+<tr>
+<th>
+89
+</th>
+<td>
+Maldives
+</td>
+<td>
+13.0
+</td>
+<td>
+5.9
+</td>
+<td>
+382.475004
+</td>
+<td>
+4038.857818
+</td>
+</tr>
+<tr>
+<th>
+93
+</th>
+<td>
+Mauritius
+</td>
+<td>
+15.2
+</td>
+<td>
+10.1
+</td>
+<td>
+448.927451
+</td>
+<td>
+5182.143721
+</td>
+</tr>
+<tr>
+<th>
+95
+</th>
+<td>
+Moldova
+</td>
+<td>
+17.1
+</td>
+<td>
+12.4
+</td>
+<td>
+190.413037
+</td>
+<td>
+595.874535
+</td>
+</tr>
+<tr>
+<th>
+97
+</th>
+<td>
+Montenegro
+</td>
+<td>
+6.8
+</td>
+<td>
+11.6
+</td>
+<td>
+578.348772
+</td>
+<td>
+2222.335052
+</td>
+</tr>
+<tr>
+<th>
+111
+</th>
+<td>
+Panama
+</td>
+<td>
+19.8
+</td>
+<td>
+11.4
+</td>
+<td>
+616.386537
+</td>
+<td>
+5900.616944
+</td>
+</tr>
+<tr>
+<th>
+119
+</th>
+<td>
+Romania
+</td>
+<td>
+13.9
+</td>
+<td>
+12.5
+</td>
+<td>
+427.999858
+</td>
+<td>
+2636.787800
+</td>
+</tr>
+<tr>
+<th>
+120
+</th>
+<td>
+Russia
+</td>
+<td>
+12.0
+</td>
+<td>
+13.2
+</td>
+<td>
+525.318074
+</td>
+<td>
+2923.144355
+</td>
+</tr>
+<tr>
+<th>
+122
+</th>
+<td>
+Samoa
+</td>
+<td>
+18.7
+</td>
+<td>
+12.9
+</td>
+<td>
+203.978640
+</td>
+<td>
+1784.071284
+</td>
+</tr>
+<tr>
+<th>
+126
+</th>
+<td>
+Serbia
+</td>
+<td>
+7.6
+</td>
+<td>
+10.9
+</td>
+<td>
+546.027710
+</td>
+<td>
+1194.711433
+</td>
+</tr>
+<tr>
+<th>
+136
+</th>
+<td>
+Sri Lanka
+</td>
+<td>
+10.6
+</td>
+<td>
+10.6
+</td>
+<td>
+69.959105
+</td>
+<td>
+1295.742686
+</td>
+</tr>
+<tr>
+<th>
+142
+</th>
+<td>
+Syria
+</td>
+<td>
+15.3
+</td>
+<td>
+7.6
+</td>
+<td>
+96.585010
+</td>
+<td>
+1525.780116
+</td>
+</tr>
+<tr>
+<th>
+146
+</th>
+<td>
+Thailand
+</td>
+<td>
+14.5
+</td>
+<td>
+8.9
+</td>
+<td>
+179.146529
+</td>
+<td>
+2712.517199
+</td>
+</tr>
+<tr>
+<th>
+149
+</th>
+<td>
+Tonga
+</td>
+<td>
+17.4
+</td>
+<td>
+12.6
+</td>
+<td>
+171.799052
+</td>
+<td>
+2025.282665
+</td>
+</tr>
+<tr>
+<th>
+151
+</th>
+<td>
+Tunisia
+</td>
+<td>
+17.4
+</td>
+<td>
+7.1
+</td>
+<td>
+237.837072
+</td>
+<td>
+3164.927693
+</td>
+</tr>
+<tr>
+<th>
+152
+</th>
+<td>
+Turkey
+</td>
+<td>
+19.1
+</td>
+<td>
+8.2
+</td>
+<td>
+678.113325
+</td>
+<td>
+5348.597192
+</td>
+</tr>
+<tr>
+<th>
+155
+</th>
+<td>
+Ukraine
+</td>
+<td>
+11.8
+</td>
+<td>
+12.9
+</td>
+<td>
+234.356614
+</td>
+<td>
+1036.830725
+</td>
+</tr>
+<tr>
+<th>
+162
+</th>
+<td>
+Venezuela
+</td>
+<td>
+16.6
+</td>
+<td>
+10.5
+</td>
+<td>
+663.387571
+</td>
+<td>
+5528.363114
+</td>
+</tr>
+</tbody>
+</table>
+
+<p>Number of countries in subset: 36</p>
+<h3>Creating new ranges for the variables</h3>
+<div class="highlight"><pre>    <span class="n">sub2</span><span class="p">[</span><span class="s">&quot;incomeperperson_scat&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">sub2</span><span class="o">.</span><span class="n">incomeperperson</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">6000</span><span class="p">,</span> <span class="mi">1000</span><span class="p">))</span>
+    <span class="n">sub2</span><span class="p">[</span><span class="s">&quot;under5mort_scat&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">sub2</span><span class="o">.</span><span class="n">under5mort</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="n">sub2</span><span class="p">[</span><span class="s">&quot;womenschool_scat&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">sub2</span><span class="o">.</span><span class="n">womenschool</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="n">sub2</span><span class="p">[</span><span class="s">&quot;healthexpend_scat&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">sub2</span><span class="o">.</span><span class="n">healthexpend</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+</pre></div>
+
+
+<h3>Example frequency distribution of subset</h3>
+<div class="highlight"><pre>    <span class="k">print</span> <span class="s">&quot;Child mortality value range in subset: &quot;</span><span class="p">,</span> <span class="n">sub2</span><span class="p">[</span><span class="s">&#39;under5mort&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span>  <span class="s">&quot; - &quot;</span><span class="p">,</span> <span class="n">sub2</span><span class="p">[</span><span class="s">&#39;under5mort&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span>
+    <span class="k">print</span> <span class="s">&quot;Count for child mortality under the age of 5. Expressed as a rate per 1,000 live births&quot;</span>
+    <span class="n">cs1</span> <span class="o">=</span> <span class="n">sub2</span><span class="p">[</span><span class="s">&#39;under5mort_scat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">dropna</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&quot;Category:&quot;</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">Frequency&quot;</span>
+    <span class="k">print</span> <span class="n">cs1</span><span class="p">,</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span>
+    <span class="k">print</span> <span class="s">&quot;Percentage for child mortality under the age of 5. Expressed as a rate per 1,000 live births&quot;</span>
+    <span class="n">ps1</span> <span class="o">=</span> <span class="n">sub2</span><span class="p">[</span><span class="s">&#39;under5mort_scat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">dropna</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&quot;Category:&quot;</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">Frequency %&quot;</span>
+    <span class="k">print</span> <span class="n">ps1</span> <span class="o">*</span> <span class="mi">100</span>
+</pre></div>
+
+
+<div class="highlight"><pre>    Child mortality value range in subset:  6.1  -  19.8 
+
+    Count for child mortality under the age of 5. Expressed as a rate per 1,000 live births
+    Category:   Frequency
+    (0, 2]      0
+    (2, 4]      0
+    (4, 6]      0
+    (6, 8]      7
+    (8, 10]     3
+    (10, 12]    4
+    (12, 14]    3
+    (14, 16]    4
+    (16, 18]    8
+    NaN         7
+    Name: under5mort_scat, dtype: int64 
+
+    Percentage for child mortality under the age of 5. Expressed as a rate per 1,000 live births
+    Category:   Frequency %
+    (0, 2]       0.000000
+    (2, 4]       0.000000
+    (4, 6]       0.000000
+    (6, 8]      19.444444
+    (8, 10]      8.333333
+    (10, 12]    11.111111
+    (12, 14]     8.333333
+    (14, 16]    11.111111
+    (16, 18]    22.222222
+    NaN         19.444444
+    Name: under5mort_scat, dtype: float64
+</pre></div>
+
+
+<div class="highlight"><pre>    <span class="k">print</span> <span class="s">&quot;Mean years in school value range in subaset: &quot;</span><span class="p">,</span> <span class="n">sub2</span><span class="p">[</span><span class="s">&#39;womenschool&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span>  <span class="s">&quot; - &quot;</span><span class="p">,</span> <span class="n">sub2</span><span class="p">[</span><span class="s">&#39;womenschool&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span>
+    <span class="k">print</span> <span class="s">&quot;Count for Mean years in school. Women of reproductive age, 15 to 44.&quot;</span>
+    <span class="n">cs2</span> <span class="o">=</span> <span class="n">sub2</span><span class="p">[</span><span class="s">&#39;womenschool_scat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">dropna</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&quot;Category:&quot;</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">Frequency&quot;</span>
+    <span class="k">print</span> <span class="n">cs2</span><span class="p">,</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span>
+    <span class="k">print</span> <span class="s">&quot;Percentage for Mean years in school. Women of reproductive age, 15 to 44.&quot;</span>
+    <span class="n">ps2</span> <span class="o">=</span> <span class="n">sub2</span><span class="p">[</span><span class="s">&#39;womenschool_scat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">dropna</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&quot;Category:&quot;</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">Frequency %&quot;</span>
+    <span class="k">print</span> <span class="n">ps2</span> <span class="o">*</span> <span class="mi">100</span>
+</pre></div>
+
+
+<div class="highlight"><pre>    Mean years in school value range in subaset:  5.9  -  13.2 
+
+    Count for Mean years in school. Women of reproductive age, 15 to 44.
+    Category:   Frequency
+    (0, 2]       0
+    (2, 4]       0
+    (4, 6]       1
+    (6, 8]       2
+    (8, 10]      8
+    (10, 12]    12
+    (12, 14]    13
+    (14, 16]     0
+    (16, 18]     0
+    Name: womenschool_scat, dtype: int64 
+
+    Percentage for Mean years in school. Women of reproductive age, 15 to 44.
+    Category:   Frequency %
+    (0, 2]       0.000000
+    (2, 4]       0.000000
+    (4, 6]       2.777778
+    (6, 8]       5.555556
+    (8, 10]     22.222222
+    (10, 12]    33.333333
+    (12, 14]    36.111111
+    (14, 16]     0.000000
+    (16, 18]     0.000000
+    Name: womenschool_scat, dtype: float64
+</pre></div>
+
+
+<p>36 countries in the original dataframe have an Income per person less
+than 6,000 USD and Per capita health expenditure under 1,000 USD with
+less than 20 child mortality per 1,000 live births. 7 observations has no data of under5mort. Child mortality value is between 6.1 - 19.8, the most common range is 16 - 18 with 22.22% (8 countries). Mean years in schools is 5.9 - 13.2
+with the highest ratio of 36.11% (13 countries) in the 12 - 14 years
+range.</p></div>
+	
+        <hr>
+
+    </div>
+        </div>
+        
+        <div class="span3">
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Site
+                </li>
+            
+                <li><a href="https://ernogolya.github.io/archives.html">Archives</a>
+                <li><a href="https://ernogolya.github.io/tags.html">Tags</a>
+
+
+
+
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Categories
+                </li>
+                
+                <li><a href="https://ernogolya.github.io/category/data-science.html">Data Science</a></li>
+                   
+            </ul>
+            </div>
+
+
+
+
+
+        </div>  
+    </div>     </div> 
+<footer>
+<br />
+<p><a href="https://ernogolya.github.io">ernogolya</a> &copy; Ernő Gólya 2016</p>
+</footer>
+
+</div> <!-- /container -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="https://ernogolya.github.io/theme/bootstrap-collapse.js"></script>
+ 
+</body>
+</html>

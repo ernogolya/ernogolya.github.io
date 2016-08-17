@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>ernogolya - Data Management & Visualization: Frequency Distributions</title>
+    <meta name="description" content="">
+    <meta name="author" content="Ernő Gólya">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="https://ernogolya.github.io/theme/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="https://ernogolya.github.io/theme/bootstrap.min.css" rel="stylesheet">
+    <link href="https://ernogolya.github.io/theme/bootstrap.min.responsive.css" rel="stylesheet">
+    <link href="https://ernogolya.github.io/theme/local.css" rel="stylesheet">
+    <link href="https://ernogolya.github.io/theme/pygments.css" rel="stylesheet">
+
+    <!-- So Firefox can bookmark->"abo this site" -->
+
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="navbar-inner">
+    <div class="container">
+
+         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+         </a>
+
+        <a class="brand" href="https://ernogolya.github.io">ernogolya</a>
+
+        <div class="nav-collapse">
+        <ul class="nav">
+            
+            <li><a href="https://ernogolya.github.io/pages/about/">About</a></li>
+        </ul>
+        </div>
+        
+    </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="content">
+    <div class="row">
+
+        <div class="span9">
+    <div class='article'>
+        <div class="content-title">
+            <h1>Data Management & Visualization: Frequency Distributions</h1>
+cs 21 július 2016
+
+by <a class="url fn" href="https://ernogolya.github.io/author/erno-golya.html">Ernő Gólya</a>
+ 
+
+
+        </div>
+	
+        <div><p>This week I will call in a dataset and run frequency distributions for
+my chosen variables. I will also demonstrate how to create a subset of
+the data rows (i.e. observations).</p>
+<p>During the course I use Gapminder dataset, which contains quantitative
+variables. Calculating frequency distribution with continuous data in
+this case is not very useful. For a continuous variable if we take a
+class for each distinct value of the variable, the number of classes may
+become very large, thus defeating the purpose of tabulation. Since a
+continuous variable can assume an infinite number of values within its
+range of variation, the classification of such data is necessary.</p>
+<p>I use Pandas cut.() function to sort the data into categories. The
+ranges I choose are arbitrary as at this point the sole purpose of this
+transformation is to get more discernible results as opposed to display
+all distinct values separately.</p>
+<div class="highlight"><pre>    <span class="c"># -*- coding: utf-8 -*-</span>
+    <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+    <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+    <span class="c"># Reading in data file</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">&#39;custom_gapminder.csv&#39;</span><span class="p">,</span> <span class="n">low_memory</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="c"># Show the number of rows and columns </span>
+    <span class="k">print</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="c"># Number of countries in dataframe</span>
+    <span class="k">print</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="c"># Number of variables in dataframe</span>
+    <span class="c"># print len(data.index) # Another option for displaying (number of) rows in a Dataframe</span>
+</pre></div>
+
+
+<p>Output:</p>
+<div class="highlight"><pre>    167
+    19
+</pre></div>
+
+
+<p>My customized dataset contains data for 167 countries (the inner join
+merge included only those countries that are presented in every data
+files I used as a source).</p>
+<p>The number of variables is 19, which are the variables from the original
+Gapminder file complemented with under5mort, womenschool and
+healthexpend.</p>
+<div class="highlight"><pre>    <span class="c"># Replace all missing values with 0 by replace() function </span>
+    <span class="c">#data[&quot;incomeperperson&quot;] = data[&quot;incomeperperson&quot;].replace(0, numpy.nan)</span>
+    <span class="c">#data[&quot;under5mort&quot;] = data[&quot;under5mort&quot;].replace(0, numpy.nan)</span>
+    <span class="c">#data[&quot;womenschool&quot;] = data[&quot;womenschool&quot;].replace(0, numpy.nan)</span>
+    <span class="c">#data[&quot;healthexpend&quot;] = data[&quot;healthexpend&quot;].replace(0, numpy.nan)</span>
+</pre></div>
+
+
+<p>I commented out the rows above, because missing values are displayed as
+NaN already.</p>
+<div class="highlight"><pre>    <span class="c"># Creating categories for each variable</span>
+
+    <span class="n">data</span><span class="p">[</span><span class="s">&quot;incomeperperson&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;incomeperperson&quot;</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;coerce&#39;</span><span class="p">)</span>
+    <span class="n">data</span><span class="p">[</span><span class="s">&quot;incomeperperson_cat&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">incomeperperson</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">56000</span><span class="p">,</span> <span class="mi">6000</span><span class="p">))</span>
+
+    <span class="n">data</span><span class="p">[</span><span class="s">&quot;under5mort&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;under5mort&quot;</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;coerce&#39;</span><span class="p">)</span>
+    <span class="n">data</span><span class="p">[</span><span class="s">&quot;under5mort_cat&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">under5mort</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">240</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
+
+    <span class="n">data</span><span class="p">[</span><span class="s">&quot;womenschool&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;womenschool&quot;</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;coerce&#39;</span><span class="p">)</span>
+    <span class="n">data</span><span class="p">[</span><span class="s">&quot;womenschool_cat&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">womenschool</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+
+    <span class="n">data</span><span class="p">[</span><span class="s">&quot;healthexpend&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;healthexpend&quot;</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;coerce&#39;</span><span class="p">)</span>
+    <span class="n">data</span><span class="p">[</span><span class="s">&quot;healthexpend_cat&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">healthexpend</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10000</span><span class="p">,</span> <span class="mi">1000</span><span class="p">))</span>
+</pre></div>
+
+
+<p>Incomeperperson is sorted in a range of 0 - 56000 in increments of 6000.
+Underfivemort has a range from 0 to 240 with increments of 20. In the
+case of womenschool variable I set the maximum of range to 20, with 2
+years steps, while healthexpand values vary between an extended 0 -
+10000 range divided to 9 categories with an increment of 1000.</p>
+<div class="highlight"><pre>    <span class="c"># Generate frequency distributions using the value\_counts() function </span>
+    <span class="c"># Child Mortality frequency tables</span>
+    <span class="k">print</span> <span class="s">&quot;Child mortality value range in dataset: &quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;under5mort&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span>  <span class="s">&quot; - &quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;under5mort&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span>
+    <span class="k">print</span> <span class="s">&quot;Count for child mortality under the age of 5. Expressed as a rate per 1,000 live births&quot;</span>
+    <span class="n">c1</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;under5mort_cat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">dropna</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&quot;Category:&quot;</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">Frequency&quot;</span>
+    <span class="k">print</span> <span class="n">c1</span><span class="p">,</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span>
+    <span class="k">print</span> <span class="s">&quot;Percentage for child mortality under the age of 5. Expressed as a rate per 1,000 live births&quot;</span>
+    <span class="n">p1</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;under5mort_cat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">dropna</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&quot;Category:&quot;</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">Frequency %&quot;</span>
+    <span class="k">print</span> <span class="n">p1</span> <span class="o">*</span> <span class="mi">100</span>
+</pre></div>
+
+
+<div class="highlight"><pre>Child mortality value range in dataset:  2.4  -  208.8
+
+Count for child mortality under the age of 5. Expressed as a rate per 1,000 live births
+Category:   Frequency
+(0, 20]       81
+(20, 40]      25
+(40, 60]      13
+(60, 80]      16
+(80, 100]     12
+(100, 120]    11
+(120, 140]     3
+(140, 160]     0
+(160, 180]     3
+(180, 200]     1
+(200, 220]     1
+NaN            1
+Name: under5mort_cat, dtype: int64
+
+Percentage for child mortality under the age of 5. Expressed as a rate per 1,000 live births
+Category:   Frequency %
+(0, 20]       48.502994
+(20, 40]      14.970060
+(40, 60]       7.784431
+(60, 80]       9.580838
+(80, 100]      7.185629
+(100, 120]     6.586826
+(120, 140]     1.796407
+(140, 160]     0.000000
+(160, 180]     1.796407
+(180, 200]     0.598802
+(200, 220]     0.598802
+NaN            0.598802
+Name: under5mort_cat, dtype: float64
+</pre></div>
+
+
+<p>Child mortality rate under 5 years is the probability that a child born
+in a specific year will die before reaching the age of five if subject
+to current age-specific mortality rates. Expressed as a rate per 1,000
+live births. In the sample data the minimum value is 2.4 the maximum is
+208.8.</p>
+<p>In almost half of the countries (48.5%) this value is under 20. In about
+39,5% of the countries this rate is above 20 but under 100, while the
+rest (around 12%) has a value above 100.
+There is 1 instance of missing data.</p>
+<div class="highlight"><pre>    <span class="c"># Mean Years In School frequency tables</span>
+    <span class="k">print</span> <span class="s">&quot;Mean years in school value range in dataset: &quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;womenschool&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span>  <span class="s">&quot; - &quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;womenschool&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span>
+    <span class="k">print</span> <span class="s">&quot;Count for Mean years in school. Women of reproductive age, 15 to 44.&quot;</span>
+    <span class="n">c2</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;womenschool_cat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">dropna</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&quot;Category:&quot;</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">Frequency&quot;</span>
+    <span class="k">print</span> <span class="n">c2</span><span class="p">,</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span>
+    <span class="k">print</span> <span class="s">&quot;Percentage for Mean years in school. Women of reproductive age, 15 to 44.&quot;</span>
+    <span class="n">p2</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;womenschool_cat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">dropna</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&quot;Category:&quot;</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">Frequency %&quot;</span>
+    <span class="k">print</span> <span class="n">p2</span> <span class="o">*</span> <span class="mi">100</span>
+</pre></div>
+
+
+<div class="highlight"><pre>Mean years in school value range in dataset:  0.8  -  14.7
+
+Count for Mean years in school. Women of reproductive age, 15 to 44.
+Category:   Frequency
+(0, 2]       7
+(2, 4]      14
+(4, 6]      22
+(6, 8]      17
+(8, 10]     30
+(10, 12]    42
+(12, 14]    33
+(14, 16]     2
+(16, 18]     0
+Name: womenschool_cat, dtype: int64
+
+Percentage for Mean years in school. Women of reproductive age, 15 to 44.
+Category:   Frequency %
+(0, 2]       4.191617
+(2, 4]       8.383234
+(4, 6]      13.173653
+(6, 8]      10.179641
+(8, 10]     17.964072
+(10, 12]    25.149701
+(12, 14]    19.760479
+(14, 16]     1.197605
+(16, 18]     0.000000
+Name: womenschool_cat, dtype: float64
+</pre></div>
+
+
+<p>Mean years in school (women of reproductive age, 15 to 44): the average
+number of years of school attended by all people in the age and gender
+group specified, including primary, secondary and tertiary education.<br />
+Minimum value in dataset is 0.8, maximum is 14.7. In 21 countries
+(12.5%) the average time women spend in schools is less than 4 years.
+There is only two countries (1.19%) where this value is more than 14
+years.<br />
+As we can see the most common category is 10 - 12 years with 25.14%.
+That means 42 observations. More than 62% of the countries falls in the
+8 - 14 years range.</p>
+<div class="highlight"><pre>    <span class="c"># Expenditure On Health frequency tables</span>
+    <span class="k">print</span> <span class="s">&quot;Per capita total expenditure on health value range in dataset:  &quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;healthexpend&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> 
+    <span class="s">&quot; - &quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;healthexpend&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span>
+    <span class="k">print</span> <span class="s">&quot;Count for healthexpend. Per capita total expenditure on health expressed at average exchange rate for that year in US$&quot;</span>
+    <span class="n">c3</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;healthexpend_cat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">dropna</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&quot;Category:&quot;</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">Frequency&quot;</span>
+    <span class="k">print</span> <span class="n">c3</span><span class="p">,</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span>
+    <span class="k">print</span> <span class="s">&quot;Percentage for healthexpend. Per capita total expenditure on health expressed at average exchange rate for that year in US$&quot;</span>
+    <span class="n">p3</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;healthexpend_cat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">dropna</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&quot;Category:&quot;</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">Frequency %&quot;</span>
+    <span class="k">print</span> <span class="n">p3</span> <span class="o">*</span> <span class="mi">100</span>
+</pre></div>
+
+
+<div class="highlight"><pre>Per capita total expenditure on health value range in dataset:  11.90349972  -  8361.732117
+
+Count for healthexpend. Per capita total expenditure on health expressed at average exchange rate for that year in US$
+Category:   Frequency
+(0, 1000]       126
+(1000, 2000]      8
+(2000, 3000]      5
+(3000, 4000]      4
+(4000, 5000]      8
+(5000, 6000]      2
+(6000, 7000]      1
+(7000, 8000]      1
+(8000, 9000]      3
+NaN               9
+Name: healthexpend_cat, dtype: int64
+
+Percentage for healthexpend. Per capita total expenditure on health expressed at average exchange rate for that year in US$
+Category:   Frequency %
+(0, 1000]       75.449102
+(1000, 2000]     4.790419
+(2000, 3000]     2.994012
+(3000, 4000]     2.395210
+(4000, 5000]     4.790419
+(5000, 6000]     1.197605
+(6000, 7000]     0.598802
+(7000, 8000]     0.598802
+(8000, 9000]     1.796407
+NaN              5.389222
+Name: healthexpend_cat, dtype: float64
+</pre></div>
+
+
+<p>Per capita total expenditure on health: per capita total expenditure on
+health expressed at average exchange rate for that year in US\$.<br />
+Range is 11.90 - 8361.73. 9 countries has no data in the dataset.<br />
+According to the frequency table in most countries (count: 126, that is
+75.44%) the per capita expenditure on health is below 1000 US\$.<br />
+One quarter of the observations varies between 1000 - 8361.73 US\$.</p>
+<div class="highlight"><pre>    <span class="c"># Income Per Person frequency tables</span>
+    <span class="k">print</span> <span class="s">&quot;GDP value range in dataset: &quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;incomeperperson&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span>  <span class="s">&quot; - &quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;incomeperperson&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span>
+    <span class="k">print</span> <span class="s">&quot;Count for incomeperperson. 2010 Gross Domestic Product per capita in constant 2000 USD&quot;</span>
+    <span class="n">c4</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;incomeperperson_cat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">dropna</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&quot;Category:&quot;</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">Frequency&quot;</span>
+    <span class="k">print</span> <span class="n">c4</span><span class="p">,</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span>
+    <span class="k">print</span> <span class="s">&quot;Percentage for incomeperperson. 2010 Gross Domestic Product per capita in constant 2000 USD&quot;</span>
+    <span class="n">p4</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;incomeperperson_cat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">dropna</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&quot;Category:&quot;</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">Frequency %&quot;</span>
+    <span class="k">print</span> <span class="n">p4</span> <span class="o">*</span> <span class="mi">100</span>
+</pre></div>
+
+
+<div class="highlight"><pre>GDP value range in dataset:  103.775857241  -  52301.587179
+
+Count for incomeperperson. 2010 Gross Domestic Product per capita in constant 2000 USD
+Category:   Frequency
+(0, 6000]         115
+(6000, 12000]      16
+(12000, 18000]      6
+(18000, 24000]      5
+(24000, 30000]      9
+(30000, 36000]      4
+(36000, 42000]      4
+(42000, 48000]      0
+(48000, 54000]      1
+NaN                 7
+Name: incomeperperson_cat, dtype: int64
+
+Percentage for incomeperperson. 2010 Gross Domestic Product per capita in constant 2000 USD
+Category:   Frequency %
+(0, 6000]         68.862275
+(6000, 12000]      9.580838
+(12000, 18000]     3.592814
+(18000, 24000]     2.994012
+(24000, 30000]     5.389222
+(30000, 36000]     2.395210
+(36000, 42000]     2.395210
+(42000, 48000]     0.000000
+(48000, 54000]     0.598802
+NaN                4.191617
+Name: incomeperperson_cat, dtype: float64
+</pre></div>
+
+
+<p>Incomeperperson: 2010 Gross Domestic Product per capita in constant 2000
+US$. The inflation but not the differences in the cost of living
+between countries has been taken into account.<br />
+The lowest reported value is 103.77 while the highest is 52301.58 (504
+times more than the minimal value).<br />
+Data is missing from 7 countries.<br />
+The lowest range (0 - 6000) is the most common among the countries: 115
+countries which is 68.86% of the observations.<br />
+The next highest category is 6000 - 12000 with 16 countries (9.58%).<br />
+The remaining 29 countries (21,56%) are distributed in the 12000 -
+52301.58 range.</p>
+<p>Example of creating subset of a dataframe can be found here: <a href="/refining-research-question/">Refining Research Question by Selecting Rows</a>.</p></div>
+	
+        <hr>
+
+    </div>
+        </div>
+        
+        <div class="span3">
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Site
+                </li>
+            
+                <li><a href="https://ernogolya.github.io/archives.html">Archives</a>
+                <li><a href="https://ernogolya.github.io/tags.html">Tags</a>
+
+
+
+
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Categories
+                </li>
+                
+                <li><a href="https://ernogolya.github.io/category/data-science.html">Data Science</a></li>
+                   
+            </ul>
+            </div>
+
+
+
+
+
+        </div>  
+    </div>     </div> 
+<footer>
+<br />
+<p><a href="https://ernogolya.github.io">ernogolya</a> &copy; Ernő Gólya 2016</p>
+</footer>
+
+</div> <!-- /container -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="https://ernogolya.github.io/theme/bootstrap-collapse.js"></script>
+ 
+</body>
+</html>

@@ -1,0 +1,1594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>ernogolya - Data Science, Pandas, Python</title>
+    <meta name="description" content="">
+    <meta name="author" content="Ernő Gólya">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="http://localhost:8000/theme/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="http://localhost:8000/theme/bootstrap.min.css" rel="stylesheet">
+    <link href="http://localhost:8000/theme/bootstrap.min.responsive.css" rel="stylesheet">
+    <link href="http://localhost:8000/theme/local.css" rel="stylesheet">
+    <link href="http://localhost:8000/theme/pygments.css" rel="stylesheet">
+
+    <!-- So Firefox can bookmark->"abo this site" -->
+
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="navbar-inner">
+    <div class="container">
+
+         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+         </a>
+
+        <a class="brand" href="http://localhost:8000">ernogolya</a>
+
+        <div class="nav-collapse">
+        <ul class="nav">
+            
+            <li><a href="http://localhost:8000/pages/about/">About</a></li>
+        </ul>
+        </div>
+        
+    </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="content">
+    <div class="row">
+
+        <div class="span9">
+        
+
+        
+
+
+    <div class='article'>
+        <div class="content-title">
+            <a href="http://localhost:8000/data-management-visualization-week-3-making-data-management-decisions/"><h1>Data Management & Visualization – Week 3: Making Data Management Decisions</h1></a>
+k 26 július 2016
+
+by <a class="url fn" href="http://localhost:8000/author/itstork.html">itstork</a>
+ 
+
+
+ 
+        </div>
+        
+        <div><div class="c-peer-review-assignment-intro bt3-row">
+
+<div class="bt3-col-md-12">
+
+<div>
+
+<div class="rc-CML styled">
+
+<div>
+
+The following Python code is an example of how to make and implement
+data management decisions.
+
+In the previous assignment I already created categories for the relevant
+variables, as the dataset I study mostly have continuous data. I revise
+and alter some of the categories to be more similar to those used by
+World Bank and WHO.
+
+World Bank income groups: WHO Member States are grouped into 4 income
+groups (low, lower-middle, upper-middle, and high) based on the World
+Bank list of analytical income classification of economies. Although it
+uses national income per capita estimates, for sake of demonstration I
+will apply these categories to the GDP per capita (incomeperperson)
+variable with different thresholds.
+
+I will add a new variable to my subset: WHO regions. WHO Member States
+are grouped into 6 WHO regions: African Region, Region of the Americas,
+South-East Asia Region, European Region, Eastern Mediterranean Region,
+and Western Pacific Region. I create crosstabs to highlight the
+differenes between these areas.
+
+I use a subset of the dataframe including only the variables of my
+interest. Frequency distribution calculations exclude countries with
+missing values (NaN) of the specific variable (dropna=False parameter is
+omitted, default value is True). M<span class="c1">inimum, maximum,
+mean, median calculations are also presented.  
+</span>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="input">
+
+<div class="inner_cell">
+
+<div class="input_area">
+
+<div class="highlight hl-ipython2">
+
+    # -*- coding: utf-8 -*-
+    # Created on 24/07/2016
+    # Author Ernő Gólya
+
+    # Import libraries
+    import pandas as pd
+    import numpy as np
+
+    # Reading in data file
+    data = pd.read_csv('custom_gapminder.csv', low_memory=False)
+
+    # Setting variables to numeric
+    data["incomeperperson"] = pd.to_numeric(data["incomeperperson"],errors='coerce')
+    data["under5mort"] = pd.to_numeric(data["under5mort"],errors='coerce')
+    data["womenschool"] = pd.to_numeric(data["womenschool"],errors='coerce')
+    data["healthexpend"] = pd.to_numeric(data["healthexpend"],errors='coerce')
+
+    # Create subset including only variables of interest
+    sub1 = data[['country','under5mort','womenschool','healthexpend','incomeperperson']]
+
+    # Make a copy of subsetted data
+    sub2 = sub1.copy()
+
+    # Number of countries in subset
+    print "Subset contains:", len(sub2.index), "countries."
+    print ""
+
+    # preview dataset
+    #print sub2.head(n=10), "\n"
+
+    # Creating categories
+    #sub2["incomeperperson_cat"] = pd.cut(sub2.incomeperperson, [1, 1000, 4000, 12000, 65000],   
+   #                                     labels=["Low-income", "Lower middle-income", "Upper middle-income", "High-income" ])
+    sub2["incomeperperson_cat"] = pd.cut(sub2.incomeperperson, [1, 1000, 4000, 12000, 65000],   
+                                        labels=["Low", "Lower middle", "Upper middle", "High" ])
+    sub2["under5mort_cat"] = pd.cut(sub2.under5mort, [1, 10, 50, 100, 220], labels=["0-10", "10-50", "50-100", "100-220"])
+    sub2["womenschool_cat"] = pd.cut(sub2.womenschool, [0, 4, 8, 12, 16],  
+                                    labels=["0-4 years", "4-8 years", "8-12 years", "12-16 years"])
+    sub2["healthexpend_cat"] = pd.cut(sub2.healthexpend, [1, 100, 300, 1000, 5000, 9000],   
+                                        labels=["1-100", "100-300", "300-1000", "1000-5000", "5000-9000" ])
+
+    #frequency distributions with minimum, maximum, mean, median calculation
+    #frequency distribution for incomeperperson_cat
+    print "GDP value range in dataset: ", sub2['incomeperperson'].min(),  " - ", sub2['incomeperperson'].max()
+    print "Mean: ",np.nanmean(sub2.incomeperperson)
+    print "Median: ",np.nanmedian(sub2.incomeperperson)
+    print "Count for incomeperperson. 2010 Gross Domestic Product per capita in constant 2000 USD."
+    c4 = sub2['incomeperperson_cat'].value_counts(sort=False)
+    print c4
+
+    print "Percentage for incomeperperson. 2010 Gross Domestic Product per capita in constant 2000 USD."
+    p4 = sub2['incomeperperson_cat'].value_counts(sort=False, normalize=True)
+    print p4 * 100
+    print "\n"
+
+    #frequency distribution for under5mort_cat
+    print "Child mortality value range in dataset: ", sub2['under5mort'].min(),  " - ", sub2['under5mort'].max()
+    print "Mean: ",np.nanmean(sub2.under5mort)
+    print "Median: ",np.nanmedian(sub2.under5mort)
+    print "Count for child mortality under the age of 5. Expressed as a rate per 1,000 live births."
+    c1 = sub2['under5mort_cat'].value_counts(sort=False)
+    print c1
+
+    print "Percentage for child mortality under the age of 5. Expressed as a rate per 1,000 live births."
+    p1 = sub2['under5mort_cat'].value_counts(sort=False, normalize=True)
+    print p1 * 100
+    print "\n"
+
+    #frequency distribution for womenschool_cat
+    print "Mean years in school value range in dataset: ", sub2['womenschool'].min(),  " - ", sub2['womenschool'].max()
+    print "Mean: ",np.nanmean(sub2.womenschool)
+    print "Median: ",np.nanmedian(sub2.womenschool)
+    print "Count for Mean years in school. Women of reproductive age, 15 to 44."
+    c2 = sub2['womenschool_cat'].value_counts(sort=False)
+    print c2
+
+    print "Percentage for Mean years in school. Women of reproductive age, 15 to 44."
+    p2 = sub2['womenschool_cat'].value_counts(sort=False, normalize=True)
+    print p2 * 100
+    print "\n"
+
+    #frequency distribution for healthexpend_cat
+    print "Per capita total expenditure on health value range in dataset: ", sub2['healthexpend'].min(),   
+   " - ", sub2['healthexpend'].max()
+    print "Mean: ",np.nanmean(sub2.healthexpend)
+    print "Median: ",np.nanmedian(sub2.healthexpend)
+    print "Count for healthexpend. Per capita total expenditure on health expressed in US$."
+    c3 = sub2['healthexpend_cat'].value_counts(sort=False)
+    print c3
+
+    print "Percentage for healthexpend. Per capita total expenditure on health expressed in US$."
+    p3 = sub2['healthexpend_cat'].value_counts(sort=False, normalize=True)
+    print p3 * 100
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<h2 class="output_wrapper">Frequency tables</h2>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+
+    Subset contains: 167 countries.
+
+    GDP value range in dataset:  103.775857241  -  52301.587179
+    Mean:  6876.91364439
+    Median:  2226.50571315
+    Count for incomeperperson. 2010 Gross Domestic Product per capita in constant 2000 USD.
+    Low             50
+    Lower middle    51
+    Upper middle    30
+    High            29
+    Name: incomeperperson_cat, dtype: int64
+    Percentage for incomeperperson. 2010 Gross Domestic Product per capita in constant 2000 USD.
+    Low             31.250
+    Lower middle    31.875
+    Upper middle    18.750
+    High            18.125
+    Name: incomeperperson_cat, dtype: float64
+
+
+    Child mortality value range in dataset:  2.4  -  208.8
+    Mean:  40.8915662651
+    Median:  21.3
+    Count for child mortality under the age of 5. Expressed as a rate per 1,000 live births.
+    0-10       45
+    10-50      67
+    50-100     35
+    100-220    19
+    Name: under5mort_cat, dtype: int64
+    Percentage for child mortality under the age of 5. Expressed as a rate per 1,000 live births.
+    0-10       27.108434
+    10-50      40.361446
+    50-100     21.084337
+    100-220    11.445783
+    Name: under5mort_cat, dtype: float64
+
+
+    Mean years in school value range in dataset:  0.8  -  14.7
+    Mean:  8.84850299401
+    Median:  9.6
+    Count for Mean years in school. Women of reproductive age, 15 to 44.
+    0-4 years      21
+    4-8 years      39
+    8-12 years     72
+    12-16 years    35
+    Name: womenschool_cat, dtype: int64
+    Percentage for Mean years in school. Women of reproductive age, 15 to 44.
+    0-4 years      12.574850
+    4-8 years      23.353293
+    8-12 years     43.113772
+    12-16 years    20.958084
+    Name: womenschool_cat, dtype: float64
+
+
+    Per capita total expenditure on health value range in dataset:  11.90349972  -  8361.732117
+    Mean:  1009.4234372
+    Median:  258.01889645
+    Count for healthexpend. Per capita total expenditure on health expressed in US$.
+    1-100        50
+    100-300      31
+    300-1000     45
+    1000-5000    25
+    5000-9000     7
+    Name: healthexpend_cat, dtype: int64
+    Percentage for healthexpend. Per capita total expenditure on health expressed in US$.
+    1-100        31.645570
+    100-300      19.620253
+    300-1000     28.481013
+    1000-5000    15.822785
+    5000-9000     4.430380
+    Name: healthexpend_cat, dtype: float64
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<h2 class="cell border-box-sizing code_cell rendered">Use crosstab() function to create cross counts for variables</h2>
+<div class="input">
+
+<div class="inner_cell">
+
+<div class="input_area">
+
+<div class="highlight hl-ipython2">
+
+    #crosstabs evaluating counts in womenshool and under5mort categories
+    print "Cross-tabulation of womenshool and under5mort categories"
+    print pd.crosstab(sub2['womenschool_cat'], sub2['under5mort_cat'])
+    print ""
+
+    #crosstabs evaluating counts in healthexpend and under5mort categories
+    print "Cross-tabulation of healthexpend and under5mort categories"
+    print pd.crosstab(sub2['healthexpend_cat'], sub2['under5mort_cat'])
+    print ""
+
+    #crosstabs evaluating counts in incomeperperson and under5mort categories
+    print "Cross-tabulation of incomeperperson and under5mort categories"
+    print pd.crosstab(sub2['incomeperperson_cat'], sub2['under5mort_cat'])
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<h2 class="output_wrapper">Crosstabs</h2>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+
+    Cross-tabulation of womenshool and under5mort categories
+    under5mort_cat   0-10  10-50  50-100  100-220
+    womenschool_cat                              
+    0-4 years           0      1       8       12
+    4-8 years           0     16      17        6
+    8-12 years         20     41      10        1
+    12-16 years        25      9       0        0
+
+    Cross-tabulation of healthexpend and under5mort categories
+    under5mort_cat    0-10  10-50  50-100  100-220
+    healthexpend_cat                              
+    1-100                0      8      27       15
+    100-300              0     26       3        2
+    300-1000            15     25       4        1
+    1000-5000           23      2       0        0
+    5000-9000            7      0       0        0
+
+    Cross-tabulation of incomeperperson and under5mort categories
+    under5mort_cat       0-10  10-50  50-100  100-220
+    incomeperperson_cat                              
+    Low                     0      9      26       15
+    Lower middle            5     40       5        1
+    Upper middle           12     15       2        1
+    High                   28      1       0        0
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<h2 class="cell border-box-sizing code_cell rendered">Add new variable (coloumn) to subset</h2>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="input">
+
+<div class="inner_cell">
+
+<div class="input_area">
+
+<div class="highlight hl-ipython2">
+
+    # WHO regions dictionary
+    who_regions = {
+        'African Region': 
+            ['Algeria', 'Angola', 'Benin', 'Botswana', 'Burkina Faso', 'Burundi', 'Cameroon',
+             'Cape Verde', 'Central African Republic', 'Chad', 'Comoros', "Cote d'Ivoire", 
+             'Congo, Dem. Rep.', 'Equatorial Guinea', 'Eritrea', 'Ethiopia', 'Gabon', 'Gambia',
+             'Ghana', 'Guinea', 'Guinea-Bissau', 'Kenya', 'Lesotho', 'Liberia', 'Madagascar',
+             'Malawi', 'Mali', 'Mauritania', 'Mauritius', 'Mozambique', 'Namibia', 'Niger',
+             'Nigeria', 'Congo, Rep.', 'Rwanda', 'Sao Tome and Principe', 'Senegal', 'Seychelles',
+             'Sierra Leone', 'South Africa', 'Swaziland', 'Togo', 'Uganda', 'Tanzania', 'Zambia', 'Zimbabwe'],
+        'Region of the Americas':
+            ['Antigua and Barbuda', 'Argentina', 'Bahamas', 'Barbados', 'Belize', 'Bolivia', 'Brazil', 'Canada',
+             'Chile', 'Colombia', 'Costa Rica', 'Cuba', 'Dominica', 'Dominican Republic', 'Ecuador', 'El Salvador',
+             'Grenada', 'Guatemala', 'Guyana', 'Haiti', 'Honduras', 'Jamaica', 'Mexico', 'Nicaragua', 'Panama',
+             'Paraguay', 'Peru', 'Saint Kitts and Nevis', 'Saint Lucia', 'Saint Vincent and the Grenadines',
+             'Suriname', 'Trinidad and Tobago', 'United States', 'Uruguay', 'Venezuela'],
+        'South-East Asia Region': 
+            ['Bangladesh', 'Bhutan', 'Democratic People\xe2\x80\x99s Republic of Korea', 'India', 'Indonesia',
+             'Maldives', 'Myanmar', 'Nepal', 'Sri Lanka', 'Thailand', 'Timor-Leste'],
+        'European Region': 
+            ['Albania', 'Andorra', 'Armenia', 'Austria', 'Azerbaijan', 'Belarus', 'Belgium', 'Bosnia and Herzegovina',
+             'Bulgaria', 'Croatia', 'Cyprus', 'Czech Republic', 'Denmark', 'Estonia', 'Finland', 'France', 'Georgia',
+             'Germany', 'Greece', 'Hungary', 'Iceland', 'Ireland', 'Israel', 'Italy', 'Kazakhstan', 'Kyrgyzstan',
+             'Latvia', 'Lithuania', 'Luxembourg', 'Malta', 'Monaco', 'Montenegro', 'Netherlands', 'Norway', 'Poland',
+             'Portugal', 'Moldova', 'Romania', 'Russia', 'San Marino', 'Serbia', 'Slovak Republic', 'Slovenia',
+             'Spain', 'Sweden', 'Switzerland', 'Tajikistan', 'Macedonia, FYR', 'Turkey', 'Turkmenistan', 'Ukraine',
+             'United Kingdom', 'Uzbekistan'], 
+        'Eastern Mediterranean Region': 
+            ['Afghanistan', 'Bahrain', 'Djibouti', 'Egypt', 'Iran', 'Iraq', 'Jordan', 'Kuwait', 'Lebanon',
+             'Libyan Arab Jamahiriya', 'Morocco', 'Oman', 'Pakistan', 'Qatar', 'Saudi Arabia', 'Somalia',
+             'Sudan', 'Syria', 'Tunisia', 'United Arab Emirates', 'Yemen'], 
+        'Western Pacific Region': 
+            ['Australia', 'Brunei Darussalam', 'Cambodia', 'China', 'Cook Islands', 'Fiji', 'Japan',
+             'Kiribati', 'Lao People\xe2\x80\x99s Democratic Republic', 'Malaysia', 'Marshall Islands',
+             'Micronesia (Federated States of)', 'Mongolia', 'Nauru', 'New Zealand', 'Niue', 'Palau',
+             'Papua New Guinea', 'Philippines', 'Republic of Korea', 'Samoa', 'Singapore', 'Solomon Islands',
+             'Taiwan', 'Tonga', 'Tuvalu', 'Vanuatu', 'Vietnam']}
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+
+<div class="input">
+
+<div class="inner_cell">
+
+<div class="input_area">
+
+<div class="highlight hl-ipython2">
+
+    # Swap keys - values in who_regions dictionary
+    d = {}
+    for key in who_regions:
+        for value in who_regions[key]:
+            d[value] = key
+
+    # Add coloumn who_region to subset
+    sub2['who_region']= sub2['country'].map(d)
+    print "Sample of subset with new variable"
+    sub2[['country','under5mort','womenschool','healthexpend','incomeperperson', 'who_region']].tail(n=5)
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="output_wrapper">
+
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+
+**Sample of subset with new variable**
+
+</div>
+
+</div>
+
+<div class="output_area">
+
+</div>
+
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+
+<div class="output">
+
+<div class="output_area">
+
+<div
+class="output_html rendered_html output_subarea output_execute_result">
+
+<div>
+
+<table class="dataframe" border="1">
+<thead>
+<tr>
+<th>
+</th>
+<th>
+country
+</th>
+<th>
+under5mort
+</th>
+<th>
+womenschool
+</th>
+<th>
+healthexpend
+</th>
+<th>
+incomeperperson
+</th>
+<th>
+who\_region
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+162
+</th>
+<td>
+Venezuela
+</td>
+<td>
+16.6
+</td>
+<td>
+10.5
+</td>
+<td>
+663.387571
+</td>
+<td>
+5528.363114
+</td>
+<td>
+Region of the Americas
+</td>
+</tr>
+<tr>
+<th>
+163
+</th>
+<td>
+West Bank and Gaza
+</td>
+<td>
+23.8
+</td>
+<td>
+11.0
+</td>
+<td>
+NaN
+</td>
+<td>
+NaN
+</td>
+<td>
+NaN
+</td>
+</tr>
+<tr>
+<th>
+164
+</th>
+<td>
+Vietnam
+</td>
+<td>
+24.8
+</td>
+<td>
+8.4
+</td>
+<td>
+82.872177
+</td>
+<td>
+722.807559
+</td>
+<td>
+Western Pacific Region
+</td>
+</tr>
+<tr>
+<th>
+165
+</th>
+<td>
+Zambia
+</td>
+<td>
+84.8
+</td>
+<td>
+6.7
+</td>
+<td>
+72.884346
+</td>
+<td>
+432.226337
+</td>
+<td>
+African Region
+</td>
+</tr>
+<tr>
+<th>
+166
+</th>
+<td>
+Zimbabwe
+</td>
+<td>
+95.1
+</td>
+<td>
+9.0
+</td>
+<td>
+NaN
+</td>
+<td>
+320.771890
+</td>
+<td>
+African Region
+</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<h2 class="cell border-box-sizing code_cell rendered">Crosstabs with new variable</h2>
+<div class="input">
+
+<div class="inner_cell">
+
+<div class="input_area">
+
+<div class="highlight hl-ipython2">
+
+    #crosstabs evaluating counts in who_region and under5mort categories
+    print "Cross-tabulation of who_region and under5mort categories"
+    print pd.crosstab(sub2['who_region'], sub2['under5mort_cat'], normalize=False)
+    print ""
+
+    #crosstabs evaluating counts in who_region and womenshool categories
+    print "Cross-tabulation of who_region and womenshool categories"
+    print pd.crosstab(sub2['who_region'], sub2['womenschool_cat'], normalize=False)
+    print ""
+
+    #crosstabs evaluating counts in who_region and healthexpend categories
+    print "Cross-tabulation of who_region and healthexpend categories"
+    print pd.crosstab(sub2['who_region'], sub2['healthexpend_cat'], normalize=False)
+    print ""
+
+    #crosstabs evaluating counts in who_region and incomeperperson categories
+    print "Cross-tabulation of who_region and incomeperperson categories"
+    print pd.crosstab(sub2['who_region'], sub2['incomeperperson_cat'], normalize=False)
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="border-box-sizing">
+
+<div class="input">
+
+<div class="inner_cell">
+
+<div class="input_area">
+
+<div class="highlight hl-ipython2">
+
+### **Cross-tabulation of who\_region and under5mort categories**
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="output_wrapper">
+
+</div>
+
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+
+<div class="output">
+
+<div class="output_area">
+
+<div
+class="output_html rendered_html output_subarea output_execute_result">
+
+<div>
+
+<table class="dataframe" border="1">
+<thead>
+<tr>
+<th>
+under5mort\_cat
+</th>
+<th>
+0-10
+</th>
+<th>
+10-50
+</th>
+<th>
+50-100
+</th>
+<th>
+100-220
+</th>
+</tr>
+<tr>
+<th>
+who\_region
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+African Region
+</th>
+<td>
+0
+</td>
+<td>
+4
+</td>
+<td>
+25
+</td>
+<td>
+16
+</td>
+</tr>
+<tr>
+<th>
+Eastern Mediterranean Region
+</th>
+<td>
+3
+</td>
+<td>
+11
+</td>
+<td>
+3
+</td>
+<td>
+2
+</td>
+</tr>
+<tr>
+<th>
+European Region
+</th>
+<td>
+32
+</td>
+<td>
+12
+</td>
+<td>
+2
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+Region of the Americas
+</th>
+<td>
+5
+</td>
+<td>
+22
+</td>
+<td>
+0
+</td>
+<td>
+1
+</td>
+</tr>
+<tr>
+<th>
+South-East Asia Region
+</th>
+<td>
+0
+</td>
+<td>
+6
+</td>
+<td>
+3
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+Western Pacific Region
+</th>
+<td>
+5
+</td>
+<td>
+11
+</td>
+<td>
+2
+</td>
+<td>
+0
+</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+
+<div class="input">
+
+<div class="inner_cell">
+
+<div class="input_area">
+
+<div class="highlight hl-ipython2">
+
+### **Cross-tabulation of who\_region and womenshool categories**
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="output_wrapper">
+
+</div>
+
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+
+<div class="output">
+
+<div class="output_area">
+
+<div
+class="output_html rendered_html output_subarea output_execute_result">
+
+<div>
+
+<table class="dataframe" border="1">
+<thead>
+<tr>
+<th>
+womenschool\_cat
+</th>
+<th>
+0-4 years
+</th>
+<th>
+4-8 years
+</th>
+<th>
+8-12 years
+</th>
+<th>
+12-16 years
+</th>
+</tr>
+<tr>
+<th>
+who\_region
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+African Region
+</th>
+<td>
+17
+</td>
+<td>
+18
+</td>
+<td>
+10
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+Eastern Mediterranean Region
+</th>
+<td>
+3
+</td>
+<td>
+7
+</td>
+<td>
+9
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+European Region
+</th>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+21
+</td>
+<td>
+25
+</td>
+</tr>
+<tr>
+<th>
+Region of the Americas
+</th>
+<td>
+0
+</td>
+<td>
+5
+</td>
+<td>
+19
+</td>
+<td>
+4
+</td>
+</tr>
+<tr>
+<th>
+South-East Asia Region
+</th>
+<td>
+1
+</td>
+<td>
+5
+</td>
+<td>
+3
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+Western Pacific Region
+</th>
+<td>
+0
+</td>
+<td>
+4
+</td>
+<td>
+9
+</td>
+<td>
+6
+</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+
+<div class="input">
+
+<div class="inner_cell">
+
+<div class="input_area">
+
+<div class="highlight hl-ipython2">
+
+### **Cross-tabulation of who\_region and healthexpend categories**
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="output_wrapper">
+
+</div>
+
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+
+<div class="output">
+
+<div class="output_area">
+
+<div
+class="output_html rendered_html output_subarea output_execute_result">
+
+<div>
+
+<table class="dataframe" border="1">
+<thead>
+<tr>
+<th>
+healthexpend\_cat
+</th>
+<th>
+1-100
+</th>
+<th>
+100-300
+</th>
+<th>
+300-1000
+</th>
+<th>
+1000-5000
+</th>
+<th>
+5000-9000
+</th>
+</tr>
+<tr>
+<th>
+who\_region
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+African Region
+</th>
+<td>
+32
+</td>
+<td>
+5
+</td>
+<td>
+7
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+Eastern Mediterranean Region
+</th>
+<td>
+5
+</td>
+<td>
+4
+</td>
+<td>
+6
+</td>
+<td>
+3
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+European Region
+</th>
+<td>
+2
+</td>
+<td>
+6
+</td>
+<td>
+16
+</td>
+<td>
+17
+</td>
+<td>
+5
+</td>
+</tr>
+<tr>
+<th>
+Region of the Americas
+</th>
+<td>
+2
+</td>
+<td>
+7
+</td>
+<td>
+13
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+</tr>
+<tr>
+<th>
+South-East Asia Region
+</th>
+<td>
+5
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+Western Pacific Region
+</th>
+<td>
+4
+</td>
+<td>
+8
+</td>
+<td>
+2
+</td>
+<td>
+4
+</td>
+<td>
+0
+</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+
+<div class="input">
+
+<div class="inner_cell">
+
+<div class="input_area">
+
+<div class="highlight hl-ipython2">
+
+### **Cross-tabulation of who\_region and incomeperperson categories**
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="output_wrapper">
+
+</div>
+
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+
+<div class="output">
+
+<div class="output_area">
+
+<div
+class="output_html rendered_html output_subarea output_execute_result">
+
+<div>
+
+<table class="dataframe" border="1">
+<thead>
+<tr>
+<th>
+incomeperperson\_cat
+</th>
+<th>
+Low
+</th>
+<th>
+Lower middle
+</th>
+<th>
+Upper middle
+</th>
+<th>
+High
+</th>
+</tr>
+<tr>
+<th>
+who\_region
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+African Region
+</th>
+<td>
+32
+</td>
+<td>
+7
+</td>
+<td>
+5
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+Eastern Mediterranean Region
+</th>
+<td>
+4
+</td>
+<td>
+6
+</td>
+<td>
+3
+</td>
+<td>
+3
+</td>
+</tr>
+<tr>
+<th>
+European Region
+</th>
+<td>
+3
+</td>
+<td>
+15
+</td>
+<td>
+9
+</td>
+<td>
+19
+</td>
+</tr>
+<tr>
+<th>
+Region of the Americas
+</th>
+<td>
+2
+</td>
+<td>
+12
+</td>
+<td>
+11
+</td>
+<td>
+3
+</td>
+</tr>
+<tr>
+<th>
+South-East Asia Region
+</th>
+<td>
+4
+</td>
+<td>
+3
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+Western Pacific Region
+</th>
+<td>
+5
+</td>
+<td>
+8
+</td>
+<td>
+1
+</td>
+<td>
+4
+</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+
+<div class="cell border-box-sizing code_cell rendered">
+
+The most common range of child mortality rate is 10-50 death per 1,000
+live births. 67 countries (40.36%) fell into this group. 27.1 % of the
+observations have a value less than or equal to 10, while about third of
+the countries pesented higher values (50 or higher mortality rate).
+
+</div>
+
+<div class="inner_cell">
+
+In 72 countries (43.11%) the women spend 8-10 years in schools. This is
+the most frequent category.
+
+</div>
+
+<div class="inner_cell">
+
+According to the crosstab calculations child mortality is higher in
+countries where women spend less time in education and per capita health
+expenditure is also on a lower level. High income countries have
+definitely better child survival rates.
+
+</div>
+
+<div class="inner_cell">
+
+Child mortality is especially high in the African region. In 35
+countries out of 40, women spend 0-8 years in school while in the
+European region 8 years is the minimum of the average value.
+
+</div>
+
+</div></div>
+        <hr />
+    </div>
+		
+<div class="pagination">
+<ul>
+    <li class="prev disabled"><a href="#">&larr; Previous</a></li>
+
+    <li class="active"><a href="http://localhost:8000/category/data-science-pandas-python.html">1</a></li>
+
+    <li class="next disabled"><a href="#">&rarr; Next</a></li>
+
+</ul>
+</div>
+ 
+  
+        </div>
+        
+        <div class="span3">
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Site
+                </li>
+            
+                <li><a href="http://localhost:8000/archives.html">Archives</a>
+                <li><a href="http://localhost:8000/tags.html">Tags</a>
+
+
+
+
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Categories
+                </li>
+                
+                <li><a href="http://localhost:8000/category/data-science.html">Data Science</a></li>
+                <li><a href="http://localhost:8000/category/data-science-pandas-python.html">Data Science, Pandas, Python</a></li>
+                   
+            </ul>
+            </div>
+
+
+
+
+
+        </div>  
+    </div>     </div> 
+<footer>
+<br />
+<p><a href="http://localhost:8000">ernogolya</a> &copy; Ernő Gólya 2016</p>
+</footer>
+
+</div> <!-- /container -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="http://localhost:8000/theme/bootstrap-collapse.js"></script>
+ 
+</body>
+</html>

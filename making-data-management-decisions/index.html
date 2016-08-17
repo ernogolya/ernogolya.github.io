@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>ernogolya - Data Management & Visualization: Making Data Management Decisions</title>
+    <meta name="description" content="">
+    <meta name="author" content="Ernő Gólya">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="https://ernogolya.github.io/theme/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="https://ernogolya.github.io/theme/bootstrap.min.css" rel="stylesheet">
+    <link href="https://ernogolya.github.io/theme/bootstrap.min.responsive.css" rel="stylesheet">
+    <link href="https://ernogolya.github.io/theme/local.css" rel="stylesheet">
+    <link href="https://ernogolya.github.io/theme/pygments.css" rel="stylesheet">
+
+    <!-- So Firefox can bookmark->"abo this site" -->
+
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="navbar-inner">
+    <div class="container">
+
+         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+         </a>
+
+        <a class="brand" href="https://ernogolya.github.io">ernogolya</a>
+
+        <div class="nav-collapse">
+        <ul class="nav">
+            
+            <li><a href="https://ernogolya.github.io/pages/about/">About</a></li>
+        </ul>
+        </div>
+        
+    </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="content">
+    <div class="row">
+
+        <div class="span9">
+    <div class='article'>
+        <div class="content-title">
+            <h1>Data Management & Visualization: Making Data Management Decisions</h1>
+k 26 július 2016
+
+by <a class="url fn" href="https://ernogolya.github.io/author/erno-golya.html">Ernő Gólya</a>
+ 
+
+
+        </div>
+	
+        <div><p>The following Python code is an example of how to make and implement
+data management decisions. In the previous assignment I already created categories for the relevant variables, as the dataset I study mostly have continuous data. I revise and alter some of the categories to be more similar to those used by World Bank and WHO.</p>
+<p>World Bank income groups: WHO Member States are grouped into 4 income
+groups (low, lower-middle, upper-middle, and high) based on the World
+Bank list of analytical income classification of economies. Although it
+uses national income per capita estimates, for sake of demonstration I
+will apply these categories to the GDP per capita (incomeperperson)
+variable with different thresholds.</p>
+<p>I will add a new variable to my subset: WHO regions. WHO Member States
+are grouped into 6 WHO regions: African Region, Region of the Americas,
+South-East Asia Region, European Region, Eastern Mediterranean Region,
+and Western Pacific Region. I create crosstabs to highlight the
+differenes between these areas.</p>
+<p>I use a subset of the dataframe including only the variables of my
+interest. Frequency distribution calculations exclude countries with
+missing values (NaN) of the specific variable (dropna=False parameter is
+omitted, default value is True). M<span class="c1">inimum, maximum,
+mean, median calculations are also presented.<br />
+</p>
+<div class="highlight"><pre><span class="c"># -*- coding: utf-8 -*-</span>
+<span class="c"># Created on 24/07/2016</span>
+<span class="c"># Author Ernő Gólya</span>
+
+<span class="c"># Import libraries</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="c"># Reading in data file</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">&#39;custom_gapminder.csv&#39;</span><span class="p">,</span> <span class="n">low_memory</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+<span class="c"># Setting variables to numeric</span>
+<span class="n">data</span><span class="p">[</span><span class="s">&quot;incomeperperson&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;incomeperperson&quot;</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;coerce&#39;</span><span class="p">)</span>
+<span class="n">data</span><span class="p">[</span><span class="s">&quot;under5mort&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;under5mort&quot;</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;coerce&#39;</span><span class="p">)</span>
+<span class="n">data</span><span class="p">[</span><span class="s">&quot;womenschool&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;womenschool&quot;</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;coerce&#39;</span><span class="p">)</span>
+<span class="n">data</span><span class="p">[</span><span class="s">&quot;healthexpend&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;healthexpend&quot;</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;coerce&#39;</span><span class="p">)</span>
+
+<span class="c"># Create subset including only variables of interest</span>
+<span class="n">sub1</span> <span class="o">=</span> <span class="n">data</span><span class="p">[[</span><span class="s">&#39;country&#39;</span><span class="p">,</span><span class="s">&#39;under5mort&#39;</span><span class="p">,</span><span class="s">&#39;womenschool&#39;</span><span class="p">,</span><span class="s">&#39;healthexpend&#39;</span><span class="p">,</span><span class="s">&#39;incomeperperson&#39;</span><span class="p">]]</span>
+
+<span class="c"># Make a copy of subsetted data</span>
+<span class="n">sub2</span> <span class="o">=</span> <span class="n">sub1</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="c"># Number of countries in subset</span>
+<span class="k">print</span> <span class="s">&quot;Subset contains:&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">sub2</span><span class="o">.</span><span class="n">index</span><span class="p">),</span> <span class="s">&quot;countries.&quot;</span>
+<span class="k">print</span> <span class="s">&quot;&quot;</span>
+
+<span class="c"># preview dataset</span>
+<span class="k">print</span> <span class="n">sub2</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span>
+
+<span class="c"># Creating categories</span>
+<span class="n">sub2</span><span class="p">[</span><span class="s">&quot;incomeperperson_cat&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">sub2</span><span class="o">.</span><span class="n">incomeperperson</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">4000</span><span class="p">,</span> <span class="mi">12000</span><span class="p">,</span> <span class="mi">65000</span><span class="p">],</span>   
+<span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;Low&quot;</span><span class="p">,</span> <span class="s">&quot;Lower middle&quot;</span><span class="p">,</span> <span class="s">&quot;Upper middle&quot;</span><span class="p">,</span> <span class="s">&quot;High&quot;</span> <span class="p">])</span>
+<span class="n">sub2</span><span class="p">[</span><span class="s">&quot;under5mort_cat&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">sub2</span><span class="o">.</span><span class="n">under5mort</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">220</span><span class="p">],</span> <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;0-10&quot;</span><span class="p">,</span> <span class="s">&quot;10-50&quot;</span><span class="p">,</span> <span class="s">&quot;50-100&quot;</span><span class="p">,</span> <span class="s">&quot;100-220&quot;</span><span class="p">])</span>
+<span class="n">sub2</span><span class="p">[</span><span class="s">&quot;womenschool_cat&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">sub2</span><span class="o">.</span><span class="n">womenschool</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">16</span><span class="p">],</span>  
+                                    <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;0-4 years&quot;</span><span class="p">,</span> <span class="s">&quot;4-8 years&quot;</span><span class="p">,</span> <span class="s">&quot;8-12 years&quot;</span><span class="p">,</span> <span class="s">&quot;12-16 years&quot;</span><span class="p">])</span>
+<span class="n">sub2</span><span class="p">[</span><span class="s">&quot;healthexpend_cat&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">sub2</span><span class="o">.</span><span class="n">healthexpend</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">5000</span><span class="p">,</span> <span class="mi">9000</span><span class="p">],</span>   
+                                        <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;1-100&quot;</span><span class="p">,</span> <span class="s">&quot;100-300&quot;</span><span class="p">,</span> <span class="s">&quot;300-1000&quot;</span><span class="p">,</span> <span class="s">&quot;1000-5000&quot;</span><span class="p">,</span> <span class="s">&quot;5000-9000&quot;</span> <span class="p">])</span>
+
+<span class="c">#frequency distributions with minimum, maximum, mean, median calculation</span>
+
+<span class="c">#frequency distribution for incomeperperson_cat</span>
+<span class="k">print</span> <span class="s">&quot;GDP value range in dataset: &quot;</span><span class="p">,</span> <span class="n">sub2</span><span class="p">[</span><span class="s">&#39;incomeperperson&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span>  <span class="s">&quot; - &quot;</span><span class="p">,</span> <span class="n">sub2</span><span class="p">[</span><span class="s">&#39;incomeperperson&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+<span class="k">print</span> <span class="s">&quot;Mean: &quot;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">sub2</span><span class="o">.</span><span class="n">incomeperperson</span><span class="p">)</span>
+<span class="k">print</span> <span class="s">&quot;Median: &quot;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">nanmedian</span><span class="p">(</span><span class="n">sub2</span><span class="o">.</span><span class="n">incomeperperson</span><span class="p">)</span>
+<span class="k">print</span> <span class="s">&quot;Count for incomeperperson. 2010 Gross Domestic Product per capita in constant 2000 USD.&quot;</span>
+<span class="n">c4</span> <span class="o">=</span> <span class="n">sub2</span><span class="p">[</span><span class="s">&#39;incomeperperson_cat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">c4</span>
+
+<span class="k">print</span> <span class="s">&quot;Percentage for incomeperperson. 2010 Gross Domestic Product per capita in constant 2000 USD.&quot;</span>
+<span class="n">p4</span> <span class="o">=</span> <span class="n">sub2</span><span class="p">[</span><span class="s">&#39;incomeperperson_cat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">p4</span> <span class="o">*</span> <span class="mi">100</span>
+<span class="k">print</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span>
+
+<span class="c">#frequency distribution for under5mort_cat</span>
+<span class="k">print</span> <span class="s">&quot;Child mortality value range in dataset: &quot;</span><span class="p">,</span> <span class="n">sub2</span><span class="p">[</span><span class="s">&#39;under5mort&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span>  <span class="s">&quot; - &quot;</span><span class="p">,</span> <span class="n">sub2</span><span class="p">[</span><span class="s">&#39;under5mort&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+<span class="k">print</span> <span class="s">&quot;Mean: &quot;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">sub2</span><span class="o">.</span><span class="n">under5mort</span><span class="p">)</span>
+<span class="k">print</span> <span class="s">&quot;Median: &quot;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">nanmedian</span><span class="p">(</span><span class="n">sub2</span><span class="o">.</span><span class="n">under5mort</span><span class="p">)</span>
+<span class="k">print</span> <span class="s">&quot;Count for child mortality under the age of 5. Expressed as a rate per 1,000 live births.&quot;</span>
+<span class="n">c1</span> <span class="o">=</span> <span class="n">sub2</span><span class="p">[</span><span class="s">&#39;under5mort_cat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">c1</span>
+
+<span class="k">print</span> <span class="s">&quot;Percentage for child mortality under the age of 5. Expressed as a rate per 1,000 live births.&quot;</span>
+<span class="n">p1</span> <span class="o">=</span> <span class="n">sub2</span><span class="p">[</span><span class="s">&#39;under5mort_cat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">p1</span> <span class="o">*</span> <span class="mi">100</span>
+<span class="k">print</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span>
+
+<span class="c">#frequency distribution for womenschool_cat</span>
+<span class="k">print</span> <span class="s">&quot;Mean years in school value range in dataset: &quot;</span><span class="p">,</span> <span class="n">sub2</span><span class="p">[</span><span class="s">&#39;womenschool&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span>  <span class="s">&quot; - &quot;</span><span class="p">,</span> <span class="n">sub2</span><span class="p">[</span><span class="s">&#39;womenschool&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+<span class="k">print</span> <span class="s">&quot;Mean: &quot;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">sub2</span><span class="o">.</span><span class="n">womenschool</span><span class="p">)</span>
+<span class="k">print</span> <span class="s">&quot;Median: &quot;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">nanmedian</span><span class="p">(</span><span class="n">sub2</span><span class="o">.</span><span class="n">womenschool</span><span class="p">)</span>
+<span class="k">print</span> <span class="s">&quot;Count for Mean years in school. Women of reproductive age, 15 to 44.&quot;</span>
+<span class="n">c2</span> <span class="o">=</span> <span class="n">sub2</span><span class="p">[</span><span class="s">&#39;womenschool_cat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">c2</span>
+
+<span class="k">print</span> <span class="s">&quot;Percentage for Mean years in school. Women of reproductive age, 15 to 44.&quot;</span>
+<span class="n">p2</span> <span class="o">=</span> <span class="n">sub2</span><span class="p">[</span><span class="s">&#39;womenschool_cat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">p2</span> <span class="o">*</span> <span class="mi">100</span>
+<span class="k">print</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span>
+
+<span class="c">#frequency distribution for healthexpend_cat</span>
+<span class="k">print</span> <span class="s">&quot;Per capita total expenditure on health value range in dataset: &quot;</span><span class="p">,</span> <span class="n">sub2</span><span class="p">[</span><span class="s">&#39;healthexpend&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span>   
+   <span class="s">&quot; - &quot;</span><span class="p">,</span> <span class="n">sub2</span><span class="p">[</span><span class="s">&#39;healthexpend&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+<span class="k">print</span> <span class="s">&quot;Mean: &quot;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">sub2</span><span class="o">.</span><span class="n">healthexpend</span><span class="p">)</span>
+<span class="k">print</span> <span class="s">&quot;Median: &quot;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">nanmedian</span><span class="p">(</span><span class="n">sub2</span><span class="o">.</span><span class="n">healthexpend</span><span class="p">)</span>
+<span class="k">print</span> <span class="s">&quot;Count for healthexpend. Per capita total expenditure on health expressed in US$.&quot;</span>
+<span class="n">c3</span> <span class="o">=</span> <span class="n">sub2</span><span class="p">[</span><span class="s">&#39;healthexpend_cat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">c3</span>
+
+<span class="k">print</span> <span class="s">&quot;Percentage for healthexpend. Per capita total expenditure on health expressed in US$.&quot;</span>
+<span class="n">p3</span> <span class="o">=</span> <span class="n">sub2</span><span class="p">[</span><span class="s">&#39;healthexpend_cat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">p3</span> <span class="o">*</span> <span class="mi">100</span>
+</pre></div>
+
+
+<h3>Frequency tables</h3>
+<div class="highlight"><pre>    Subset contains: 167 countries.
+
+    GDP value range in dataset:  103.775857241  -  52301.587179
+    Mean:  6876.91364439
+    Median:  2226.50571315
+    Count for incomeperperson. 2010 Gross Domestic Product per capita in constant 2000 USD.
+    Low             50
+    Lower middle    51
+    Upper middle    30
+    High            29
+    Name: incomeperperson_cat, dtype: int64
+    Percentage for incomeperperson. 2010 Gross Domestic Product per capita in constant 2000 USD.
+    Low             31.250
+    Lower middle    31.875
+    Upper middle    18.750
+    High            18.125
+    Name: incomeperperson_cat, dtype: float64
+
+
+    Child mortality value range in dataset:  2.4  -  208.8
+    Mean:  40.8915662651
+    Median:  21.3
+    Count for child mortality under the age of 5. Expressed as a rate per 1,000 live births.
+    0-10       45
+    10-50      67
+    50-100     35
+    100-220    19
+    Name: under5mort_cat, dtype: int64
+    Percentage for child mortality under the age of 5. Expressed as a rate per 1,000 live births.
+    0-10       27.108434
+    10-50      40.361446
+    50-100     21.084337
+    100-220    11.445783
+    Name: under5mort_cat, dtype: float64
+
+
+    Mean years in school value range in dataset:  0.8  -  14.7
+    Mean:  8.84850299401
+    Median:  9.6
+    Count for Mean years in school. Women of reproductive age, 15 to 44.
+    0-4 years      21
+    4-8 years      39
+    8-12 years     72
+    12-16 years    35
+    Name: womenschool_cat, dtype: int64
+    Percentage for Mean years in school. Women of reproductive age, 15 to 44.
+    0-4 years      12.574850
+    4-8 years      23.353293
+    8-12 years     43.113772
+    12-16 years    20.958084
+    Name: womenschool_cat, dtype: float64
+
+
+    Per capita total expenditure on health value range in dataset:  11.90349972  -  8361.732117
+    Mean:  1009.4234372
+    Median:  258.01889645
+    Count for healthexpend. Per capita total expenditure on health expressed in US$.
+    1-100        50
+    100-300      31
+    300-1000     45
+    1000-5000    25
+    5000-9000     7
+    Name: healthexpend_cat, dtype: int64
+    Percentage for healthexpend. Per capita total expenditure on health expressed in US$.
+    1-100        31.645570
+    100-300      19.620253
+    300-1000     28.481013
+    1000-5000    15.822785
+    5000-9000     4.430380
+    Name: healthexpend_cat, dtype: float64
+</pre></div>
+
+
+<h3>Use crosstab() function to create cross counts for variables</h3>
+<div class="highlight"><pre>    <span class="c">#crosstabs evaluating counts in womenshool and under5mort categories</span>
+    <span class="k">print</span> <span class="s">&quot;Cross-tabulation of womenshool and under5mort categories&quot;</span>
+    <span class="k">print</span> <span class="n">pd</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span><span class="n">sub2</span><span class="p">[</span><span class="s">&#39;womenschool_cat&#39;</span><span class="p">],</span> <span class="n">sub2</span><span class="p">[</span><span class="s">&#39;under5mort_cat&#39;</span><span class="p">])</span>
+    <span class="k">print</span> <span class="s">&quot;&quot;</span>
+
+    <span class="c">#crosstabs evaluating counts in healthexpend and under5mort categories</span>
+    <span class="k">print</span> <span class="s">&quot;Cross-tabulation of healthexpend and under5mort categories&quot;</span>
+    <span class="k">print</span> <span class="n">pd</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span><span class="n">sub2</span><span class="p">[</span><span class="s">&#39;healthexpend_cat&#39;</span><span class="p">],</span> <span class="n">sub2</span><span class="p">[</span><span class="s">&#39;under5mort_cat&#39;</span><span class="p">])</span>
+    <span class="k">print</span> <span class="s">&quot;&quot;</span>
+
+    <span class="c">#crosstabs evaluating counts in incomeperperson and under5mort categories</span>
+    <span class="k">print</span> <span class="s">&quot;Cross-tabulation of incomeperperson and under5mort categories&quot;</span>
+    <span class="k">print</span> <span class="n">pd</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span><span class="n">sub2</span><span class="p">[</span><span class="s">&#39;incomeperperson_cat&#39;</span><span class="p">],</span> <span class="n">sub2</span><span class="p">[</span><span class="s">&#39;under5mort_cat&#39;</span><span class="p">])</span>
+</pre></div>
+
+
+<h3>Crosstabs</h3>
+<div class="highlight"><pre>    Cross-tabulation of womenshool and under5mort categories
+    under5mort_cat   0-10  10-50  50-100  100-220
+    womenschool_cat                              
+    0-4 years           0      1       8       12
+    4-8 years           0     16      17        6
+    8-12 years         20     41      10        1
+    12-16 years        25      9       0        0
+
+    Cross-tabulation of healthexpend and under5mort categories
+    under5mort_cat    0-10  10-50  50-100  100-220
+    healthexpend_cat                              
+    1-100                0      8      27       15
+    100-300              0     26       3        2
+    300-1000            15     25       4        1
+    1000-5000           23      2       0        0
+    5000-9000            7      0       0        0
+
+    Cross-tabulation of incomeperperson and under5mort categories
+    under5mort_cat       0-10  10-50  50-100  100-220
+    incomeperperson_cat                              
+    Low                     0      9      26       15
+    Lower middle            5     40       5        1
+    Upper middle           12     15       2        1
+    High                   28      1       0        0
+</pre></div>
+
+
+<h3>Add new variable (coloumn) to subset</h3>
+<div class="highlight"><pre><span class="c"># WHO regions dictionary</span>
+<span class="n">who_regions</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&#39;African Region&#39;</span><span class="p">:</span> 
+            <span class="p">[</span><span class="s">&#39;Algeria&#39;</span><span class="p">,</span> <span class="s">&#39;Angola&#39;</span><span class="p">,</span> <span class="s">&#39;Benin&#39;</span><span class="p">,</span> <span class="s">&#39;Botswana&#39;</span><span class="p">,</span> <span class="s">&#39;Burkina Faso&#39;</span><span class="p">,</span> <span class="s">&#39;Burundi&#39;</span><span class="p">,</span> <span class="s">&#39;Cameroon&#39;</span><span class="p">,</span>
+             <span class="s">&#39;Cape Verde&#39;</span><span class="p">,</span> <span class="s">&#39;Central African Republic&#39;</span><span class="p">,</span> <span class="s">&#39;Chad&#39;</span><span class="p">,</span> <span class="s">&#39;Comoros&#39;</span><span class="p">,</span> <span class="s">&quot;Cote d&#39;Ivoire&quot;</span><span class="p">,</span> 
+             <span class="s">&#39;Congo, Dem. Rep.&#39;</span><span class="p">,</span> <span class="s">&#39;Equatorial Guinea&#39;</span><span class="p">,</span> <span class="s">&#39;Eritrea&#39;</span><span class="p">,</span> <span class="s">&#39;Ethiopia&#39;</span><span class="p">,</span> <span class="s">&#39;Gabon&#39;</span><span class="p">,</span> <span class="s">&#39;Gambia&#39;</span><span class="p">,</span>
+             <span class="s">&#39;Ghana&#39;</span><span class="p">,</span> <span class="s">&#39;Guinea&#39;</span><span class="p">,</span> <span class="s">&#39;Guinea-Bissau&#39;</span><span class="p">,</span> <span class="s">&#39;Kenya&#39;</span><span class="p">,</span> <span class="s">&#39;Lesotho&#39;</span><span class="p">,</span> <span class="s">&#39;Liberia&#39;</span><span class="p">,</span> <span class="s">&#39;Madagascar&#39;</span><span class="p">,</span>
+             <span class="s">&#39;Malawi&#39;</span><span class="p">,</span> <span class="s">&#39;Mali&#39;</span><span class="p">,</span> <span class="s">&#39;Mauritania&#39;</span><span class="p">,</span> <span class="s">&#39;Mauritius&#39;</span><span class="p">,</span> <span class="s">&#39;Mozambique&#39;</span><span class="p">,</span> <span class="s">&#39;Namibia&#39;</span><span class="p">,</span> <span class="s">&#39;Niger&#39;</span><span class="p">,</span>
+             <span class="s">&#39;Nigeria&#39;</span><span class="p">,</span> <span class="s">&#39;Congo, Rep.&#39;</span><span class="p">,</span> <span class="s">&#39;Rwanda&#39;</span><span class="p">,</span> <span class="s">&#39;Sao Tome and Principe&#39;</span><span class="p">,</span> <span class="s">&#39;Senegal&#39;</span><span class="p">,</span> <span class="s">&#39;Seychelles&#39;</span><span class="p">,</span>
+             <span class="s">&#39;Sierra Leone&#39;</span><span class="p">,</span> <span class="s">&#39;South Africa&#39;</span><span class="p">,</span> <span class="s">&#39;Swaziland&#39;</span><span class="p">,</span> <span class="s">&#39;Togo&#39;</span><span class="p">,</span> <span class="s">&#39;Uganda&#39;</span><span class="p">,</span> <span class="s">&#39;Tanzania&#39;</span><span class="p">,</span> <span class="s">&#39;Zambia&#39;</span><span class="p">,</span> <span class="s">&#39;Zimbabwe&#39;</span><span class="p">],</span>
+        <span class="s">&#39;Region of the Americas&#39;</span><span class="p">:</span>
+            <span class="p">[</span><span class="s">&#39;Antigua and Barbuda&#39;</span><span class="p">,</span> <span class="s">&#39;Argentina&#39;</span><span class="p">,</span> <span class="s">&#39;Bahamas&#39;</span><span class="p">,</span> <span class="s">&#39;Barbados&#39;</span><span class="p">,</span> <span class="s">&#39;Belize&#39;</span><span class="p">,</span> <span class="s">&#39;Bolivia&#39;</span><span class="p">,</span> <span class="s">&#39;Brazil&#39;</span><span class="p">,</span> <span class="s">&#39;Canada&#39;</span><span class="p">,</span>
+             <span class="s">&#39;Chile&#39;</span><span class="p">,</span> <span class="s">&#39;Colombia&#39;</span><span class="p">,</span> <span class="s">&#39;Costa Rica&#39;</span><span class="p">,</span> <span class="s">&#39;Cuba&#39;</span><span class="p">,</span> <span class="s">&#39;Dominica&#39;</span><span class="p">,</span> <span class="s">&#39;Dominican Republic&#39;</span><span class="p">,</span> <span class="s">&#39;Ecuador&#39;</span><span class="p">,</span> <span class="s">&#39;El Salvador&#39;</span><span class="p">,</span>
+             <span class="s">&#39;Grenada&#39;</span><span class="p">,</span> <span class="s">&#39;Guatemala&#39;</span><span class="p">,</span> <span class="s">&#39;Guyana&#39;</span><span class="p">,</span> <span class="s">&#39;Haiti&#39;</span><span class="p">,</span> <span class="s">&#39;Honduras&#39;</span><span class="p">,</span> <span class="s">&#39;Jamaica&#39;</span><span class="p">,</span> <span class="s">&#39;Mexico&#39;</span><span class="p">,</span> <span class="s">&#39;Nicaragua&#39;</span><span class="p">,</span> <span class="s">&#39;Panama&#39;</span><span class="p">,</span>
+             <span class="s">&#39;Paraguay&#39;</span><span class="p">,</span> <span class="s">&#39;Peru&#39;</span><span class="p">,</span> <span class="s">&#39;Saint Kitts and Nevis&#39;</span><span class="p">,</span> <span class="s">&#39;Saint Lucia&#39;</span><span class="p">,</span> <span class="s">&#39;Saint Vincent and the Grenadines&#39;</span><span class="p">,</span>
+             <span class="s">&#39;Suriname&#39;</span><span class="p">,</span> <span class="s">&#39;Trinidad and Tobago&#39;</span><span class="p">,</span> <span class="s">&#39;United States&#39;</span><span class="p">,</span> <span class="s">&#39;Uruguay&#39;</span><span class="p">,</span> <span class="s">&#39;Venezuela&#39;</span><span class="p">],</span>
+        <span class="s">&#39;South-East Asia Region&#39;</span><span class="p">:</span> 
+            <span class="p">[</span><span class="s">&#39;Bangladesh&#39;</span><span class="p">,</span> <span class="s">&#39;Bhutan&#39;</span><span class="p">,</span> <span class="s">&#39;Democratic People</span><span class="se">\xe2\x80\x99</span><span class="s">s Republic of Korea&#39;</span><span class="p">,</span> <span class="s">&#39;India&#39;</span><span class="p">,</span> <span class="s">&#39;Indonesia&#39;</span><span class="p">,</span>
+             <span class="s">&#39;Maldives&#39;</span><span class="p">,</span> <span class="s">&#39;Myanmar&#39;</span><span class="p">,</span> <span class="s">&#39;Nepal&#39;</span><span class="p">,</span> <span class="s">&#39;Sri Lanka&#39;</span><span class="p">,</span> <span class="s">&#39;Thailand&#39;</span><span class="p">,</span> <span class="s">&#39;Timor-Leste&#39;</span><span class="p">],</span>
+        <span class="s">&#39;European Region&#39;</span><span class="p">:</span> 
+            <span class="p">[</span><span class="s">&#39;Albania&#39;</span><span class="p">,</span> <span class="s">&#39;Andorra&#39;</span><span class="p">,</span> <span class="s">&#39;Armenia&#39;</span><span class="p">,</span> <span class="s">&#39;Austria&#39;</span><span class="p">,</span> <span class="s">&#39;Azerbaijan&#39;</span><span class="p">,</span> <span class="s">&#39;Belarus&#39;</span><span class="p">,</span> <span class="s">&#39;Belgium&#39;</span><span class="p">,</span> <span class="s">&#39;Bosnia and Herzegovina&#39;</span><span class="p">,</span>
+             <span class="s">&#39;Bulgaria&#39;</span><span class="p">,</span> <span class="s">&#39;Croatia&#39;</span><span class="p">,</span> <span class="s">&#39;Cyprus&#39;</span><span class="p">,</span> <span class="s">&#39;Czech Republic&#39;</span><span class="p">,</span> <span class="s">&#39;Denmark&#39;</span><span class="p">,</span> <span class="s">&#39;Estonia&#39;</span><span class="p">,</span> <span class="s">&#39;Finland&#39;</span><span class="p">,</span> <span class="s">&#39;France&#39;</span><span class="p">,</span> <span class="s">&#39;Georgia&#39;</span><span class="p">,</span>
+             <span class="s">&#39;Germany&#39;</span><span class="p">,</span> <span class="s">&#39;Greece&#39;</span><span class="p">,</span> <span class="s">&#39;Hungary&#39;</span><span class="p">,</span> <span class="s">&#39;Iceland&#39;</span><span class="p">,</span> <span class="s">&#39;Ireland&#39;</span><span class="p">,</span> <span class="s">&#39;Israel&#39;</span><span class="p">,</span> <span class="s">&#39;Italy&#39;</span><span class="p">,</span> <span class="s">&#39;Kazakhstan&#39;</span><span class="p">,</span> <span class="s">&#39;Kyrgyzstan&#39;</span><span class="p">,</span>
+             <span class="s">&#39;Latvia&#39;</span><span class="p">,</span> <span class="s">&#39;Lithuania&#39;</span><span class="p">,</span> <span class="s">&#39;Luxembourg&#39;</span><span class="p">,</span> <span class="s">&#39;Malta&#39;</span><span class="p">,</span> <span class="s">&#39;Monaco&#39;</span><span class="p">,</span> <span class="s">&#39;Montenegro&#39;</span><span class="p">,</span> <span class="s">&#39;Netherlands&#39;</span><span class="p">,</span> <span class="s">&#39;Norway&#39;</span><span class="p">,</span> <span class="s">&#39;Poland&#39;</span><span class="p">,</span>
+             <span class="s">&#39;Portugal&#39;</span><span class="p">,</span> <span class="s">&#39;Moldova&#39;</span><span class="p">,</span> <span class="s">&#39;Romania&#39;</span><span class="p">,</span> <span class="s">&#39;Russia&#39;</span><span class="p">,</span> <span class="s">&#39;San Marino&#39;</span><span class="p">,</span> <span class="s">&#39;Serbia&#39;</span><span class="p">,</span> <span class="s">&#39;Slovak Republic&#39;</span><span class="p">,</span> <span class="s">&#39;Slovenia&#39;</span><span class="p">,</span>
+             <span class="s">&#39;Spain&#39;</span><span class="p">,</span> <span class="s">&#39;Sweden&#39;</span><span class="p">,</span> <span class="s">&#39;Switzerland&#39;</span><span class="p">,</span> <span class="s">&#39;Tajikistan&#39;</span><span class="p">,</span> <span class="s">&#39;Macedonia, FYR&#39;</span><span class="p">,</span> <span class="s">&#39;Turkey&#39;</span><span class="p">,</span> <span class="s">&#39;Turkmenistan&#39;</span><span class="p">,</span> <span class="s">&#39;Ukraine&#39;</span><span class="p">,</span>
+             <span class="s">&#39;United Kingdom&#39;</span><span class="p">,</span> <span class="s">&#39;Uzbekistan&#39;</span><span class="p">],</span> 
+        <span class="s">&#39;Eastern Mediterranean Region&#39;</span><span class="p">:</span> 
+            <span class="p">[</span><span class="s">&#39;Afghanistan&#39;</span><span class="p">,</span> <span class="s">&#39;Bahrain&#39;</span><span class="p">,</span> <span class="s">&#39;Djibouti&#39;</span><span class="p">,</span> <span class="s">&#39;Egypt&#39;</span><span class="p">,</span> <span class="s">&#39;Iran&#39;</span><span class="p">,</span> <span class="s">&#39;Iraq&#39;</span><span class="p">,</span> <span class="s">&#39;Jordan&#39;</span><span class="p">,</span> <span class="s">&#39;Kuwait&#39;</span><span class="p">,</span> <span class="s">&#39;Lebanon&#39;</span><span class="p">,</span>
+             <span class="s">&#39;Libyan Arab Jamahiriya&#39;</span><span class="p">,</span> <span class="s">&#39;Morocco&#39;</span><span class="p">,</span> <span class="s">&#39;Oman&#39;</span><span class="p">,</span> <span class="s">&#39;Pakistan&#39;</span><span class="p">,</span> <span class="s">&#39;Qatar&#39;</span><span class="p">,</span> <span class="s">&#39;Saudi Arabia&#39;</span><span class="p">,</span> <span class="s">&#39;Somalia&#39;</span><span class="p">,</span>
+             <span class="s">&#39;Sudan&#39;</span><span class="p">,</span> <span class="s">&#39;Syria&#39;</span><span class="p">,</span> <span class="s">&#39;Tunisia&#39;</span><span class="p">,</span> <span class="s">&#39;United Arab Emirates&#39;</span><span class="p">,</span> <span class="s">&#39;Yemen&#39;</span><span class="p">],</span> 
+        <span class="s">&#39;Western Pacific Region&#39;</span><span class="p">:</span> 
+            <span class="p">[</span><span class="s">&#39;Australia&#39;</span><span class="p">,</span> <span class="s">&#39;Brunei Darussalam&#39;</span><span class="p">,</span> <span class="s">&#39;Cambodia&#39;</span><span class="p">,</span> <span class="s">&#39;China&#39;</span><span class="p">,</span> <span class="s">&#39;Cook Islands&#39;</span><span class="p">,</span> <span class="s">&#39;Fiji&#39;</span><span class="p">,</span> <span class="s">&#39;Japan&#39;</span><span class="p">,</span>
+             <span class="s">&#39;Kiribati&#39;</span><span class="p">,</span> <span class="s">&#39;Lao People</span><span class="se">\xe2\x80\x99</span><span class="s">s Democratic Republic&#39;</span><span class="p">,</span> <span class="s">&#39;Malaysia&#39;</span><span class="p">,</span> <span class="s">&#39;Marshall Islands&#39;</span><span class="p">,</span>
+             <span class="s">&#39;Micronesia (Federated States of)&#39;</span><span class="p">,</span> <span class="s">&#39;Mongolia&#39;</span><span class="p">,</span> <span class="s">&#39;Nauru&#39;</span><span class="p">,</span> <span class="s">&#39;New Zealand&#39;</span><span class="p">,</span> <span class="s">&#39;Niue&#39;</span><span class="p">,</span> <span class="s">&#39;Palau&#39;</span><span class="p">,</span>
+             <span class="s">&#39;Papua New Guinea&#39;</span><span class="p">,</span> <span class="s">&#39;Philippines&#39;</span><span class="p">,</span> <span class="s">&#39;Republic of Korea&#39;</span><span class="p">,</span> <span class="s">&#39;Samoa&#39;</span><span class="p">,</span> <span class="s">&#39;Singapore&#39;</span><span class="p">,</span> <span class="s">&#39;Solomon Islands&#39;</span><span class="p">,</span>
+             <span class="s">&#39;Taiwan&#39;</span><span class="p">,</span> <span class="s">&#39;Tonga&#39;</span><span class="p">,</span> <span class="s">&#39;Tuvalu&#39;</span><span class="p">,</span> <span class="s">&#39;Vanuatu&#39;</span><span class="p">,</span> <span class="s">&#39;Vietnam&#39;</span><span class="p">]}</span>
+
+<span class="c"># Swap keys - values in who_regions dictionary</span>
+<span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">who_regions</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">who_regions</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+        <span class="n">d</span><span class="p">[</span><span class="n">value</span><span class="p">]</span> <span class="o">=</span> <span class="n">key</span>
+
+<span class="c"># Add coloumn who_region to subset</span>
+<span class="n">sub2</span><span class="p">[</span><span class="s">&#39;who_region&#39;</span><span class="p">]</span><span class="o">=</span> <span class="n">sub2</span><span class="p">[</span><span class="s">&#39;country&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="k">print</span> <span class="s">&quot;Sample of subset with new variable&quot;</span>
+<span class="n">sub2</span><span class="p">[[</span><span class="s">&#39;country&#39;</span><span class="p">,</span><span class="s">&#39;under5mort&#39;</span><span class="p">,</span><span class="s">&#39;womenschool&#39;</span><span class="p">,</span><span class="s">&#39;healthexpend&#39;</span><span class="p">,</span><span class="s">&#39;incomeperperson&#39;</span><span class="p">,</span> <span class="s">&#39;who_region&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">tail</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+
+
+<p><strong>Sample of subset with new variable</strong></p>
+<table border="1">
+<thead>
+<tr>
+<th>
+</th>
+<th>
+country
+</th>
+<th>
+under5mort
+</th>
+<th>
+womenschool
+</th>
+<th>
+healthexpend
+</th>
+<th>
+incomeperperson
+</th>
+<th>
+who_region
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+162
+</th>
+<td>
+Venezuela
+</td>
+<td>
+16.6
+</td>
+<td>
+10.5
+</td>
+<td>
+663.387571
+</td>
+<td>
+5528.363114
+</td>
+<td>
+Region of the Americas
+</td>
+</tr>
+<tr>
+<th>
+163
+</th>
+<td>
+West Bank and Gaza
+</td>
+<td>
+23.8
+</td>
+<td>
+11.0
+</td>
+<td>
+NaN
+</td>
+<td>
+NaN
+</td>
+<td>
+NaN
+</td>
+</tr>
+<tr>
+<th>
+164
+</th>
+<td>
+Vietnam
+</td>
+<td>
+24.8
+</td>
+<td>
+8.4
+</td>
+<td>
+82.872177
+</td>
+<td>
+722.807559
+</td>
+<td>
+Western Pacific Region
+</td>
+</tr>
+<tr>
+<th>
+165
+</th>
+<td>
+Zambia
+</td>
+<td>
+84.8
+</td>
+<td>
+6.7
+</td>
+<td>
+72.884346
+</td>
+<td>
+432.226337
+</td>
+<td>
+African Region
+</td>
+</tr>
+<tr>
+<th>
+166
+</th>
+<td>
+Zimbabwe
+</td>
+<td>
+95.1
+</td>
+<td>
+9.0
+</td>
+<td>
+NaN
+</td>
+<td>
+320.771890
+</td>
+<td>
+African Region
+</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Crosstabs with new variable</h3>
+<div class="highlight"><pre>    <span class="c">#crosstabs evaluating counts in who_region and under5mort categories</span>
+    <span class="k">print</span> <span class="s">&quot;Cross-tabulation of who_region and under5mort categories&quot;</span>
+    <span class="k">print</span> <span class="n">pd</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span><span class="n">sub2</span><span class="p">[</span><span class="s">&#39;who_region&#39;</span><span class="p">],</span> <span class="n">sub2</span><span class="p">[</span><span class="s">&#39;under5mort_cat&#39;</span><span class="p">],</span> <span class="n">normalize</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&quot;&quot;</span>
+
+    <span class="c">#crosstabs evaluating counts in who_region and womenshool categories</span>
+    <span class="k">print</span> <span class="s">&quot;Cross-tabulation of who_region and womenshool categories&quot;</span>
+    <span class="k">print</span> <span class="n">pd</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span><span class="n">sub2</span><span class="p">[</span><span class="s">&#39;who_region&#39;</span><span class="p">],</span> <span class="n">sub2</span><span class="p">[</span><span class="s">&#39;womenschool_cat&#39;</span><span class="p">],</span> <span class="n">normalize</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&quot;&quot;</span>
+
+    <span class="c">#crosstabs evaluating counts in who_region and healthexpend categories</span>
+    <span class="k">print</span> <span class="s">&quot;Cross-tabulation of who_region and healthexpend categories&quot;</span>
+    <span class="k">print</span> <span class="n">pd</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span><span class="n">sub2</span><span class="p">[</span><span class="s">&#39;who_region&#39;</span><span class="p">],</span> <span class="n">sub2</span><span class="p">[</span><span class="s">&#39;healthexpend_cat&#39;</span><span class="p">],</span> <span class="n">normalize</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&quot;&quot;</span>
+
+    <span class="c">#crosstabs evaluating counts in who_region and incomeperperson categories</span>
+    <span class="k">print</span> <span class="s">&quot;Cross-tabulation of who_region and incomeperperson categories&quot;</span>
+    <span class="k">print</span> <span class="n">pd</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span><span class="n">sub2</span><span class="p">[</span><span class="s">&#39;who_region&#39;</span><span class="p">],</span> <span class="n">sub2</span><span class="p">[</span><span class="s">&#39;incomeperperson_cat&#39;</span><span class="p">],</span> <span class="n">normalize</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</pre></div>
+
+
+<h3>Cross-tabulation of who_region and under5mort categories</h3>
+<table border="1">
+<thead>
+<tr>
+<th>
+under5mort_cat
+</th>
+<th>
+0-10
+</th>
+<th>
+10-50
+</th>
+<th>
+50-100
+</th>
+<th>
+100-220
+</th>
+</tr>
+<tr>
+<th>
+who_region
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+African Region
+</th>
+<td>
+0
+</td>
+<td>
+4
+</td>
+<td>
+25
+</td>
+<td>
+16
+</td>
+</tr>
+<tr>
+<th>
+Eastern Mediterranean Region
+</th>
+<td>
+3
+</td>
+<td>
+11
+</td>
+<td>
+3
+</td>
+<td>
+2
+</td>
+</tr>
+<tr>
+<th>
+European Region
+</th>
+<td>
+32
+</td>
+<td>
+12
+</td>
+<td>
+2
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+Region of the Americas
+</th>
+<td>
+5
+</td>
+<td>
+22
+</td>
+<td>
+0
+</td>
+<td>
+1
+</td>
+</tr>
+<tr>
+<th>
+South-East Asia Region
+</th>
+<td>
+0
+</td>
+<td>
+6
+</td>
+<td>
+3
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+Western Pacific Region
+</th>
+<td>
+5
+</td>
+<td>
+11
+</td>
+<td>
+2
+</td>
+<td>
+0
+</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Cross-tabulation of who_region and womenshool categories</h3>
+<table border="1">
+<thead>
+<tr>
+<th>
+womenschool_cat
+</th>
+<th>
+0-4 years
+</th>
+<th>
+4-8 years
+</th>
+<th>
+8-12 years
+</th>
+<th>
+12-16 years
+</th>
+</tr>
+<tr>
+<th>
+who_region
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+African Region
+</th>
+<td>
+17
+</td>
+<td>
+18
+</td>
+<td>
+10
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+Eastern Mediterranean Region
+</th>
+<td>
+3
+</td>
+<td>
+7
+</td>
+<td>
+9
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+European Region
+</th>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+21
+</td>
+<td>
+25
+</td>
+</tr>
+<tr>
+<th>
+Region of the Americas
+</th>
+<td>
+0
+</td>
+<td>
+5
+</td>
+<td>
+19
+</td>
+<td>
+4
+</td>
+</tr>
+<tr>
+<th>
+South-East Asia Region
+</th>
+<td>
+1
+</td>
+<td>
+5
+</td>
+<td>
+3
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+Western Pacific Region
+</th>
+<td>
+0
+</td>
+<td>
+4
+</td>
+<td>
+9
+</td>
+<td>
+6
+</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Cross-tabulation of who_region and healthexpend categories</h3>
+<table border="1">
+<thead>
+<tr>
+<th>
+healthexpend_cat
+</th>
+<th>
+1-100
+</th>
+<th>
+100-300
+</th>
+<th>
+300-1000
+</th>
+<th>
+1000-5000
+</th>
+<th>
+5000-9000
+</th>
+</tr>
+<tr>
+<th>
+who_region
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+African Region
+</th>
+<td>
+32
+</td>
+<td>
+5
+</td>
+<td>
+7
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+Eastern Mediterranean Region
+</th>
+<td>
+5
+</td>
+<td>
+4
+</td>
+<td>
+6
+</td>
+<td>
+3
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+European Region
+</th>
+<td>
+2
+</td>
+<td>
+6
+</td>
+<td>
+16
+</td>
+<td>
+17
+</td>
+<td>
+5
+</td>
+</tr>
+<tr>
+<th>
+Region of the Americas
+</th>
+<td>
+2
+</td>
+<td>
+7
+</td>
+<td>
+13
+</td>
+<td>
+1
+</td>
+<td>
+2
+</td>
+</tr>
+<tr>
+<th>
+South-East Asia Region
+</th>
+<td>
+5
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+Western Pacific Region
+</th>
+<td>
+4
+</td>
+<td>
+8
+</td>
+<td>
+2
+</td>
+<td>
+4
+</td>
+<td>
+0
+</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Cross-tabulation of who_region and incomeperperson categories</h3>
+<table border="1">
+<thead>
+<tr>
+<th>
+incomeperperson_cat
+</th>
+<th>
+Low
+</th>
+<th>
+Lower middle
+</th>
+<th>
+Upper middle
+</th>
+<th>
+High
+</th>
+</tr>
+<tr>
+<th>
+who_region
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+<th>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+African Region
+</th>
+<td>
+32
+</td>
+<td>
+7
+</td>
+<td>
+5
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+Eastern Mediterranean Region
+</th>
+<td>
+4
+</td>
+<td>
+6
+</td>
+<td>
+3
+</td>
+<td>
+3
+</td>
+</tr>
+<tr>
+<th>
+European Region
+</th>
+<td>
+3
+</td>
+<td>
+15
+</td>
+<td>
+9
+</td>
+<td>
+19
+</td>
+</tr>
+<tr>
+<th>
+Region of the Americas
+</th>
+<td>
+2
+</td>
+<td>
+12
+</td>
+<td>
+11
+</td>
+<td>
+3
+</td>
+</tr>
+<tr>
+<th>
+South-East Asia Region
+</th>
+<td>
+4
+</td>
+<td>
+3
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+Western Pacific Region
+</th>
+<td>
+5
+</td>
+<td>
+8
+</td>
+<td>
+1
+</td>
+<td>
+4
+</td>
+</tr>
+</tbody>
+</table>
+
+<p>The most common range of child mortality rate is 10-50 death per 1,000
+live births. 67 countries (40.36%) fell into this group. 27.1 % of the
+observations have a value less than or equal to 10, while about third of
+the countries pesented higher values (50 or higher mortality rate).</p>
+<p>In 72 countries (43.11%) the women spend 8-10 years in schools. This is
+the most frequent category.</p>
+<p>According to the crosstab calculations child mortality is higher in
+countries where women spend less time in education and per capita health
+expenditure is also on a lower level. High income countries have
+definitely better child survival rates.</p>
+<p>Child mortality is especially high in the African region. In 35
+countries out of 40, women spend 0-8 years in school while in the
+European region 8 years is the minimum of the average value.</p></div>
+	
+        <hr>
+
+    </div>
+        </div>
+        
+        <div class="span3">
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Site
+                </li>
+            
+                <li><a href="https://ernogolya.github.io/archives.html">Archives</a>
+                <li><a href="https://ernogolya.github.io/tags.html">Tags</a>
+
+
+
+
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Categories
+                </li>
+                
+                <li><a href="https://ernogolya.github.io/category/data-science.html">Data Science</a></li>
+                   
+            </ul>
+            </div>
+
+
+
+
+
+        </div>  
+    </div>     </div> 
+<footer>
+<br />
+<p><a href="https://ernogolya.github.io">ernogolya</a> &copy; Ernő Gólya 2016</p>
+</footer>
+
+</div> <!-- /container -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="https://ernogolya.github.io/theme/bootstrap-collapse.js"></script>
+ 
+</body>
+</html>
