@@ -59,8 +59,8 @@
 
     <div class='article'>
         <div class="content-title">
-            <a href="https://ernogolya.github.io/basic_linear_regression/"><h1>Regression Modeling in Practice: Basic Linear Regression Model</h1></a>
-h 15 augusztus 2016
+            <a href="https://ernogolya.github.io/logistic_regression/"><h1>Regression Modeling in Practice: Logistic Regression Model</h1></a>
+h 22 augusztus 2016
 
 by <a class="url fn" href="https://ernogolya.github.io/author/erno-golya.html">Ernő Gólya</a>
  
@@ -69,139 +69,312 @@ by <a class="url fn" href="https://ernogolya.github.io/author/erno-golya.html">E
  
         </div>
         
-        <div><p>So far, in the <a href="https://www.coursera.org/specializations/data-analysis">Data Analysis and Interpretation Specialization</a> courses by Wesleyan University, I have statistically tested the association between the level of female education (primary explanatory variable) and under-five child mortality rate (response variable). </p>
-<p>This time I will test and interpret this relationship using basic linear regression analysis for the two variable.</p>
-<p>Simple linear regression is a statistical method that allows us to describe data and explain the relationship between two quantitative variables:
-1. It might be used to identify the strength of the effect that the independent variable have on a dependent variable.
-2. It can be used to forecast effects or impacts of changes. Regression analysis can help us to understand how much will the dependent variable change, when we change the independent variable.
-3. Regression analysis predicts trends and future values, and can be used to get value estimates.</p>
-<p>Just like in my previous assignments, I use a dataset compiled from the data available at the <a href="https://gapminder.org">Gapminder</a> site. I have a quantitative explanatory variable (mean years in school for women), which I will center so that the mean = 0 (or actually really close to 0 due to the floating-point number representation in Python) by subtracting the mean from each “mean years” value. Then I will test a linear regression model and briefly summarize the results.</p>
-<p>My basic hypothesis is that providing higher education level for women in a country is an important factor in reducing the rate of death among children younger than five.
-Null hypothesis: there is no significant association between the two variables.</p>
-<h2>Output of my code</h2>
-<div class="highlight"><pre>    Mean of women mean years in school: 9.011039
+        <div><p>Logistic regression is another form of the linear regression model, so the basic idea is the same as a multiple regression analysis. But, unlike the multiple regression model, the logistic regression model is designed to test binary response variables. We can use a logistic regression model, including using odds ratios and confidence intervals to determine the magnitude of the association between our explanatory variables and response variable.</p>
+<p>Our research question is, whether there is a relationship between the female education level and the under-5 child mortality rate (U5MR) of a country. Additionally, we would also like to find out how other factors, such as income per person and total expenditure on health, can potentionally modify this relationship. Because we are using a logistic regression model this time, the response variable needs to be binary (categorical with 2 categories). As child mortality rate is a quantitative response variable, we will have to bin it into 2 categories. The child mortality frequency distribution of the countries is skewed to the right so we will use the global median of the under5mort variable for the comparison.</p>
+<p><strong>under5mort:</strong><br />
+<code>0: under5mort &lt;= 19.5</code> (median of U5MR rates of 154 countries)<br />
+<code>1: under5mort &gt; 19.5</code> (median of U5MR rates of 154 countries)<br />
+<em>(Data source: <a href="https://gapminder.org">Gapminder</a>)</em></p>
+<p><strong>Null Hypothesis:</strong> There is no association between the female education level and the under-five child mortality rate being higher (or lower) than the median value of all countries.<br />
+<strong>Alternate Hypothesis:</strong> There is an association between the female education level and the under-five child mortality rate being higher (or lower) than the median value of all countries.</p>
+<p>In order to better answer our research question, we will choose odds ratios as opposed to coefficients. The odds ratio is the probability of an even occurring in one group compared to the probability of an event occurring in another group. Odds ratios are the natural exponentiation of our parameter estimates and are always given in the form of odds and are not linear. 
+An odds ratio can range from zero to positive infinity, and is centered around the value one. If we ran our model and got an odds ratio of one, it would mean that there's an equal probability of child mortality rate being above the global median in countries with different level of female education. It's also likely then that our model would be statistically non-significant. If an odds ratio is greater than one, it means that the probability of reporting under5mort &gt; 19.5 value in a country increases among those with greater schooling for women compared to those with lower mean years in school rate. In contrast, if the odds ratio is below one, it means that the probability of having child mortality above the given rate decreases among those countries with better female education compared to those with lower mean years in school rate.</p>
+<h3>Results</h3>
+<pre>
+Logistic regression model for the association between female education and child mortality rate
+                           Logit Regression Results                           
+==============================================================================
+Dep. Variable:         u5_abovemedian   No. Observations:                  154
+Model:                          Logit   Df Residuals:                      152
+Method:                           MLE   Df Model:                            1
+Date:                Mon, 22 Aug 2016   Pseudo R-squ.:                  0.4281
+Time:                        12:24:43   Log-Likelihood:                -61.051
+converged:                       True   LL-Null:                       -106.74
+                                        LLR p-value:                 1.181e-21
+=================================================================================
+                    coef    std err          z      P>|z|      [95.0% Conf. Int.]
+---------------------------------------------------------------------------------
+Intercept         0.3204      0.248      1.291      0.197        -0.166     0.807
+c_womenschool    -0.6890      0.107     -6.429      0.000        -0.899    -0.479
+=================================================================================
 
-    Dataframe before centering Mean years in school
-           under5mort  womenschool
-    count  154.000000   154.000000
-    mean    39.708442     9.011039
-    std     41.935490     3.483417
-    min      2.400000     1.300000
-    25%      8.350000     6.225000
-    50%     19.500000     9.900000
-    75%     62.750000    11.900000
-    max    208.800000    14.700000 
+Odds Ratios
+Intercept        1.377696
+c_womenschool    0.502055
+dtype: float64
 
-    Dataframe after centering Mean years in school
-           under5mort   womenschool
-    count  154.000000  1.540000e+02
-    mean    39.708442 -2.231981e-15
-    std     41.935490  3.483417e+00
-    min      2.400000 -7.711039e+00
-    25%      8.350000 -2.786039e+00
-    50%     19.500000  8.889610e-01
-    75%     62.750000  2.888961e+00
-    max    208.800000  5.688961e+00
-</pre></div>
+Odds ratios with 95% confidence intervals
+               Lower CI  Upper CI        OR
+Intercept      0.847138  2.240539  1.377696
+c_womenschool  0.406933  0.619412  0.502055
+</pre>
 
+<p>The logistic regression model for the association between the primary explanatory variable <code>c_womenschool</code> and response variable <code>u5_abovemedian</code> shows a negative association. Mean years in school is significantly associated with child mortality, such that countries with higher female education level are significantly less likely to have child mortality rate above the global average <strong>(OR= 0.50, 95% CI=0.40-0.62, p=0.000)</strong>.</p>
+<p>As with multiple regression, when using logistic regression, we can continue to add variables to our
+model in order to evaluate multiple predictors of our binary categorical response variable.</p>
+<pre>
+                           Logit Regression Results                           
+==============================================================================
+Dep. Variable:         u5_abovemedian   No. Observations:                  154
+Model:                          Logit   Df Residuals:                      151
+Method:                           MLE   Df Model:                            2
+Date:                Mon, 22 Aug 2016   Pseudo R-squ.:                  0.5569
+Time:                        12:44:08   Log-Likelihood:                -47.298
+converged:                       True   LL-Null:                       -106.74
+                                        LLR p-value:                 1.523e-26
+=====================================================================================
+                        coef    std err          z      P>|z|      [95.0% Conf. Int.]
+-------------------------------------------------------------------------------------
+Intercept            -1.2607      0.607     -2.078      0.038        -2.450    -0.071
+c_womenschool        -0.5102      0.120     -4.240      0.000        -0.746    -0.274
+c_incomeperperson    -0.0004      0.000     -3.417      0.001        -0.001    -0.000
+=====================================================================================
 
-<div class="highlight"><pre>OLS regression model for the association between schooling of women and child mortality rate
-                                OLS Regression Results                            
-    ==============================================================================
-    Dep. Variable:             under5mort   R-squared:                       0.617
-    Model:                            OLS   Adj. R-squared:                  0.615
-    Method:                 Least Squares   F-statistic:                     245.2
-    Date:                Mon, 15 Aug 2016   Prob (F-statistic):           1.63e-33
-    Time:                        11:34:07   Log-Likelihood:                -719.43
-    No. Observations:                 154   AIC:                             1443.
-    Df Residuals:                     152   BIC:                             1449.
-    Df Model:                           1                                         
-    Covariance Type:            nonrobust                                         
-    ===============================================================================
-                      coef    std err          t      P&gt;|t|      [95.0% Conf. Int.]
-    -------------------------------------------------------------------------------
-    Intercept      39.7084      2.097     18.932      0.000        35.565    43.852
-    womenschool    -9.4584      0.604    -15.657      0.000       -10.652    -8.265
-    ==============================================================================
-    Omnibus:                       65.182   Durbin-Watson:                   2.158
-    Prob(Omnibus):                  0.000   Jarque-Bera (JB):              264.144
-    Skew:                           1.547   Prob(JB):                     4.38e-58
-    Kurtosis:                       8.621   Cond. No.                         3.47
-    ==============================================================================
+Odds Ratios
+Intercept            0.283442
+c_womenschool        0.600365
+c_incomeperperson    0.999578
+dtype: float64
 
-    Warnings:
-    [1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
-</pre></div>
+Odds ratios with 95% confidence intervals
+                   Lower CI  Upper CI        OR
+Intercept          0.086280  0.931146  0.283442
+c_womenschool      0.474219  0.760067  0.600365
+c_incomeperperson  0.999336  0.999820  0.999578
 
 
-<h2>Describing my results</h2>
-<p>Scatterplot for the relationship in question follows below, including fitted regression line, drawn by  seaborn’s regplot() function. It shows the distribution of the response variable after the centering of the explanatory variable.
-The graph shows a strong negative linear relationship between the indicators: in countries with more advanced female education (measured in average years women spend in schools) the under-five child mortality rate is lower.
-The regression line shown in the plot above can be modeled with the ordinary least squares function, which I already used in the analysis of variance (ANOVA) test.</p>
-<p><img alt="scatterplot" src="https://ernogolya.github.io/images/RegressionModeling/regmod_w2.png" /></p>
-<p>The results of the linear regression model indicates that mean years of school for women (F=245.2, p&lt;0.0001) is significantly and negatively associated with the number of children dying under the age of five (per 1,000 live births). The F-statistic value is very high, showing that the variance between the two variables is a lot higher than the variance within each variable. The p value is considerably smaller than 0.05 which tells us that we can reject the null hypothesis of no association between child mortality rate and mean years in school for women.
-Coefficient for mean years in school: Beta=-9.45, and the Intercept is 39.7.<br />
-Equation for the best fit line of the graph is: <code>under5mort = 39.7 -9.45 * womenschool</code> could theoretically be used to predict new values. This formula implies that increasing the average schooling of women in a country by one year, we can expect the decrease of child mortality rate by more than 9.</p>
-<p>This is statistically significant in the model due to the F and p values previously addressed. Also given mean years in school as the only explanatory variable, this model concludes that the variability in female education level accounts for about 61.7% of the variability we have seen in child mortality rate (R2=0.617, proportion of the variance in the response variable that can be explained by the explanatory variable) </p>
-<h2>Python code</h2>
+                           Logit Regression Results                           
+==============================================================================
+Dep. Variable:         u5_abovemedian   No. Observations:                  154
+Model:                          Logit   Df Residuals:                      151
+Method:                           MLE   Df Model:                            2
+Date:                Mon, 22 Aug 2016   Pseudo R-squ.:                  0.5569
+Time:                        12:48:40   Log-Likelihood:                -47.294
+converged:                       True   LL-Null:                       -106.74
+                                        LLR p-value:                 1.517e-26
+==================================================================================
+                     coef    std err          z      P>|z|      [95.0% Conf. Int.]
+----------------------------------------------------------------------------------
+Intercept         -2.2097      0.811     -2.726      0.006        -3.798    -0.621
+c_womenschool     -0.4604      0.119     -3.862      0.000        -0.694    -0.227
+c_healthexpend    -0.0039      0.001     -3.614      0.000        -0.006    -0.002
+==================================================================================
+
+Odds Ratios
+Intercept         0.109733
+c_womenschool     0.631044
+c_healthexpend    0.996112
+dtype: float64
+
+Odds ratios with 95% confidence intervals
+                Lower CI  Upper CI        OR
+Intercept       0.022409  0.537333  0.109733
+c_womenschool   0.499565  0.797126  0.631044
+c_healthexpend  0.994010  0.998218  0.996112
+</pre>
+
+<p>After adding income per person and per capita expenditure on health to the model separately, both secondary variables show a negative, significant relationship with the child mortality response variable.
+Income per person <strong>OR= 0.99, 95% CI=0.999-0.999, p=0.001</strong>.
+Per capita expenditure on health <strong>OR= 0.99, 95% CI=0.994-0.998, p=0.000</strong>.
+These numbers appear to show very weak association with the dependent variable, as they are very close to 1. Their confidence intervals do not overlap with the the primary explanatory variable (c_womenschool), and they are not confounders in the relationship of mean years in school and under-five mortality.</p>
+<pre>
+                           Logit Regression Results                           
+==============================================================================
+Dep. Variable:         u5_abovemedian   No. Observations:                  154
+Model:                          Logit   Df Residuals:                      150
+Method:                           MLE   Df Model:                            3
+Date:                Mon, 22 Aug 2016   Pseudo R-squ.:                  0.5651
+Time:                        12:50:21   Log-Likelihood:                -46.424
+converged:                       True   LL-Null:                       -106.74
+                                        LLR p-value:                 5.612e-26
+=====================================================================================
+                        coef    std err          z      P>|z|      [95.0% Conf. Int.]
+-------------------------------------------------------------------------------------
+Intercept            -1.9172      0.827     -2.318      0.020        -3.538    -0.296
+c_womenschool        -0.4783      0.123     -3.884      0.000        -0.720    -0.237
+c_incomeperperson    -0.0002      0.000     -1.227      0.220        -0.001     0.000
+c_healthexpend       -0.0022      0.002     -1.300      0.194        -0.005     0.001
+=====================================================================================
+
+Odds Ratios
+Intercept            0.147023
+c_womenschool        0.619839
+c_incomeperperson    0.999779
+c_healthexpend       0.997829
+dtype: float64
+
+Odds ratios with 95% confidence intervals
+                   Lower CI  Upper CI        OR
+Intercept          0.029058  0.743886  0.147023
+c_womenschool      0.486908  0.789061  0.619839
+c_incomeperperson  0.999427  1.000132  0.999779
+c_healthexpend     0.994565  1.001105  0.997829
+</pre>
+
+<p>What happens if we control for both income per person and health expenditure? As we can see, income per person <strong>(OR= 0.99, 95% CI=0.99-1.00, p=0.22)</strong> and per capita health expenditure <strong>(OR= 0.99, 95% CI=0.99-1.00, p=0.19)</strong> are no longer significantly associated with child mortality.
+Here we have an example of confounding. Income per person and total expenditure on health show strong multicollinearity with each other. We would say that income per person confounds the relationship between expenditure on health and child mortality while expenditure on health confounds the relationship between income per person and the response variable, because their p-values are no longer significant when the other variable is included in the model. Further, because these variables are no longer associated with under-five mortality, we would not interpret the corresponding odds ratios. </p>
+<p>Meanwhile, the relationship between female education and child mortality is still significant and strong <strong>(OR= 0.61, 95% CI=0.48-0.78, p=0.000)</strong>. These results support the hypothesis for the association between our primary explanatory variable and our response variable.</p>
+<h3>Python code</h3>
 <div class="highlight"><pre><span class="c"># -*- coding: utf-8 -*-</span>
-<span class="c"># Created on 14/08/2016</span>
+<span class="c"># Created on 22/08/2016</span>
 <span class="c"># Author Ernő Gólya</span>
 
 <span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
-<span class="c"># Import libraries</span>
+<span class="c"># import libraries</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">seaborn</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">statsmodels.formula.api</span> <span class="kn">as</span> <span class="nn">smf</span>
-<span class="c">#import statsmodels.stats.multicomp as multi</span>
+<span class="kn">import</span> <span class="nn">statsmodels.api</span> <span class="kn">as</span> <span class="nn">sm</span>
 
-<span class="c"># Read in data file</span>
+<span class="c"># read in data file</span>
 <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">&#39;custom_gapminder_2.csv&#39;</span><span class="p">,</span> <span class="n">low_memory</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 
-<span class="c"># Set variables to numeric</span>
+<span class="c"># set variables to numeric</span>
 <span class="n">data</span><span class="p">[</span><span class="s">&quot;incomeperperson&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;incomeperperson&quot;</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;coerce&#39;</span><span class="p">)</span>
 <span class="n">data</span><span class="p">[</span><span class="s">&quot;under5mort&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;under5mort&quot;</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;coerce&#39;</span><span class="p">)</span>
 <span class="n">data</span><span class="p">[</span><span class="s">&quot;womenschool&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;womenschool&quot;</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;coerce&#39;</span><span class="p">)</span>
 <span class="n">data</span><span class="p">[</span><span class="s">&quot;healthexpend&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;healthexpend&quot;</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;coerce&#39;</span><span class="p">)</span>
 
-<span class="c"># Remove observations with NaN values in any variables of interest</span>
-<span class="c"># Describe function returns NaN for percentiles if dataset contains NaN</span>
+<span class="c"># remove observations with NaN values in any variables of interest</span>
 <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
 
-<span class="c"># Create subgrup for child mortality and mean years in school</span>
-<span class="n">sub1</span> <span class="o">=</span> <span class="n">data</span><span class="p">[[</span><span class="s">&#39;under5mort&#39;</span><span class="p">,</span> <span class="s">&#39;womenschool&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="c"># use country names as row names/indices for plotting purposes</span>
+<span class="n">data</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&quot;country&quot;</span><span class="p">]</span>
+<span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s">&quot;country&quot;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
-<span class="c"># Center mean years in school (explanatory variable)</span>
-<span class="n">sub1</span><span class="p">[</span><span class="s">&#39;womenschool&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;womenschool&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;womenschool&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="c"># create copy of data set</span>
+<span class="n">sub1</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
-<span class="c"># Mean of womenscool</span>
-<span class="n">women_mean</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;womenschool&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="c"># center explanatory variables</span>
+<span class="n">sub1</span><span class="p">[</span><span class="s">&#39;c_womenschool&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;womenschool&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;womenschool&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">sub1</span><span class="p">[</span><span class="s">&#39;c_incomeperperson&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;incomeperperson&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;incomeperperson&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">sub1</span><span class="p">[</span><span class="s">&#39;c_healthexpend&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;healthexpend&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;healthexpend&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 
-<span class="c"># Print dataframe before and after centering</span>
-<span class="k">print</span> <span class="s">&quot;Mean of women mean years in school: </span><span class="si">%f</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span><span class="n">women_mean</span>
-<span class="k">print</span> <span class="s">&quot;Dataframe before centering Mean years in school&quot;</span>
-<span class="k">print</span> <span class="n">data</span><span class="p">[[</span><span class="s">&#39;under5mort&#39;</span><span class="p">,</span> <span class="s">&#39;womenschool&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">describe</span><span class="p">(),</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="c"># median global child mortality</span>
+<span class="n">under5median</span> <span class="o">=</span> <span class="n">sub1</span><span class="p">[</span><span class="s">&#39;under5mort&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">median</span><span class="p">()</span>
 
-<span class="k">print</span> <span class="s">&quot;Dataframe after centering Mean years in school&quot;</span>
-<span class="k">print</span> <span class="n">sub1</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+<span class="c"># create u5_abovemedian variable (value = 1 if under5mort &gt; under5median, othervise value = 0)</span>
+<span class="k">def</span> <span class="nf">u5_abovemedian</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="s">&#39;under5mort&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">under5median</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
+<span class="n">sub1</span><span class="p">[</span><span class="s">&#39;u5_abovemedian&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sub1</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">u5_abovemedian</span><span class="p">(</span><span class="n">row</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
-<span class="c"># Regression model for schooling of women and child mortality</span>
-<span class="k">print</span> <span class="s">&quot;OLS regression model for the association between schooling of women and child mortality rate&quot;</span>
-<span class="n">model1</span> <span class="o">=</span> <span class="n">smf</span><span class="o">.</span><span class="n">ols</span><span class="p">(</span><span class="s">&#39;under5mort ~ womenschool&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">sub1</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="c"># logistic regression model for female education and child mortality</span>
+<span class="k">print</span> <span class="s">&quot;Logistic regression model for the association between female education and child mortality rate&quot;</span>
+<span class="n">model1</span> <span class="o">=</span> <span class="n">smf</span><span class="o">.</span><span class="n">logit</span><span class="p">(</span><span class="s">&#39;u5_abovemedian ~ c_womenschool&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">sub1</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
 <span class="k">print</span> <span class="n">model1</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+<span class="k">print</span> <span class="s">&quot;&quot;</span>
 
-<span class="c"># scatterplot</span>
-<span class="n">fig</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span> <span class="mi">80</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">)</span>
-<span class="n">seaborn</span><span class="o">.</span><span class="n">regplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s">&#39;womenschool&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s">&#39;under5mort&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">sub1</span><span class="p">,</span> <span class="n">scatter</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;Mean years of schooling for women&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;Under-five mortality rate (per 1,000 live births)&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Scatterplot for the association between Child mortality rate and Mean years of schooling for women&#39;</span><span class="p">);</span>
+<span class="c"># odds ratios</span>
+<span class="k">print</span> <span class="s">&quot;Odds Ratios&quot;</span>
+<span class="k">print</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">model1</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
+<span class="k">print</span> <span class="s">&quot;&quot;</span>
+
+<span class="c"># odd ratios with 95% confidence intervals</span>
+<span class="k">print</span> <span class="s">&quot;Odds ratios with 95</span><span class="si">% c</span><span class="s">onfidence intervals&quot;</span>
+<span class="n">params</span> <span class="o">=</span> <span class="n">model1</span><span class="o">.</span><span class="n">params</span>
+<span class="n">conf</span> <span class="o">=</span> <span class="n">model1</span><span class="o">.</span><span class="n">conf_int</span><span class="p">()</span>
+<span class="n">conf</span><span class="p">[</span><span class="s">&#39;OR&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">params</span>
+<span class="n">conf</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;Lower CI&#39;</span><span class="p">,</span> <span class="s">&#39;Upper CI&#39;</span><span class="p">,</span> <span class="s">&#39;OR&#39;</span><span class="p">]</span>
+<span class="k">print</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">conf</span><span class="p">)</span>
+
+<span class="c"># logistic regression model with female education and income per person</span>
+<span class="n">model4</span> <span class="o">=</span> <span class="n">smf</span><span class="o">.</span><span class="n">logit</span><span class="p">(</span><span class="s">&#39;u5_abovemedian ~ c_womenschool + c_incomeperperson&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">sub1</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="k">print</span> <span class="n">model4</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+<span class="k">print</span> <span class="s">&quot;&quot;</span>
+
+<span class="c"># odds ratios</span>
+<span class="k">print</span> <span class="s">&quot;Odds Ratios&quot;</span>
+<span class="k">print</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">model4</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
+<span class="k">print</span> <span class="s">&quot;&quot;</span>
+
+<span class="c"># odd ratios with 95% confidence intervals</span>
+<span class="k">print</span> <span class="s">&quot;Odds ratios with 95</span><span class="si">% c</span><span class="s">onfidence intervals&quot;</span>
+<span class="n">params</span> <span class="o">=</span> <span class="n">model4</span><span class="o">.</span><span class="n">params</span>
+<span class="n">conf</span> <span class="o">=</span> <span class="n">model4</span><span class="o">.</span><span class="n">conf_int</span><span class="p">()</span>
+<span class="n">conf</span><span class="p">[</span><span class="s">&#39;OR&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">params</span>
+<span class="n">conf</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;Lower CI&#39;</span><span class="p">,</span> <span class="s">&#39;Upper CI&#39;</span><span class="p">,</span> <span class="s">&#39;OR&#39;</span><span class="p">]</span>
+<span class="k">print</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">conf</span><span class="p">)</span>
+
+<span class="c"># logistic regression model with female education and expenditure on health</span>
+<span class="n">model5</span> <span class="o">=</span> <span class="n">smf</span><span class="o">.</span><span class="n">logit</span><span class="p">(</span><span class="s">&#39;u5_abovemedian ~ c_womenschool + c_healthexpend&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">sub1</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="k">print</span> <span class="n">model5</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+<span class="k">print</span> <span class="s">&quot;&quot;</span>
+
+<span class="c"># odds ratios</span>
+<span class="k">print</span> <span class="s">&quot;Odds Ratios&quot;</span>
+<span class="k">print</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">model5</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
+<span class="k">print</span> <span class="s">&quot;&quot;</span>
+
+<span class="c"># odd ratios with 95% confidence intervals</span>
+<span class="k">print</span> <span class="s">&quot;Odds ratios with 95</span><span class="si">% c</span><span class="s">onfidence intervals&quot;</span>
+<span class="n">params</span> <span class="o">=</span> <span class="n">model5</span><span class="o">.</span><span class="n">params</span>
+<span class="n">conf</span> <span class="o">=</span> <span class="n">model5</span><span class="o">.</span><span class="n">conf_int</span><span class="p">()</span>
+<span class="n">conf</span><span class="p">[</span><span class="s">&#39;OR&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">params</span>
+<span class="n">conf</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;Lower CI&#39;</span><span class="p">,</span> <span class="s">&#39;Upper CI&#39;</span><span class="p">,</span> <span class="s">&#39;OR&#39;</span><span class="p">]</span>
+<span class="k">print</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">conf</span><span class="p">)</span>
+
+<span class="c"># logistic regression model with female education, income per person and expenditure on health</span>
+<span class="n">model6</span> <span class="o">=</span> <span class="n">smf</span><span class="o">.</span><span class="n">logit</span><span class="p">(</span><span class="s">&#39;u5_abovemedian ~ c_womenschool + c_incomeperperson + c_healthexpend&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">sub1</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="k">print</span> <span class="n">model6</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+<span class="k">print</span> <span class="s">&quot;&quot;</span>
+
+<span class="c"># odds ratios</span>
+<span class="k">print</span> <span class="s">&quot;Odds Ratios&quot;</span>
+<span class="k">print</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">model6</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
+<span class="k">print</span> <span class="s">&quot;&quot;</span>
+
+<span class="c"># odd ratios with 95% confidence intervals</span>
+<span class="k">print</span> <span class="s">&quot;Odds ratios with 95</span><span class="si">% c</span><span class="s">onfidence intervals&quot;</span>
+<span class="n">params</span> <span class="o">=</span> <span class="n">model6</span><span class="o">.</span><span class="n">params</span>
+<span class="n">conf</span> <span class="o">=</span> <span class="n">model6</span><span class="o">.</span><span class="n">conf_int</span><span class="p">()</span>
+<span class="n">conf</span><span class="p">[</span><span class="s">&#39;OR&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">params</span>
+<span class="n">conf</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;Lower CI&#39;</span><span class="p">,</span> <span class="s">&#39;Upper CI&#39;</span><span class="p">,</span> <span class="s">&#39;OR&#39;</span><span class="p">]</span>
+<span class="k">print</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">conf</span><span class="p">)</span>
 </pre></div></div>
         <hr />
     </div>
 		
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="https://ernogolya.github.io/multiple_regression/"><h2>Regression Modeling in Practice: Multiple Regression Model</h2></a>
+        <div class= "well small"> v 21 augusztus 2016
+
+by <a class="url fn" href="https://ernogolya.github.io/author/erno-golya.html">Ernő Gólya</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>The results of my linear regression model indicated that the level of female education in a country was significantly and negatively associated with the number of children dying under the age of five. But what other variables might explain more of this association and the variability in child mortality?</p> <a class="btn btn-info xsmall" href="https://ernogolya.github.io/multiple_regression/">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="https://ernogolya.github.io/basic_linear_regression/"><h2>Regression Modeling in Practice: Basic Linear Regression Model</h2></a>
+        <div class= "well small"> h 15 augusztus 2016
+
+by <a class="url fn" href="https://ernogolya.github.io/author/erno-golya.html">Ernő Gólya</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>This time I will test and interpret this relationship using basic linear regression analysis for the two variable. Simple linear regression is a statistical method that allows us to describe data and explain the relationship between two quantitative variables</p> <a class="btn btn-info xsmall" href="https://ernogolya.github.io/basic_linear_regression/">read more</a></div>
+    </div>	
+				
 
  
         
@@ -217,8 +390,7 @@ by <a class="url fn" href="https://ernogolya.github.io/author/erno-golya.html">E
 
 
  </div>
-        <div class="summary"><p>The data set I use for the <a href="https://www.coursera.org/specializations/data-analysis">Data Analysis and Interpretation Specialization</a> courses by Wesleyan University is an excerpt of the data available at the <a href="https://www.gapminder.org">Gapminder</a> site.<br />
-Gapminder is a non-profit foundation promoting sustainable global development and achievement of the United Nations Millennium Development Goals. The indicators collected here provide ...</p> <a class="btn btn-info xsmall" href="https://ernogolya.github.io/describing_data/">read more</a></div>
+        <div class="summary"><p>My sample provides values for under-five child mortality rate (used as response variable), mean years in school for women, per capita total expenditure on health and income per person (explanatory variables, moderators) for 167 countries from 2009 and 2010.</p> <a class="btn btn-info xsmall" href="https://ernogolya.github.io/describing_data/">read more</a></div>
     </div>	
 				
 
@@ -228,51 +400,15 @@ Gapminder is a non-profit foundation promoting sustainable global development an
  
 
     <div class='article'>
-        <a href="https://ernogolya.github.io/creating-graphs-for-your-data/"><h2>Data Management & Visualization: Creating Graphs for Your Data</h2></a>
-        <div class= "well small"> cs 28 július 2016
+        <a href="https://ernogolya.github.io/chi-square-test-of-independence/"><h2>Chi-Square Test of Independence</h2></a>
+        <div class= "well small"> k 02 augusztus 2016
 
 by <a class="url fn" href="https://ernogolya.github.io/author/erno-golya.html">Ernő Gólya</a>
  
 
 
  </div>
-        <div class="summary"><p>After implementing useful data management decisions, it is time to create visual representations of our data that help us better display our findings by graphing the variables we study. According to this week's assignment I use visual tools to display the variables and the relationships between them.</p> <a class="btn btn-info xsmall" href="https://ernogolya.github.io/creating-graphs-for-your-data/">read more</a></div>
-    </div>	
-				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="https://ernogolya.github.io/making-data-management-decisions/"><h2>Data Management & Visualization: Making Data Management Decisions</h2></a>
-        <div class= "well small"> k 26 július 2016
-
-by <a class="url fn" href="https://ernogolya.github.io/author/erno-golya.html">Ernő Gólya</a>
- 
-
-
- </div>
-        <div class="summary"><p>The following Python code is an example of how to make and implement data management decisions. In the previous assignment I already created categories for the relevant variables, as the dataset I study mostly have continuous data. I revise and alter some of the categories to be more similar to those used by World Bank and WHO.</p> <a class="btn btn-info xsmall" href="https://ernogolya.github.io/making-data-management-decisions/">read more</a></div>
-    </div>	
-				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="https://ernogolya.github.io/refining-research-question/"><h2>Data Management & Visualization: Refining Research Question by Selecting Rows</h2></a>
-        <div class= "well small"> szo 23 július 2016
-
-by <a class="url fn" href="https://ernogolya.github.io/author/erno-golya.html">Ernő Gólya</a>
- 
-
-
- </div>
-        <div class="summary"><p>This is an example of narrowing down the original dataframe to a subset of rows that meet a certain criteria. In this case the frequency analysis revealed that 68.86% of the countries in the dataframe fell into the lowest (artificial) category of the Income per person variable.</p> <a class="btn btn-info xsmall" href="https://ernogolya.github.io/refining-research-question/">read more</a></div>
+        <div class="summary"><p>A Chi-Square Test of Independence compares frequencies of one categorical variable for different values of a second categorical variable. The null hypothesis is that the relative proportions of one variable are independent of the second variable. The alternate hypothesis is that the relative proportions of one variable are associated with the second variable.</p> <a class="btn btn-info xsmall" href="https://ernogolya.github.io/chi-square-test-of-independence/">read more</a></div>
     </div>	
 				
 <div class="pagination">

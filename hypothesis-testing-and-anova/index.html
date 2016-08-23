@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>ernogolya - Hypothesis Testing and ANOVA</title>
+    <meta name="description" content="">
+    <meta name="author" content="Ernő Gólya">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="https://ernogolya.github.io/theme/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="https://ernogolya.github.io/theme/bootstrap.min.css" rel="stylesheet">
+    <link href="https://ernogolya.github.io/theme/bootstrap.min.responsive.css" rel="stylesheet">
+    <link href="https://ernogolya.github.io/theme/local.css" rel="stylesheet">
+    <link href="https://ernogolya.github.io/theme/pygments.css" rel="stylesheet">
+
+    <!-- So Firefox can bookmark->"abo this site" -->
+
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="navbar-inner">
+    <div class="container">
+
+         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+         </a>
+
+        <a class="brand" href="https://ernogolya.github.io">ernogolya</a>
+
+        <div class="nav-collapse">
+        <ul class="nav">
+            
+            <li><a href="https://ernogolya.github.io/pages/about/">About</a></li>
+        </ul>
+        </div>
+        
+    </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="content">
+    <div class="row">
+
+        <div class="span9">
+    <div class='article'>
+        <div class="content-title">
+            <h1>Hypothesis Testing and ANOVA</h1>
+h 01 augusztus 2016
+
+by <a class="url fn" href="https://ernogolya.github.io/author/erno-golya.html">Ernő Gólya</a>
+ 
+
+
+        </div>
+	
+        <div><p>This is part of my coursework for the Data Analysis Tools course by Wesleyan University on Coursera. Week 1 assignment is to run an analysis of variance. Analyze and interpret post hoc paired comparisons in instances where the original statistical test was significant, and we were examining more than two groups.
+Data source: <a href="https://www.gapminder.org/data/">Gapminder World</a>.</p>
+<p>Original research question: What is the correlation between child mortality and female education?</p>
+<p>After selecting a data set and research question, managing our variables of interest and visualizing their relationship graphically (<a href="/selecting-a-research-question/">Data Management and Visualization</a> coursework), it is time to test those relationships statistically. The first assignment deals with analysis of variance. Analysis of variance assesses whether the means of two or more groups are statistically different from each other. This analysis is appropriate whenever we want to compare the means (quantitative variables) of groups (categorical variables). The null hypothesis is that there is no difference in the mean of the quantitative variable across groups (categorical variable),
+while the alternative is that there is a difference.</p>
+<p><strong><u>Null Hypothesis:</u></strong> There is no association between the average amount of time (years) women spend in schools and the under-five child mortality rate in a country.</p>
+<p><strong><u>Alternate Hypothesis:</u></strong> There is an association between the average amount of time (years) women spend in schools and the under-five child mortality rate in a given country.</p>
+<h2>Categorizing the explanatory variable</h2>
+<p>Both response variable (under-five child mortality per 1,000 live births) and explanatory variable (mean years of schooling for women) are quantitative variables. In order to perform an Analysis of Variance (ANOVA) test, I had to create categories for the explanatory variable (womenschool -&gt; womenschool_cat): 0-4 years, 4-8 years, 8-12 years, 12-16 years.</p>
+<h2>Model Interpretation for ANOVA</h2>
+<p>When examining the association between under-five child mortality rate (quantitative response) and mean years of schooling for women categories, an Analysis of Variance (ANOVA) revealed that there are significant differencies in child mortality rates among countries that fell into different categories of average years of schooling for women (see graph for visual presentation and OLS regression results below).</p>
+<p><strong>Means for under5mort by Schooling of Women</strong><br />
+<code>womenschool_cat</code>    <code>under5mort</code><br />
+0-4 years                    104.822222<br />
+4-8 years                      68.517647<br />
+8-12 years                    23.855882<br />
+12-16 years                    8.132353</p>
+<p><strong>Standard deviations for under5mort by Schooling of Women</strong><br />
+<code>womenschool_cat</code>    <code>under5mort</code><br />
+0-4 years                    29.084574<br />
+4-8 years                    45.223790<br />
+8-12 years                  21.431358<br />
+12-16 years                  5.206739</p>
+<p><img alt="boxplot_anova" src="https://ernogolya.github.io/images/DataAnalysisTools/boxplot_anova.png" /></p>
+<p>Countries with higher female education scores demonstrated lower child mortality rate with an F(3, 150) = 68.49 and a p-value of 5.92e-28. The probability of the between-categories mean square being 68.49 times the within-categories mean square, if the null hypothesis is true, is p&lt;.0001.</p>
+<p>The p-value is well below our significance level of 0.05. It would be quite unlikely to have F-value this large if there were no real difference among the means. Therefore it implies that we can  reject the null hypothesis and take on the alternate hypothesis as valid, concluding that child mortality rate and the level of female education are significantly associated.</p>
+<div class="highlight"><pre>                                OLS Regression Results                            
+    ==============================================================================
+    Dep. Variable:             under5mort   R-squared:                       0.578
+    Model:                            OLS   Adj. R-squared:                  0.570
+    Method:                 Least Squares   F-statistic:                     68.49
+    Date:                Mon, 01 Aug 2016   Prob (F-statistic):           5.92e-28
+    Time:                        11:19:18   Log-Likelihood:                -726.94
+    No. Observations:                 154   AIC:                             1462.
+    Df Residuals:                     150   BIC:                             1474.
+    Df Model:                           3                                         
+    Covariance Type:            nonrobust                                         
+    =====================================================================================================
+                                            coef    std err          t      P&gt;|t|      [95.0% Conf. Int.]
+    -----------------------------------------------------------------------------------------------------
+    Intercept                           104.8222      6.485     16.164      0.000        92.009   117.635
+    C(womenschool_cat)[T.4-8 years]     -36.3046      8.020     -4.527      0.000       -52.151   -20.459
+    C(womenschool_cat)[T.8-12 years]    -80.9663      7.293    -11.102      0.000       -95.376   -66.557
+    C(womenschool_cat)[T.12-16 years]   -96.6899      8.020    -12.057      0.000      -112.536   -80.844
+    ==============================================================================
+    Omnibus:                       67.145   Durbin-Watson:                   2.205
+    Prob(Omnibus):                  0.000   Jarque-Bera (JB):              276.775
+    Skew:                           1.595   Prob(JB):                     7.93e-61
+    Kurtosis:                       8.741   Cond. No.                         6.98
+    ==============================================================================
+
+    Warnings:
+    [1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+</pre></div>
+
+
+<h2>Model Interpretation for post hoc ANOVA results</h2>
+<p>ANOVA revealed that the categories for the explanatory variable were significantly associated to the quantitative response variable. This rules out the null hypothesis that the variables are no different (all means equal) and shows that there is, in fact, a difference between the means. As the ANOVA test shows that the means aren’t all equal, our next step is to determine which means are different, to our level of significance.</p>
+<p>The post hoc comparisons of mean (performed through the Tukey HSD test) shows all comparisons reporting statistically significant difference. In every case the reject = True result implies that we can disapprove the null hypothesis for the education levels compared to each other and accept the alternate hypothesis that group means are significantly different.</p>
+<div class="highlight"><pre>        Multiple Comparison of Means - Tukey HSD,FWER=0.05    
+    ==========================================================
+       group1      group2   meandiff   lower    upper   reject
+    ----------------------------------------------------------
+     0-4 years  12-16 years -96.6899 -117.5267 -75.853   True 
+     0-4 years   4-8 years  -36.3046  -57.1414 -15.4677  True 
+     0-4 years   8-12 years -80.9663  -99.9144 -62.0183  True 
+    12-16 years  4-8 years  60.3853    43.048  77.7226   True 
+    12-16 years  8-12 years 15.7235    0.709   30.7381   True 
+     4-8 years   8-12 years -44.6618  -59.6763 -29.6472  True 
+    ----------------------------------------------------------
+</pre></div>
+
+
+<h3>Python source code</h3>
+<div class="highlight"><pre><span class="c"># -*- coding: utf-8 -*-</span>
+<span class="c"># Created on 01/08/2016</span>
+<span class="c"># Author Ernő Gólya</span>
+
+<span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+<span class="c"># Import libraries</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">statsmodels.formula.api</span> <span class="kn">as</span> <span class="nn">smf</span>
+<span class="kn">import</span> <span class="nn">statsmodels.stats.multicomp</span> <span class="kn">as</span> <span class="nn">multi</span>
+
+<span class="c"># Reading in data file</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">&#39;custom_gapminder_2.csv&#39;</span><span class="p">,</span> <span class="n">low_memory</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+<span class="c"># Setting variables to numeric</span>
+<span class="n">data</span><span class="p">[</span><span class="s">&quot;incomeperperson&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;incomeperperson&quot;</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;coerce&#39;</span><span class="p">)</span>
+<span class="n">data</span><span class="p">[</span><span class="s">&quot;under5mort&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;under5mort&quot;</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;coerce&#39;</span><span class="p">)</span>
+<span class="n">data</span><span class="p">[</span><span class="s">&quot;womenschool&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;womenschool&quot;</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;coerce&#39;</span><span class="p">)</span>
+<span class="n">data</span><span class="p">[</span><span class="s">&quot;healthexpend&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;healthexpend&quot;</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;coerce&#39;</span><span class="p">)</span>
+
+<span class="c"># Remove observations with NaN values in any variables of interest</span>
+<span class="c"># Describe function returns NaN for percentiles if dataset contains NaN </span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+
+<span class="c"># Creating categories for quantitative variables</span>
+<span class="n">data</span><span class="p">[</span><span class="s">&quot;incomeperperson_cat&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">incomeperperson</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">4000</span><span class="p">,</span> <span class="mi">12000</span><span class="p">,</span> <span class="mi">65000</span><span class="p">],</span> <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;Low&quot;</span><span class="p">,</span> <span class="s">&quot;Lower middle&quot;</span><span class="p">,</span> <span class="s">&quot;Upper middle&quot;</span><span class="p">,</span> <span class="s">&quot;High&quot;</span> <span class="p">])</span>
+<span class="n">data</span><span class="p">[</span><span class="s">&quot;under5mort_cat&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">under5mort</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="mi">220</span><span class="p">],</span> <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;0-40&quot;</span><span class="p">,</span><span class="s">&quot;40-80&quot;</span><span class="p">,</span> <span class="s">&quot;80-120&quot;</span><span class="p">,</span> <span class="s">&quot;120-160&quot;</span><span class="p">,</span> <span class="s">&quot;160-220&quot;</span><span class="p">])</span>
+<span class="n">data</span><span class="p">[</span><span class="s">&quot;womenschool_cat&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">womenschool</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">16</span><span class="p">],</span> <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;0-4 years&quot;</span><span class="p">,</span> <span class="s">&quot;4-8 years&quot;</span><span class="p">,</span> <span class="s">&quot;8-12 years&quot;</span><span class="p">,</span> <span class="s">&quot;12-16 years&quot;</span><span class="p">])</span>
+<span class="n">data</span><span class="p">[</span><span class="s">&quot;healthexpend_cat&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">healthexpend</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span> <span class="mi">5000</span><span class="p">,</span> <span class="mi">9000</span><span class="p">],</span> <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;1-500&quot;</span><span class="p">,</span> <span class="s">&quot;500-1000&quot;</span><span class="p">,</span> <span class="s">&quot;1000-2000&quot;</span><span class="p">,</span> <span class="s">&quot;2000-5000&quot;</span><span class="p">,</span> <span class="s">&quot;5000-9000&quot;</span><span class="p">])</span>
+
+<span class="c"># Creating subgrup for child mortality (quantitative) and mean years in school (categories)</span>
+<span class="n">sub1</span> <span class="o">=</span> <span class="n">data</span><span class="p">[[</span><span class="s">&#39;under5mort&#39;</span><span class="p">,</span> <span class="s">&#39;womenschool_cat&#39;</span><span class="p">]]</span>
+
+<span class="c"># Show frequency table for mean years in school categories</span>
+<span class="k">print</span> <span class="s">&quot;Frequency table for Schooling of Women&quot;</span>
+<span class="n">c1</span> <span class="o">=</span> <span class="n">sub1</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s">&#39;womenschool_cat&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
+<span class="k">print</span> <span class="n">c1</span>
+<span class="k">print</span> <span class="s">&quot;&quot;</span>
+
+<span class="c"># Using ols function for calculating the F-statistic and associated p value</span>
+<span class="n">model1</span> <span class="o">=</span> <span class="n">smf</span><span class="o">.</span><span class="n">ols</span><span class="p">(</span><span class="n">formula</span><span class="o">=</span><span class="s">&#39;under5mort ~ C(womenschool_cat)&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">sub1</span><span class="p">)</span>
+<span class="n">result1</span> <span class="o">=</span> <span class="n">model1</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="k">print</span> <span class="n">result1</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+<span class="k">print</span> <span class="s">&quot;&quot;</span>
+
+<span class="c"># Print means</span>
+<span class="k">print</span> <span class="s">&quot;Means for under5mort by Schooling of Women&quot;</span>
+<span class="n">m1</span><span class="o">=</span> <span class="n">sub1</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s">&#39;womenschool_cat&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="k">print</span> <span class="n">m1</span>
+<span class="k">print</span> <span class="s">&quot;&quot;</span>
+
+<span class="c"># Print standard deviations</span>
+<span class="k">print</span> <span class="s">&quot;Standard deviations for under5mort by Schooling of Women&quot;</span>
+<span class="n">sd1</span><span class="o">=</span> <span class="n">sub1</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s">&#39;womenschool_cat&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+<span class="k">print</span> <span class="n">sd1</span>
+<span class="k">print</span> <span class="s">&quot;&quot;</span>
+
+<span class="c"># Perform post-hoc analysis</span>
+<span class="n">mc1</span> <span class="o">=</span> <span class="n">multi</span><span class="o">.</span><span class="n">MultiComparison</span><span class="p">(</span><span class="n">sub1</span><span class="p">[</span><span class="s">&#39;under5mort&#39;</span><span class="p">],</span> <span class="n">sub1</span><span class="p">[</span><span class="s">&#39;womenschool_cat&#39;</span><span class="p">])</span>
+<span class="n">result2</span> <span class="o">=</span> <span class="n">mc1</span><span class="o">.</span><span class="n">tukeyhsd</span><span class="p">()</span>
+<span class="k">print</span> <span class="n">result2</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+
+<span class="c"># Plotting bivariate distributions</span>
+<span class="n">sub1</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s">&#39;under5mort&#39;</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="s">&#39;womenschool_cat&#39;</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="n">layout</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">showmeans</span><span class="o">=</span><span class="bp">True</span><span class="p">);</span>
+</pre></div></div>
+	
+        <hr>
+
+    </div>
+        </div>
+        
+        <div class="span3">
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Site
+                </li>
+            
+                <li><a href="https://ernogolya.github.io/archives.html">Archives</a>
+                <li><a href="https://ernogolya.github.io/tags.html">Tags</a>
+
+
+
+
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Categories
+                </li>
+                
+                <li><a href="https://ernogolya.github.io/category/data-science.html">Data Science</a></li>
+                   
+            </ul>
+            </div>
+
+
+
+
+
+        </div>  
+    </div>     </div> 
+<footer>
+<br />
+<p><a href="https://ernogolya.github.io">ernogolya</a> &copy; Ernő Gólya 2016</p>
+</footer>
+
+</div> <!-- /container -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="https://ernogolya.github.io/theme/bootstrap-collapse.js"></script>
+ 
+</body>
+</html>

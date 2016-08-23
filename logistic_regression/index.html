@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>ernogolya</title>
+    <title>ernogolya - Regression Modeling in Practice: Logistic Regression Model</title>
     <meta name="description" content="">
     <meta name="author" content="Ernő Gólya">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -52,23 +52,17 @@
     <div class="row">
 
         <div class="span9">
-        
-
-        
-
-
     <div class='article'>
         <div class="content-title">
-            <a href="https://ernogolya.github.io/logistic_regression/"><h1>Regression Modeling in Practice: Logistic Regression Model</h1></a>
+            <h1>Regression Modeling in Practice: Logistic Regression Model</h1>
 h 22 augusztus 2016
 
 by <a class="url fn" href="https://ernogolya.github.io/author/erno-golya.html">Ernő Gólya</a>
  
 
 
- 
         </div>
-        
+	
         <div><p>Logistic regression is another form of the linear regression model, so the basic idea is the same as a multiple regression analysis. But, unlike the multiple regression model, the logistic regression model is designed to test binary response variables. We can use a logistic regression model, including using odds ratios and confidence intervals to determine the magnitude of the association between our explanatory variables and response variable.</p>
 <p>Our research question is, whether there is a relationship between the female education level and the under-5 child mortality rate (U5MR) of a country. Additionally, we would also like to find out how other factors, such as income per person and total expenditure on health, can potentionally modify this relationship. Because we are using a logistic regression model this time, the response variable needs to be binary (categorical with 2 categories). As child mortality rate is a quantitative response variable, we will have to bin it into 2 categories. The child mortality frequency distribution of the countries is skewed to the right so we will use the global median of the under5mort variable for the comparison.</p>
 <p><strong>under5mort:</strong><br />
@@ -336,94 +330,10 @@ Here we have an example of confounding. Income per person and total expenditure 
 <span class="n">conf</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;Lower CI&#39;</span><span class="p">,</span> <span class="s">&#39;Upper CI&#39;</span><span class="p">,</span> <span class="s">&#39;OR&#39;</span><span class="p">]</span>
 <span class="k">print</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">conf</span><span class="p">)</span>
 </pre></div></div>
-        <hr />
+	
+        <hr>
+
     </div>
-		
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="https://ernogolya.github.io/multiple_regression/"><h2>Regression Modeling in Practice: Multiple Regression Model</h2></a>
-        <div class= "well small"> v 21 augusztus 2016
-
-by <a class="url fn" href="https://ernogolya.github.io/author/erno-golya.html">Ernő Gólya</a>
- 
-
-
- </div>
-        <div class="summary"><p>The results of my linear regression model indicated that the level of female education in a country was significantly and negatively associated with the number of children dying under the age of five. But what other variables might explain more of this association and the variability in child mortality?</p> <a class="btn btn-info xsmall" href="https://ernogolya.github.io/multiple_regression/">read more</a></div>
-    </div>	
-				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="https://ernogolya.github.io/basic_linear_regression/"><h2>Regression Modeling in Practice: Basic Linear Regression Model</h2></a>
-        <div class= "well small"> h 15 augusztus 2016
-
-by <a class="url fn" href="https://ernogolya.github.io/author/erno-golya.html">Ernő Gólya</a>
- 
-
-
- </div>
-        <div class="summary"><p>This time I will test and interpret this relationship using basic linear regression analysis for the two variable. Simple linear regression is a statistical method that allows us to describe data and explain the relationship between two quantitative variables</p> <a class="btn btn-info xsmall" href="https://ernogolya.github.io/basic_linear_regression/">read more</a></div>
-    </div>	
-				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="https://ernogolya.github.io/describing_data/"><h2>Regression Modeling in Practice: Describing Data</h2></a>
-        <div class= "well small"> v 07 augusztus 2016
-
-by <a class="url fn" href="https://ernogolya.github.io/author/erno-golya.html">Ernő Gólya</a>
- 
-
-
- </div>
-        <div class="summary"><p>My sample provides values for under-five child mortality rate (used as response variable), mean years in school for women, per capita total expenditure on health and income per person (explanatory variables, moderators) for 167 countries from 2009 and 2010.</p> <a class="btn btn-info xsmall" href="https://ernogolya.github.io/describing_data/">read more</a></div>
-    </div>	
-				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="https://ernogolya.github.io/chi-square-test-of-independence/"><h2>Chi-Square Test of Independence</h2></a>
-        <div class= "well small"> k 02 augusztus 2016
-
-by <a class="url fn" href="https://ernogolya.github.io/author/erno-golya.html">Ernő Gólya</a>
- 
-
-
- </div>
-        <div class="summary"><p>A Chi-Square Test of Independence compares frequencies of one categorical variable for different values of a second categorical variable. The null hypothesis is that the relative proportions of one variable are independent of the second variable. The alternate hypothesis is that the relative proportions of one variable are associated with the second variable.</p> <a class="btn btn-info xsmall" href="https://ernogolya.github.io/chi-square-test-of-independence/">read more</a></div>
-    </div>	
-				
-<div class="pagination">
-<ul>
-    <li class="prev disabled"><a href="#">&larr; Previous</a></li>
-
-    <li class="active"><a href="https://ernogolya.github.io/index.html">1</a></li>
-    <li class=""><a href="https://ernogolya.github.io/index2.html">2</a></li>
-
-    <li class="next"><a href="https://ernogolya.github.io/index2.html">Next &rarr;</a></li>
-
-</ul>
-</div>
- 
-  
         </div>
         
         <div class="span3">

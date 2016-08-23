@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>ernogolya - Chi-Square Test of Independence</title>
+    <meta name="description" content="">
+    <meta name="author" content="Ernő Gólya">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="https://ernogolya.github.io/theme/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="https://ernogolya.github.io/theme/bootstrap.min.css" rel="stylesheet">
+    <link href="https://ernogolya.github.io/theme/bootstrap.min.responsive.css" rel="stylesheet">
+    <link href="https://ernogolya.github.io/theme/local.css" rel="stylesheet">
+    <link href="https://ernogolya.github.io/theme/pygments.css" rel="stylesheet">
+
+    <!-- So Firefox can bookmark->"abo this site" -->
+
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="navbar-inner">
+    <div class="container">
+
+         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+         </a>
+
+        <a class="brand" href="https://ernogolya.github.io">ernogolya</a>
+
+        <div class="nav-collapse">
+        <ul class="nav">
+            
+            <li><a href="https://ernogolya.github.io/pages/about/">About</a></li>
+        </ul>
+        </div>
+        
+    </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="content">
+    <div class="row">
+
+        <div class="span9">
+    <div class='article'>
+        <div class="content-title">
+            <h1>Chi-Square Test of Independence</h1>
+k 02 augusztus 2016
+
+by <a class="url fn" href="https://ernogolya.github.io/author/erno-golya.html">Ernő Gólya</a>
+ 
+
+
+        </div>
+	
+        <div><p>This is part of my coursework for the Data Analysis Tools course by Wesleyan University on Coursera. Week 2 assignment: Run a Chi-Square Test of Independence. Analyze and interpret post hoc paired comparisons in instances where the original statistical test was significant, and we were examining more than two groups.</p>
+<p>Data source: <a href="https://www.gapminder.org/data">Gapminder World</a>.</p>
+<p>This assignment deals with the Chi-Square Test of Independence. A Chi-Square Test of Independence compares frequencies of one categorical
+variable for different values of a second categorical variable. The null hypothesis is that the relative proportions of one variable are independent of the second variable. The alternate hypothesis is that the relative proportions of one variable are associated with the second variable.</p>
+<p>I'am interested in whether there is a relationship between the income level and the under-5 child mortality rate (U5MR) of a country. More specifically I want to analyze how the proportion of the countries with a value of under-five child mortality rate above the global median (19.5) varies among the World Bank income groups (low, lower-middle, upper-middle, and high) of countries.</p>
+<p>As the child mortality frequency distribution of the countries is skewed to the right I will use the global median of the under5mort variable for the comparison.</p>
+<p><strong><u>Null Hypothesis:</u></strong> There is no association between the income level category and the under-five child mortality rate in a country
+being higher (or lower) than the median of all countries.</p>
+<p><strong><u>Alternate Hypothesis:</u></strong> There is an association between the income level category and the under-five child mortality rate in a country being higher (or lower) than the median of all countries.</p>
+<h3>Categorizing the variables</h3>
+<p>The data set contains 154 countries. Both under5mort and incomeperperson are quantitative variables. In order to be able to run a Chi-Square Test I create categories for these indicators.</p>
+<p><strong>incomeperperson:</strong><br />
+low: 1-1,005 US$<br />
+lower-middle: 1,006-3,975 US$<br />
+upper-middle: 3,976-12,275 US$<br />
+high: &gt; 12,275 US$</p>
+<p><strong>under5mort:</strong><br />
+0: under5mort &lt;= 19.5 (median of U5MR rates of 154 countries)<br />
+1: under5mort &gt; 19.5 (median of U5MR rates of 154 countries)</p>
+<h2>Model Interpretation for Chi-Square Test</h2>
+<p>When examining the association between under-five child mortality, represented as "u5_abovemedian" (categorical response) and GDP level of
+country, represented as "incomeperperson_cat"  (categorical explanatory), a chi-square test of independence revealed that among 154 countries in the data set, those with high GDP per capita having no under-five child mortality rate above the average (median) value of all the countries  (0.00 %), compared to countries in the upper-middle income group (17.24%),  lower-middle income group (54%) or low income group (97.8%), X2=83.85, df=3, p=4.5694326276298282e-18.</p>
+<p>The low p-value suggests that there is association between the two variables. By running post hoc Chi-Square tests we can find in which comparisons we can reject the null hypothesis.</p>
+<p>The df or degree of freedom we record is the number of levels of the explanatory variable -1. Here the df is 3 income per person which has 4 levels (df 4-1=3).</p>
+<h4>Contingency table</h4>
+<div class="highlight"><pre>incomeperperson_cat  Low  Lower middle  Upper middle  High
+u5_abovemedian                                            
+0                      1            23            24    29
+1                     45            27             5     0
+</pre></div>
+
+
+<h4>Observed counts</h4>
+<div class="highlight"><pre>incomeperperson_cat       Low  Lower middle  Upper middle  High
+u5_abovemedian                                                 
+0                    0.021739          0.46      0.827586   1.0
+1                    0.978261          0.54      0.172414   0.0
+</pre></div>
+
+
+<h4>Chi-Square test</h4>
+<div class="highlight"><pre>chi-square value, p value, expected counts
+(83.855232383808101, 4.5694326276298282e-18, 3, array([[ 23. ,  25. ,  14.5,  14.5],
+       [ 23. ,  25. ,  14.5,  14.5]]))
+</pre></div>
+
+
+<h4>Factor plot for the variables</h4>
+<p><img alt="chi-factorplot" src="https://ernogolya.github.io/images/DataAnalysisTools/chi-factorplot.png" /></p>
+<h2>Model Interpretation for post hoc Chi-Square Test results</h2>
+<p>A Chi-Square test of independence revealed that among 154 countries the income per person level of the country and under-five child mortality
+rate were significantly associated, X2=83.85, df=3, p=4.5694326276298282e-18.</p>
+<p>Post hoc comparisons of GDP levels, by pairs of under-five mortality categories revealed that countries with higher GDP per capita reported lower score of child mortality. The negative relationship between income level and child mortality was proven in almost all of the comparison
+tests (the p value in almost each test was lower than 0.008, i.e. p value after the Bonferroni correction) with one exception. Child mortality rate was statistically similar between the Upper middle and High income groups (X2=3.5, df=1, p=0.06).</p>
+<p>Bonferroni adjusted p-value for 6 comparisons: p = 0.05/6 = 0.008.</p>
+<div class="highlight"><pre>    Contingency table
+    COMPLvLm        Low  Lower middle
+    u5_abovemedian                   
+    0                 1            23
+    1                45            27 
+
+    Observed counts
+    COMPLvLm             Low  Lower middle
+    u5_abovemedian                        
+    0               0.021739          0.46
+    1               0.978261          0.54 
+
+    Chi-Square test
+    chi-square value, p value, expected counts
+    (22.260869565217391, 2.3800765057438958e-06, 1, array([[ 11.5,  12.5],
+           [ 34.5,  37.5]]))
+</pre></div>
+
+
+<div class="highlight"><pre>    Contingency table
+    COMPLvUm        Low  Upper middle
+    u5_abovemedian                   
+    0                 1            24
+    1                45             5 
+
+    Observed counts
+    COMPLvUm             Low  Upper middle
+    u5_abovemedian                        
+    0               0.021739      0.827586
+    1               0.978261      0.172414 
+
+    Chi-Square test
+    chi-square value, p value, expected counts
+    (48.414074212893553, 3.4508262281508998e-12, 1, array([[ 15.33333333,   9.66666667],
+           [ 30.66666667,  19.33333333]]))
+</pre></div>
+
+
+<div class="highlight"><pre>    Contingency table
+    COMPLvH         High  Low
+    u5_abovemedian           
+    0                 29    1
+    1                  0   45 
+
+    Observed counts
+    COMPLvH         High       Low
+    u5_abovemedian                
+    0                1.0  0.021739
+    1                0.0  0.978261 
+
+    Chi-Square test
+    chi-square value, p value, expected counts
+    (66.906390554722634, 2.8471045701472532e-16, 1, array([[ 11.6,  18.4],
+           [ 17.4,  27.6]]))
+</pre></div>
+
+
+<div class="highlight"><pre>    Contingency table
+    COMPLmvUm       Lower middle  Upper middle
+    u5_abovemedian                            
+    0                         23            24
+    1                         27             5 
+
+    Observed counts
+    COMPLmvUm       Lower middle  Upper middle
+    u5_abovemedian                            
+    0                       0.46      0.827586
+    1                       0.54      0.172414 
+
+    Chi-Square test
+    chi-square value, p value, expected counts
+    (8.8223760775862043, 0.0029755895248322777, 1, array([[ 29.74683544,  17.25316456],
+           [ 20.25316456,  11.74683544]]))
+</pre></div>
+
+
+<div class="highlight"><pre>    Contingency table
+    COMPLmvH        High  Lower middle
+    u5_abovemedian                    
+    0                 29            23
+    1                  0            27 
+
+    Observed counts
+    COMPLmvH        High  Lower middle
+    u5_abovemedian                    
+    0                1.0          0.46
+    1                0.0          0.54 
+
+    Chi-Square test
+    chi-square value, p value, expected counts
+    (21.451315330582574, 3.6292697947721256e-06, 1, array([[ 19.08860759,  32.91139241],
+           [  9.91139241,  17.08860759]]))
+</pre></div>
+
+
+<div class="highlight"><pre>    Contingency table
+    COMPUmvH        High  Upper middle
+    u5_abovemedian                    
+    0                 29            24
+    1                  0             5 
+
+    Observed counts
+    COMPUmvH        High  Upper middle
+    u5_abovemedian                    
+    0                1.0      0.827586
+    1                0.0      0.172414 
+
+    Chi-Square test
+    chi-square value, p value, expected counts
+    (3.5018867924528303, 0.06129895419397504, 1, array([[ 26.5,  26.5],
+           [  2.5,   2.5]]))
+</pre></div>
+
+
+<h2>Python source code</h2>
+<div class="highlight"><pre><span class="c"># -*- coding: utf-8 -*-</span>
+<span class="c"># Created on 02/08/2016</span>
+<span class="c"># Author Ernő Gólya</span>
+
+<span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+<span class="c"># import libraries</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy.stats</span>
+<span class="kn">import</span> <span class="nn">seaborn</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+
+<span class="c"># read in data file</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">&#39;custom_gapminder_2.csv&#39;</span><span class="p">,</span> <span class="n">low_memory</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+<span class="c"># set variables to numeric</span>
+<span class="n">data</span><span class="p">[</span><span class="s">&quot;incomeperperson&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;incomeperperson&quot;</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;coerce&#39;</span><span class="p">)</span>
+<span class="n">data</span><span class="p">[</span><span class="s">&quot;under5mort&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;under5mort&quot;</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;coerce&#39;</span><span class="p">)</span>
+<span class="n">data</span><span class="p">[</span><span class="s">&quot;womenschool&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;womenschool&quot;</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;coerce&#39;</span><span class="p">)</span>
+<span class="n">data</span><span class="p">[</span><span class="s">&quot;healthexpend&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;healthexpend&quot;</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;coerce&#39;</span><span class="p">)</span>
+
+<span class="c"># remove observations with NaN values in any variables of interest</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+
+<span class="c"># create categories for quantitative variable</span>
+<span class="n">data</span><span class="p">[</span><span class="s">&quot;incomeperperson_cat&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">incomeperperson</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1005</span><span class="p">,</span> <span class="mi">3975</span><span class="p">,</span> <span class="mi">12275</span><span class="p">,</span> <span class="mi">65000</span><span class="p">],</span> <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;Low&quot;</span><span class="p">,</span> <span class="s">&quot;Lower middle&quot;</span><span class="p">,</span> <span class="s">&quot;Upper middle&quot;</span><span class="p">,</span> <span class="s">&quot;High&quot;</span> <span class="p">])</span>
+
+<span class="c"># create subgrup for child mortality (quantitative) and income per person levels (categorical)</span>
+<span class="n">sub1</span> <span class="o">=</span> <span class="n">data</span><span class="p">[[</span><span class="s">&#39;country&#39;</span><span class="p">,</span><span class="s">&#39;under5mort&#39;</span><span class="p">,</span> <span class="s">&#39;incomeperperson_cat&#39;</span><span class="p">]]</span>
+
+<span class="c"># create copy of subset</span>
+<span class="n">sub2</span> <span class="o">=</span> <span class="n">sub1</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="c"># median global child mortality</span>
+<span class="n">under5median</span> <span class="o">=</span> <span class="n">sub1</span><span class="p">[</span><span class="s">&#39;under5mort&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">median</span><span class="p">()</span>
+
+<span class="c"># create u5_abovemedian variable (value = 1 if under5mort &gt; under5median, othervise value = 0)</span>
+<span class="k">def</span> <span class="nf">u5_abovemedian</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="s">&#39;under5mort&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">under5median</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
+<span class="n">sub2</span><span class="p">[</span><span class="s">&#39;u5_abovemedian&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sub2</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">u5_abovemedian</span><span class="p">(</span><span class="n">row</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="k">print</span> <span class="s">&quot;Global median of under-5 mortality rate is: </span><span class="si">%r</span><span class="s">&quot;</span> <span class="o">%</span><span class="n">under5median</span>
+<span class="c"># Global median of under-5 mortality rate is: 19.5</span>
+
+<span class="c"># contingency table of observed counts</span>
+<span class="n">ct1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span><span class="n">sub2</span><span class="p">[</span><span class="s">&#39;u5_abovemedian&#39;</span><span class="p">],</span> <span class="n">sub2</span><span class="p">[</span><span class="s">&#39;incomeperperson_cat&#39;</span><span class="p">])</span>
+<span class="k">print</span> <span class="s">&quot;Contingency table</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="k">print</span> <span class="n">ct1</span><span class="p">,</span><span class="s">&quot;</span><span class="se">\n\n</span><span class="s">&quot;</span>
+
+<span class="c"># column percentages</span>
+<span class="n">colsum</span> <span class="o">=</span> <span class="n">ct1</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">colpct</span> <span class="o">=</span> <span class="n">ct1</span><span class="o">/</span><span class="n">colsum</span>
+<span class="k">print</span> <span class="s">&quot;Observed counts</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="k">print</span> <span class="n">colpct</span><span class="p">,</span><span class="s">&quot;</span><span class="se">\n\n</span><span class="s">&quot;</span>
+
+<span class="c"># chi-square</span>
+<span class="k">print</span> <span class="s">&quot;Chi-Square test</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="k">print</span> <span class="s">&#39;chi-square value, p value, expected counts&#39;</span>
+<span class="n">cs1</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">chi2_contingency</span><span class="p">(</span><span class="n">ct1</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">cs1</span>
+
+<span class="c"># graph percent with child mortality within each income level group</span>
+<span class="n">seaborn</span><span class="o">.</span><span class="n">factorplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s">&quot;incomeperperson_cat&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s">&quot;u5_abovemedian&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">sub2</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s">&quot;bar&quot;</span><span class="p">,</span> <span class="n">ci</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">aspect</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;Income per person level groups&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;Proportion above median child mortality&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Proportion of countries with child mortality rate above the median (19.5 per 1,000 live births)&#39;</span><span class="p">);</span>
+
+<span class="n">recode1</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;Low&quot;</span><span class="p">:</span> <span class="s">&quot;Low&quot;</span><span class="p">,</span> <span class="s">&quot;Lower middle&quot;</span><span class="p">:</span> <span class="s">&quot;Lower middle&quot;</span><span class="p">}</span>
+<span class="n">sub2</span><span class="p">[</span><span class="s">&#39;COMPLvLm&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sub2</span><span class="p">[</span><span class="s">&#39;incomeperperson_cat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">recode1</span><span class="p">)</span>
+
+<span class="c"># contingency table of observed counts</span>
+<span class="n">ct2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span><span class="n">sub2</span><span class="p">[</span><span class="s">&#39;u5_abovemedian&#39;</span><span class="p">],</span> <span class="n">sub2</span><span class="p">[</span><span class="s">&#39;COMPLvLm&#39;</span><span class="p">])</span>
+<span class="k">print</span> <span class="s">&quot;Contingency table</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="k">print</span> <span class="n">ct2</span><span class="p">,</span><span class="s">&quot;</span><span class="se">\n\n</span><span class="s">&quot;</span>
+
+<span class="c"># column percentages</span>
+<span class="n">colsum</span> <span class="o">=</span> <span class="n">ct2</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">colpct</span> <span class="o">=</span> <span class="n">ct2</span><span class="o">/</span><span class="n">colsum</span>
+<span class="k">print</span> <span class="s">&quot;Observed counts</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="k">print</span> <span class="n">colpct</span><span class="p">,</span><span class="s">&quot;</span><span class="se">\n\n</span><span class="s">&quot;</span>
+
+<span class="c"># chi-square</span>
+<span class="k">print</span> <span class="s">&quot;Chi-Square test</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="k">print</span> <span class="s">&#39;chi-square value, p value, expected counts&#39;</span>
+<span class="n">cs2</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">chi2_contingency</span><span class="p">(</span><span class="n">ct2</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">cs2</span>
+
+<span class="n">recode2</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;Low&quot;</span><span class="p">:</span> <span class="s">&quot;Low&quot;</span><span class="p">,</span> <span class="s">&quot;Upper middle&quot;</span><span class="p">:</span> <span class="s">&quot;Upper middle&quot;</span><span class="p">}</span>
+<span class="n">sub2</span><span class="p">[</span><span class="s">&#39;COMPLvUm&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sub2</span><span class="p">[</span><span class="s">&#39;incomeperperson_cat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">recode2</span><span class="p">)</span>
+
+<span class="c"># contingency table of observed counts</span>
+<span class="n">ct3</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span><span class="n">sub2</span><span class="p">[</span><span class="s">&#39;u5_abovemedian&#39;</span><span class="p">],</span> <span class="n">sub2</span><span class="p">[</span><span class="s">&#39;COMPLvUm&#39;</span><span class="p">])</span>
+<span class="k">print</span> <span class="s">&quot;Contingency table</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="k">print</span> <span class="n">ct3</span><span class="p">,</span><span class="s">&quot;</span><span class="se">\n\n</span><span class="s">&quot;</span>
+
+<span class="c"># column percentages</span>
+<span class="n">colsum</span> <span class="o">=</span> <span class="n">ct3</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">colpct</span> <span class="o">=</span> <span class="n">ct3</span><span class="o">/</span><span class="n">colsum</span>
+<span class="k">print</span> <span class="s">&quot;Observed counts</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="k">print</span> <span class="n">colpct</span><span class="p">,</span><span class="s">&quot;</span><span class="se">\n\n</span><span class="s">&quot;</span>
+
+<span class="c"># chi-square</span>
+<span class="k">print</span> <span class="s">&quot;Chi-Square test</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="k">print</span> <span class="s">&#39;chi-square value, p value, expected counts&#39;</span>
+<span class="n">cs3</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">chi2_contingency</span><span class="p">(</span><span class="n">ct3</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">cs3</span>
+
+<span class="n">recode3</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;Low&quot;</span><span class="p">:</span> <span class="s">&quot;Low&quot;</span><span class="p">,</span> <span class="s">&quot;High&quot;</span><span class="p">:</span> <span class="s">&quot;High&quot;</span><span class="p">}</span>
+<span class="n">sub2</span><span class="p">[</span><span class="s">&#39;COMPLvH&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sub2</span><span class="p">[</span><span class="s">&#39;incomeperperson_cat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">recode3</span><span class="p">)</span>
+
+<span class="c"># contingency table of observed counts</span>
+<span class="n">ct4</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span><span class="n">sub2</span><span class="p">[</span><span class="s">&#39;u5_abovemedian&#39;</span><span class="p">],</span> <span class="n">sub2</span><span class="p">[</span><span class="s">&#39;COMPLvH&#39;</span><span class="p">])</span>
+<span class="k">print</span> <span class="s">&quot;Contingency table</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="k">print</span> <span class="n">ct4</span><span class="p">,</span><span class="s">&quot;</span><span class="se">\n\n</span><span class="s">&quot;</span>
+
+<span class="c"># column percentages</span>
+<span class="n">colsum</span> <span class="o">=</span> <span class="n">ct4</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">colpct</span> <span class="o">=</span> <span class="n">ct4</span><span class="o">/</span><span class="n">colsum</span>
+<span class="k">print</span> <span class="s">&quot;Observed counts</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="k">print</span> <span class="n">colpct</span><span class="p">,</span><span class="s">&quot;</span><span class="se">\n\n</span><span class="s">&quot;</span>
+
+<span class="c"># chi-square</span>
+<span class="k">print</span> <span class="s">&quot;Chi-Square test</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="k">print</span> <span class="s">&#39;chi-square value, p value, expected counts&#39;</span>
+<span class="n">cs4</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">chi2_contingency</span><span class="p">(</span><span class="n">ct4</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">cs4</span>
+
+<span class="n">recode4</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;Lower middle&quot;</span><span class="p">:</span> <span class="s">&quot;Lower middle&quot;</span><span class="p">,</span> <span class="s">&quot;Upper middle&quot;</span><span class="p">:</span> <span class="s">&quot;Upper middle&quot;</span><span class="p">}</span>
+<span class="n">sub2</span><span class="p">[</span><span class="s">&#39;COMPLmvUm&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sub2</span><span class="p">[</span><span class="s">&#39;incomeperperson_cat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">recode4</span><span class="p">)</span>
+
+<span class="c"># contingency table of observed counts</span>
+<span class="n">ct5</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span><span class="n">sub2</span><span class="p">[</span><span class="s">&#39;u5_abovemedian&#39;</span><span class="p">],</span> <span class="n">sub2</span><span class="p">[</span><span class="s">&#39;COMPLmvUm&#39;</span><span class="p">])</span>
+<span class="k">print</span> <span class="s">&quot;Contingency table</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="k">print</span> <span class="n">ct5</span><span class="p">,</span><span class="s">&quot;</span><span class="se">\n\n</span><span class="s">&quot;</span>
+
+<span class="c"># column percentages</span>
+<span class="n">colsum</span> <span class="o">=</span> <span class="n">ct5</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">colpct</span> <span class="o">=</span> <span class="n">ct5</span><span class="o">/</span><span class="n">colsum</span>
+<span class="k">print</span> <span class="s">&quot;Observed counts</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="k">print</span> <span class="n">colpct</span><span class="p">,</span><span class="s">&quot;</span><span class="se">\n\n</span><span class="s">&quot;</span>
+
+<span class="c"># chi-square</span>
+<span class="k">print</span> <span class="s">&quot;Chi-Square test</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="k">print</span> <span class="s">&#39;chi-square value, p value, expected counts&#39;</span>
+<span class="n">cs5</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">chi2_contingency</span><span class="p">(</span><span class="n">ct5</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">cs5</span>
+
+<span class="n">recode5</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;Lower middle&quot;</span><span class="p">:</span> <span class="s">&quot;Lower middle&quot;</span><span class="p">,</span> <span class="s">&quot;High&quot;</span><span class="p">:</span> <span class="s">&quot;High&quot;</span><span class="p">}</span>
+<span class="n">sub2</span><span class="p">[</span><span class="s">&#39;COMPLmvH&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sub2</span><span class="p">[</span><span class="s">&#39;incomeperperson_cat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">recode5</span><span class="p">)</span>
+
+<span class="c"># contingency table of observed counts</span>
+<span class="n">ct6</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span><span class="n">sub2</span><span class="p">[</span><span class="s">&#39;u5_abovemedian&#39;</span><span class="p">],</span> <span class="n">sub2</span><span class="p">[</span><span class="s">&#39;COMPLmvH&#39;</span><span class="p">])</span>
+<span class="k">print</span> <span class="s">&quot;Contingency table</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="k">print</span> <span class="n">ct6</span><span class="p">,</span><span class="s">&quot;</span><span class="se">\n\n</span><span class="s">&quot;</span>
+
+<span class="c"># column percentages</span>
+<span class="n">colsum</span> <span class="o">=</span> <span class="n">ct6</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">colpct</span> <span class="o">=</span> <span class="n">ct6</span><span class="o">/</span><span class="n">colsum</span>
+<span class="k">print</span> <span class="s">&quot;Observed counts</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="k">print</span> <span class="n">colpct</span><span class="p">,</span><span class="s">&quot;</span><span class="se">\n\n</span><span class="s">&quot;</span>
+
+<span class="c"># chi-square</span>
+<span class="k">print</span> <span class="s">&quot;Chi-Square test</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="k">print</span> <span class="s">&#39;chi-square value, p value, expected counts&#39;</span>
+<span class="n">cs6</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">chi2_contingency</span><span class="p">(</span><span class="n">ct6</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">cs6</span>
+
+<span class="n">recode6</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;Upper middle&quot;</span><span class="p">:</span> <span class="s">&quot;Upper middle&quot;</span><span class="p">,</span> <span class="s">&quot;High&quot;</span><span class="p">:</span> <span class="s">&quot;High&quot;</span><span class="p">}</span>
+<span class="n">sub2</span><span class="p">[</span><span class="s">&#39;COMPUmvH&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sub2</span><span class="p">[</span><span class="s">&#39;incomeperperson_cat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">recode6</span><span class="p">)</span>
+
+<span class="c"># contingency table of observed counts</span>
+<span class="n">ct7</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span><span class="n">sub2</span><span class="p">[</span><span class="s">&#39;u5_abovemedian&#39;</span><span class="p">],</span> <span class="n">sub2</span><span class="p">[</span><span class="s">&#39;COMPUmvH&#39;</span><span class="p">])</span>
+<span class="k">print</span> <span class="s">&quot;Contingency table</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="k">print</span> <span class="n">ct7</span><span class="p">,</span><span class="s">&quot;</span><span class="se">\n\n</span><span class="s">&quot;</span>
+
+<span class="c"># column percentages</span>
+<span class="n">colsum</span> <span class="o">=</span> <span class="n">ct7</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">colpct</span> <span class="o">=</span> <span class="n">ct7</span><span class="o">/</span><span class="n">colsum</span>
+<span class="k">print</span> <span class="s">&quot;Observed counts</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="k">print</span> <span class="n">colpct</span><span class="p">,</span><span class="s">&quot;</span><span class="se">\n\n</span><span class="s">&quot;</span>
+
+<span class="c"># chi-square</span>
+<span class="k">print</span> <span class="s">&quot;Chi-Square test</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="k">print</span> <span class="s">&#39;chi-square value, p value, expected counts&#39;</span>
+<span class="n">cs7</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">chi2_contingency</span><span class="p">(</span><span class="n">ct7</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">cs7</span>
+</pre></div></div>
+	
+        <hr>
+
+    </div>
+        </div>
+        
+        <div class="span3">
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Site
+                </li>
+            
+                <li><a href="https://ernogolya.github.io/archives.html">Archives</a>
+                <li><a href="https://ernogolya.github.io/tags.html">Tags</a>
+
+
+
+
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Categories
+                </li>
+                
+                <li><a href="https://ernogolya.github.io/category/data-science.html">Data Science</a></li>
+                   
+            </ul>
+            </div>
+
+
+
+
+
+        </div>  
+    </div>     </div> 
+<footer>
+<br />
+<p><a href="https://ernogolya.github.io">ernogolya</a> &copy; Ernő Gólya 2016</p>
+</footer>
+
+</div> <!-- /container -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="https://ernogolya.github.io/theme/bootstrap-collapse.js"></script>
+ 
+</body>
+</html>
