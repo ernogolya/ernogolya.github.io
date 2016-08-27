@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>ernogolya - Pearson Correlation</title>
+    <meta name="description" content="">
+    <meta name="author" content="Ernő Gólya">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="https://ernogolya.github.io/theme/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="https://ernogolya.github.io/theme/bootstrap.min.css" rel="stylesheet">
+    <link href="https://ernogolya.github.io/theme/bootstrap.min.responsive.css" rel="stylesheet">
+    <link href="https://ernogolya.github.io/theme/local.css" rel="stylesheet">
+    <link href="https://ernogolya.github.io/theme/pygments.css" rel="stylesheet">
+
+    <!-- So Firefox can bookmark->"abo this site" -->
+
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="navbar-inner">
+    <div class="container">
+
+         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+         </a>
+
+        <a class="brand" href="https://ernogolya.github.io">ernogolya</a>
+
+        <div class="nav-collapse">
+        <ul class="nav">
+            
+            <li><a href="https://ernogolya.github.io/pages/about/">About</a></li>
+        </ul>
+        </div>
+        
+    </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="content">
+    <div class="row">
+
+        <div class="span9">
+    <div class='article'>
+        <div class="content-title">
+            <h1>Pearson Correlation</h1>
+sze 03 augusztus 2016
+
+by <a class="url fn" href="https://ernogolya.github.io/author/erno-golya.html">Ernő Gólya</a>
+ 
+
+
+        </div>
+	
+        <div><p>This is part of my coursework for the Data Analysis Tools course by Wesleyan University on Coursera.</p>
+<p>Week 3 assignment: Generate a correlation coefficient.</p>
+<p>The Pearson correlation coefficient (r) is a measure that determines the degree to which two variables' movements are associated. The range of values for the correlation coefficient is -1.0 to 1.0. If a calculated correlation is greater than 1.0 or less than -1.0, a mistake has been made. A correlation of -1.0 indicates a perfect negative linear relationship between the two variables, while a correlation of +1.0 indicates a perfect positive linear correlation. In both cases, knowing the value of one variable, one can predict the value of the second.</p>
+<p>Data source: <a href="https://www.gapminder.org/data/">Gapminder World</a>.</p>
+<p>I want to compare the child mortality rates against years of schooling for women for the 154 countries in the data set. Both response variable (under-five mortality rate per 1,000 live births) and explanatory variable (mean years of schooling for women, age 15 to 44) are quantitative variables, thus Pearson correlation coefficient (r) can be used.</p>
+<p>The scatterplot for the two variables seems to show a negative linear correlation:</p>
+<p><img alt="pearson" src="https://ernogolya.github.io/images/DataAnalysisTools/pearson.png" /></p>
+<pre>
+    Output of pearsonr() function:
+    Association between mean years of schooling for women (age 15 to 44) and child mortality
+    (-0.78566944724891918, 1.6315641063941191e-33)
+</pre>
+
+<p>The correlation coefficient is -0.78, indicating a strong negative linear relationship.</p>
+<p>The r^2^ value (coefficient of determination) is 0.608, meaning that 60.8% of the variability in the child mortality rate is described by the variation in female education.</p>
+<p>The p-value is 1.63e-33, indicating that the correlation is statistically significant.</p>
+<p>This suggests that an increased level of female education in a country is correlated with a decrease in the recorded child mortality rate, and the strength of association between the variables is high (r=-0.78).</p>
+<p><em>Note, that Pearson's r is sensitive to outliers, which can have a very large effect on the line of best fit and the Pearson correlation
+coefficient, leading to very difficult conclusions regarding our data. Therefore, it is best if there are no outliers or they are kept to a
+minimum. For now, dealing with outliers is out of the scope of this presentation.</em></p>
+<h3>Python code</h3>
+<div class="highlight"><pre>    <span class="c"># -*- coding: utf-8 -*-</span>
+    <span class="c"># Created on 03/08/2016</span>
+    <span class="c"># Author Ernő Gólya</span>
+
+    <span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+    <span class="c"># import libraries</span>
+    <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+    <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+    <span class="kn">import</span> <span class="nn">seaborn</span>
+    <span class="kn">import</span> <span class="nn">scipy</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+
+    <span class="c"># read in data file</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">&#39;custom_gapminder_2.csv&#39;</span><span class="p">,</span> <span class="n">low_memory</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+    <span class="c"># set variables to numeric</span>
+    <span class="n">data</span><span class="p">[</span><span class="s">&quot;incomeperperson&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;incomeperperson&quot;</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;coerce&#39;</span><span class="p">)</span>
+    <span class="n">data</span><span class="p">[</span><span class="s">&quot;under5mort&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;under5mort&quot;</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;coerce&#39;</span><span class="p">)</span>
+    <span class="n">data</span><span class="p">[</span><span class="s">&quot;womenschool&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;womenschool&quot;</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;coerce&#39;</span><span class="p">)</span>
+    <span class="n">data</span><span class="p">[</span><span class="s">&quot;healthexpend&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;healthexpend&quot;</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;coerce&#39;</span><span class="p">)</span>
+
+    <span class="c"># remove observations with NaN values in any variables of interest</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+
+    <span class="c"># generate correlation coefficient</span>
+    <span class="k">print</span> <span class="s">&quot;Association between mean years of schooling for women (age 15 to 44) and child mortality&quot;</span>
+    <span class="k">print</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">pearsonr</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;womenschool&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;under5mort&#39;</span><span class="p">])</span>
+    <span class="k">print</span> <span class="s">&quot;&quot;</span>
+    <span class="k">print</span> <span class="s">&quot;Association between income per person (US$) and child mortality&quot;</span>
+    <span class="k">print</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">pearsonr</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;incomeperperson&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;under5mort&#39;</span><span class="p">])</span>
+    <span class="k">print</span> <span class="s">&quot;&quot;</span>
+    <span class="k">print</span> <span class="s">&quot;Association between per capita total expenditure on health and child mortality&quot;</span>
+    <span class="k">print</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">pearsonr</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;healthexpend&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;under5mort&#39;</span><span class="p">])</span>
+
+    <span class="c"># basic scatterplot</span>
+    <span class="n">fig</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span> <span class="mi">80</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">)</span>
+    <span class="n">scat1</span> <span class="o">=</span> <span class="n">seaborn</span><span class="o">.</span><span class="n">regplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s">&#39;womenschool&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s">&#39;under5mort&#39;</span><span class="p">,</span> <span class="n">fit_reg</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;Mean years of schooling for women&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;Children dying before the age of 5 per 1,000 live births&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Association between mean years of schooling for women (age 15 to 44) and child mortality&#39;</span><span class="p">);</span>
+
+    <span class="c"># basic scatterplot</span>
+    <span class="n">fig</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span> <span class="mi">80</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">)</span>
+    <span class="n">scat3</span> <span class="o">=</span> <span class="n">seaborn</span><span class="o">.</span><span class="n">regplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s">&#39;incomeperperson&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s">&#39;under5mort&#39;</span><span class="p">,</span> <span class="n">fit_reg</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;2010 GDP per capita (US$)&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;Children dying before the age of 5 per 1,000 live births&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Association between income per person (US$) and child mortality&#39;</span><span class="p">);</span>
+
+    <span class="c"># basic scatterplot</span>
+    <span class="n">fig</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span> <span class="mi">80</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">)</span>
+    <span class="n">scat2</span> <span class="o">=</span> <span class="n">seaborn</span><span class="o">.</span><span class="n">regplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s">&#39;healthexpend&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s">&#39;under5mort&#39;</span><span class="p">,</span> <span class="n">fit_reg</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;Per capita expenditure on health (US$)&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;Children dying before the age of 5 per 1,000 live births&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Association between per capita total expenditure on health and child mortality&#39;</span><span class="p">);</span>
+</pre></div></div>
+	
+        <hr>
+
+    </div>
+        </div>
+        
+        <div class="span3">
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Site
+                </li>
+            
+                <li><a href="https://ernogolya.github.io/archives.html">Archives</a>
+                <li><a href="https://ernogolya.github.io/tags.html">Tags</a>
+
+
+
+
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Categories
+                </li>
+                
+                <li><a href="https://ernogolya.github.io/category/data-science.html">Data Science</a></li>
+                <li><a href="https://ernogolya.github.io/category/machine-learning.html">Machine Learning</a></li>
+                   
+            </ul>
+            </div>
+
+
+
+
+            <div class="social">
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Social
+                </li>
+           
+                <li><a href="https://hu.linkedin.com/in/ernő-gólya-44626093">Linkedin</a></li>
+            </ul>
+            </div>
+            </div>
+
+        </div>  
+    </div>     </div> 
+<footer>
+<br />
+<p><a href="https://ernogolya.github.io">ernogolya</a> &copy; Ernő Gólya 2016</p>
+</footer>
+
+</div> <!-- /container -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="https://ernogolya.github.io/theme/bootstrap-collapse.js"></script>
+ 
+</body>
+</html>

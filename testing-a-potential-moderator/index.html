@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>ernogolya - Testing a Potential Moderator</title>
+    <meta name="description" content="">
+    <meta name="author" content="Ernő Gólya">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="https://ernogolya.github.io/theme/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="https://ernogolya.github.io/theme/bootstrap.min.css" rel="stylesheet">
+    <link href="https://ernogolya.github.io/theme/bootstrap.min.responsive.css" rel="stylesheet">
+    <link href="https://ernogolya.github.io/theme/local.css" rel="stylesheet">
+    <link href="https://ernogolya.github.io/theme/pygments.css" rel="stylesheet">
+
+    <!-- So Firefox can bookmark->"abo this site" -->
+
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="navbar-inner">
+    <div class="container">
+
+         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+         </a>
+
+        <a class="brand" href="https://ernogolya.github.io">ernogolya</a>
+
+        <div class="nav-collapse">
+        <ul class="nav">
+            
+            <li><a href="https://ernogolya.github.io/pages/about/">About</a></li>
+        </ul>
+        </div>
+        
+    </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="content">
+    <div class="row">
+
+        <div class="span9">
+    <div class='article'>
+        <div class="content-title">
+            <h1>Testing a Potential Moderator</h1>
+sze 03 augusztus 2016
+
+by <a class="url fn" href="https://ernogolya.github.io/author/erno-golya.html">Ernő Gólya</a>
+ 
+
+
+        </div>
+	
+        <div><p>This is part of my coursework for the Data Analysis Tools course by Wesleyan University on Coursera. Week 4 assignment: run an ANOVA, Chi-Square Test or correlation coefficient that includes a moderator.</p>
+<p>Moderation is the basic concept of statistical interaction. In statistics, moderation occurs when the relationship between two variables depends on a third variable. The effect of a moderating variable is often characterized statistically as an interaction; that is, a third variable that affects the direction and/or strength of the relation between the explanatory and response variable.<br />
+For this post I will test my hypothesis (there is a relationship between child mortality and female education) in the context of a potential
+moderating variable (GDP level of the country) by asking the question whether there is an association between the two constructs for different subgroups (income levels) within the sample.</p>
+<p>Data source: <a href="https://www.gapminder.org/data/">Gapminder World</a>.</p>
+<p>Using Pearson’s correlation coefficient (r), I found that the average time women spend in schools has a significant negative correlation with under-five child mortality rate for the whole data set (r=-0.78, p=1.63e-33). Obviously there may be several potential confounding
+factors in this association. Now, I want to see if this correlation is dependent on the income level of the country.</p>
+<p>The data set contains 154 countries. Incomeperperson is a quantitative variable, so I grouped the observations into 4 income groups (low, lower middle, upper middle, and high) based on the World Bank list of analytical income classification of economies.</p>
+<p><code>incomeperperson_cat:</code><br />
+low: 1-1,005 US$<br />
+lower middle: 1,006-3,975 US$<br />
+upper middle: 3,976-12,275 US$<br />
+high: &gt; 12,275 US$</p>
+<p>After running the Pearson correlation test for each group I obtained the following results:</p>
+<div class="highlight"><pre>Association between female education and child mortality for ALL countries
+(-0.78566944724891918, 1.6315641063941191e-33)
+------------------------------------------------------------------------------------------
+Association between female education and child mortality for LOW income countries
+(-0.53543457895633506, 0.000125930575935477)
+
+Association between female education and child mortality for LOWER MIDDLE income countries
+(-0.42591241118143275, 0.0020437060659682081)
+
+Association between female education and child mortality for UPPER MIDDLE income countries
+(-0.60057439538258761, 0.00057180409183018644)
+
+Association between female education and child mortality for HIGH income countries
+(-0.12255920495793617, 0.52649555305118811)
+</pre></div>
+
+
+<p>As we can see from the results above, there is a statistically significant, moderate negative relationship between female education rates and under-five child mortality rates in low (r=-0.53, p=0.0001; r2=0.28), lower middle (r=-0.42, p=0.002; r2=0.17) and upper middle
+(r=-0.6, p=0.0005; r2=0.36) income groups. In these countries lower child mortality rates are associated with higher female education rates.</p>
+<p>For the high income group, the correlation between female education and under-five child mortality rate is not statistically significant, with a p-value (p=0.52) greater than 0.05. For these countries, we must accept the null hypothesis, that there is no significant relationship between female education and under-five child mortality rate.</p>
+<p><em>(There are 29 countries in the high income category in this data set. In these more affluent countries the average time a woman spend in education is 12.3 years. This may suggest, that above a certain level of educational attainment and income level there is an increased emphasis on other factors affecting child mortality.)</em></p>
+<p>The results are further illustrated by the scatterplots for the different income groups:</p>
+<p><img alt="dat4_scatterplot_all" src="https://ernogolya.github.io/images/DataAnalysisTools/dat4_scatterplot_all.png" /></p>
+<p><img alt="dat4_scatterplot_low" src="https://ernogolya.github.io/images/DataAnalysisTools/dat4_scatterplot_low.png" /></p>
+<p><img alt="dat4_scatterplot_lowermiddle" src="https://ernogolya.github.io/images/DataAnalysisTools/dat4_scatterplot_lowermiddle.png" /></p>
+<p><img alt="dat4_scatterplot_uppermiddle" src="https://ernogolya.github.io/images/DataAnalysisTools/dat4_scatterplot_uppermiddle.png" /></p>
+<p><img alt="dat4_scatterplot_high" src="https://ernogolya.github.io/images/DataAnalysisTools/dat4_scatterplot_high.png" /></p>
+<h3>Python source code</h3>
+<div class="highlight"><pre>    <span class="c"># -*- coding: utf-8 -*-</span>
+    <span class="c"># Created on 02/08/2016</span>
+    <span class="c"># Author Ernő Gólya</span>
+
+    <span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+    <span class="c"># import libraries</span>
+    <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+    <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+    <span class="kn">import</span> <span class="nn">scipy.stats</span>
+    <span class="kn">import</span> <span class="nn">seaborn</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+
+    <span class="c"># read in data file</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">&#39;custom_gapminder_2.csv&#39;</span><span class="p">,</span> <span class="n">low_memory</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+    <span class="c"># set variables to numeric</span>
+    <span class="n">data</span><span class="p">[</span><span class="s">&quot;incomeperperson&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;incomeperperson&quot;</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;coerce&#39;</span><span class="p">)</span>
+    <span class="n">data</span><span class="p">[</span><span class="s">&quot;under5mort&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;under5mort&quot;</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;coerce&#39;</span><span class="p">)</span>
+    <span class="n">data</span><span class="p">[</span><span class="s">&quot;womenschool&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;womenschool&quot;</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;coerce&#39;</span><span class="p">)</span>
+    <span class="n">data</span><span class="p">[</span><span class="s">&quot;healthexpend&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;healthexpend&quot;</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;coerce&#39;</span><span class="p">)</span>
+
+    <span class="c"># remove observations with NaN values in any variables of interest</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+
+    <span class="c"># create categories for quantitative variable</span>
+    <span class="n">data</span><span class="p">[</span><span class="s">&quot;incomeperperson_cat&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">incomeperperson</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1005</span><span class="p">,</span> <span class="mi">3975</span><span class="p">,</span> <span class="mi">12275</span><span class="p">,</span> <span class="mi">65000</span><span class="p">],</span>   
+                                        <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;Low&quot;</span><span class="p">,</span> <span class="s">&quot;Lower middle&quot;</span><span class="p">,</span> <span class="s">&quot;Upper middle&quot;</span><span class="p">,</span> <span class="s">&quot;High&quot;</span> <span class="p">])</span>
+
+    <span class="c"># create subgroups of income levels</span>
+    <span class="n">subLow</span> <span class="o">=</span> <span class="n">data</span><span class="p">[(</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;incomeperperson_cat&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&quot;Low&quot;</span><span class="p">)]</span>
+    <span class="n">subLowMid</span> <span class="o">=</span> <span class="n">data</span><span class="p">[(</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;incomeperperson_cat&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&quot;Lower middle&quot;</span><span class="p">)]</span>
+    <span class="n">subUpMid</span> <span class="o">=</span> <span class="n">data</span><span class="p">[(</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;incomeperperson_cat&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&quot;Upper middle&quot;</span><span class="p">)]</span>
+    <span class="n">subHigh</span> <span class="o">=</span> <span class="n">data</span><span class="p">[(</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;incomeperperson_cat&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&quot;High&quot;</span><span class="p">)]</span>
+
+    <span class="c"># generate correlation coefficient for all countries</span>
+    <span class="k">print</span> <span class="s">&quot;Association between female education and child mortality for ALL countries&quot;</span>
+    <span class="k">print</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">pearsonr</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;womenschool&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;under5mort&#39;</span><span class="p">])</span>
+    <span class="k">print</span> <span class="s">&quot;-&quot;</span><span class="o">*</span><span class="mi">90</span>
+
+    <span class="c"># generate correlation coefficients for income groups</span>
+    <span class="k">print</span> <span class="s">&quot;Association between female education and child mortality for LOW income countries&quot;</span>
+    <span class="k">print</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">pearsonr</span><span class="p">(</span><span class="n">subLow</span><span class="p">[</span><span class="s">&#39;womenschool&#39;</span><span class="p">],</span> <span class="n">subLow</span><span class="p">[</span><span class="s">&#39;under5mort&#39;</span><span class="p">])</span>
+    <span class="k">print</span> <span class="s">&quot;&quot;</span>
+
+    <span class="k">print</span> <span class="s">&quot;Association between female education and child mortality for LOWER MIDDLE income countries&quot;</span>
+    <span class="k">print</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">pearsonr</span><span class="p">(</span><span class="n">subLowMid</span><span class="p">[</span><span class="s">&#39;womenschool&#39;</span><span class="p">],</span> <span class="n">subLowMid</span><span class="p">[</span><span class="s">&#39;under5mort&#39;</span><span class="p">])</span>
+    <span class="k">print</span> <span class="s">&quot;&quot;</span>
+
+    <span class="k">print</span> <span class="s">&quot;Association between female education and child mortality for UPPER MIDDLE income countries&quot;</span>
+    <span class="k">print</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">pearsonr</span><span class="p">(</span><span class="n">subUpMid</span><span class="p">[</span><span class="s">&#39;womenschool&#39;</span><span class="p">],</span> <span class="n">subUpMid</span><span class="p">[</span><span class="s">&#39;under5mort&#39;</span><span class="p">])</span>
+    <span class="k">print</span> <span class="s">&quot;&quot;</span>
+
+    <span class="k">print</span> <span class="s">&quot;Association between female education and child mortality for HIGH income countries&quot;</span>
+    <span class="k">print</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">pearsonr</span><span class="p">(</span><span class="n">subHigh</span><span class="p">[</span><span class="s">&#39;womenschool&#39;</span><span class="p">],</span> <span class="n">subHigh</span><span class="p">[</span><span class="s">&#39;under5mort&#39;</span><span class="p">])</span>
+    <span class="k">print</span> <span class="s">&quot;&quot;</span>
+
+    <span class="c"># scatterplot for all countries</span>
+    <span class="n">fig</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span> <span class="mi">80</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">)</span>
+    <span class="n">scat1</span> <span class="o">=</span> <span class="n">seaborn</span><span class="o">.</span><span class="n">regplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s">&#39;womenschool&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s">&#39;under5mort&#39;</span><span class="p">,</span> <span class="n">fit_reg</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;Mean years of schooling for women&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;Children dying before the age of 5 per 1,000 live births&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Association between female education and child mortality for ALL countries&#39;</span><span class="p">);</span>
+
+    <span class="c"># scatterplot for low income countries</span>
+    <span class="n">fig</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span> <span class="mi">80</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">)</span>
+    <span class="n">scat1</span> <span class="o">=</span> <span class="n">seaborn</span><span class="o">.</span><span class="n">regplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s">&#39;womenschool&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s">&#39;under5mort&#39;</span><span class="p">,</span> <span class="n">fit_reg</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">subLow</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;Mean years of schooling for women&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;Children dying before the age of 5 per 1,000 live births&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Association between female education and child mortality for LOW income countries&#39;</span><span class="p">);</span>
+
+    <span class="c"># scatterplot for lower middle income countries</span>
+    <span class="n">fig</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span> <span class="mi">80</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">)</span>
+    <span class="n">scat1</span> <span class="o">=</span> <span class="n">seaborn</span><span class="o">.</span><span class="n">regplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s">&#39;womenschool&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s">&#39;under5mort&#39;</span><span class="p">,</span> <span class="n">fit_reg</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">subLowMid</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;Mean years of schooling for women&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;Children dying before the age of 5 per 1,000 live births&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Association between female education and child mortality for LOWER MIDDLE income countries&#39;</span><span class="p">);</span>
+
+    <span class="c"># scatterplot for upper middle income countries</span>
+    <span class="n">fig</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span> <span class="mi">80</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">)</span>
+    <span class="n">scat1</span> <span class="o">=</span> <span class="n">seaborn</span><span class="o">.</span><span class="n">regplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s">&#39;womenschool&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s">&#39;under5mort&#39;</span><span class="p">,</span> <span class="n">fit_reg</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">subUpMid</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;Mean years of schooling for women&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;Children dying before the age of 5 per 1,000 live births&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Association between female education and child mortality for UPPER MIDDLE income countries&#39;</span><span class="p">);</span>
+
+    <span class="c"># scatterplot for high income countries</span>
+    <span class="n">fig</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span> <span class="mi">80</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">)</span>
+    <span class="n">scat1</span> <span class="o">=</span> <span class="n">seaborn</span><span class="o">.</span><span class="n">regplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s">&#39;womenschool&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s">&#39;under5mort&#39;</span><span class="p">,</span> <span class="n">fit_reg</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">subHigh</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;Mean years of schooling for women&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;Children dying before the age of 5 per 1,000 live births&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Association between female education and child mortality for HIGH income countries&#39;</span><span class="p">);</span>
+</pre></div></div>
+	
+        <hr>
+
+    </div>
+        </div>
+        
+        <div class="span3">
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Site
+                </li>
+            
+                <li><a href="https://ernogolya.github.io/archives.html">Archives</a>
+                <li><a href="https://ernogolya.github.io/tags.html">Tags</a>
+
+
+
+
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Categories
+                </li>
+                
+                <li><a href="https://ernogolya.github.io/category/data-science.html">Data Science</a></li>
+                <li><a href="https://ernogolya.github.io/category/machine-learning.html">Machine Learning</a></li>
+                   
+            </ul>
+            </div>
+
+
+
+
+            <div class="social">
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Social
+                </li>
+           
+                <li><a href="https://hu.linkedin.com/in/ernő-gólya-44626093">Linkedin</a></li>
+            </ul>
+            </div>
+            </div>
+
+        </div>  
+    </div>     </div> 
+<footer>
+<br />
+<p><a href="https://ernogolya.github.io">ernogolya</a> &copy; Ernő Gólya 2016</p>
+</footer>
+
+</div> <!-- /container -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="https://ernogolya.github.io/theme/bootstrap-collapse.js"></script>
+ 
+</body>
+</html>
