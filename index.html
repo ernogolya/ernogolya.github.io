@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>ernogolya</title>
+    <title>deviate from the norm</title>
     <meta name="description" content="">
     <meta name="author" content="Ernő Gólya">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -34,7 +34,7 @@
              <span class="icon-bar"></span>
          </a>
 
-        <a class="brand" href="https://ernogolya.github.io">ernogolya</a>
+        <a class="brand" href="https://ernogolya.github.io">deviate from the norm</a>
 
         <div class="nav-collapse">
         <ul class="nav">
@@ -59,8 +59,8 @@
 
     <div class='article'>
         <div class="content-title">
-            <a href="https://ernogolya.github.io/decision_tree/"><h1>Machine Learning for Data Analysis: Decision Trees</h1></a>
-p 26 augusztus 2016
+            <a href="https://ernogolya.github.io/random_forest/"><h1>Machine Learning for Data Analysis: Random Forests</h1></a>
+k 30 augusztus 2016
 
 by <a class="url fn" href="https://ernogolya.github.io/author/erno-golya.html">Ernő Gólya</a>
  
@@ -69,89 +69,93 @@ by <a class="url fn" href="https://ernogolya.github.io/author/erno-golya.html">E
  
         </div>
         
-        <div><p>Machine learning encompasses a wide range of statistical methods that can be used to describe associations, search for patterns, or make predictions about outcomes from a set of inputs. When our goal is to predict the value of a response variable based on a number of predictors, then we are using a supervised learning approach. We use a subset of observations from our dataset (training set), to learn about the data and then test the model we get on a different set of observations (test set). When we apply our statistical model to the test set, we're interested in the accuracy of our model,  that can be assessed by the test error rate, which is a measure of the extent to which a model correctly classifies observations into categories. Our goal then is to identify a model that minimizes the test error rate.</p>
-<h3>Decision Trees</h3>
-<p>Decision tree is a type of supervised learning algorithm that is mostly used in classification problems. It is a type of data mining method that allows us to explore the presence of potentially complicated interactions within our data by creating subgroups (or segmentations) by applying a series of rules over and over again, which choose variable arrangements that best predict the target variable. It works for both categorical and continuous input and output variables. When the response variable is categorical, the model is called a classification tree. 
-Decision trees are so-named because the predictive model can be represented in a tree-like structure in which each internal node represents a test on a variable (a split based on the values of one of the explanatory variables), each branch represents the outcome of the test and each leaf node represents a class or subgroup based on the combination of previous splits. </p>
-<h3>About the Data</h3>
-<p>The dataset is compiled from data available on the <a href="http://gapminder.org">Gapminder</a> website. This data sample provides values for under-five child mortality rate (target variable), mean years in school for women, per capita total expenditure on health, income per person, estimated HIV prevalence, urban population rate, mean age at 1st marriage of women, corruption perception index, access to improved sanitation facilities, access to improved drinking water sources and teen fertility rate (explanatory variables or predictors) for 167 countries from years between 2005 and 2010. After removing countries with missing data (all variables examined) there are 106 observations left.</p>
-<p>The response variable (child mortality rate) is a quantitative variable, so for this analysis it is converted into a binary categorical variable (u5_abovemedian), using the global median of the under5mort variable as a cut-point.</p>
-<p><code>u5_abovemedian</code><br />
-0: under5mort &lt;= median of U5MR rates of all countries in dataset<br />
-1: under5mort &gt; median of U5MR rates of  all countries in dataset</p>
-<p>Because decision tree analyses cannot handle any NA's in our dataset, we need to create a data frame that drops all NA's. We can take a look at various characteristics of our data by using the d types and describe functions to examine data types and summary statistics*, and include the train test split function for predictors and target. Size ratio is set to 60% for the training sample and 40% for the test sample. The training sample has 67 observations, and 8 explanatory variables. The test sample has 45 observations and again 8 explanatory variables.</p>
+        <div><p>The decision tree method introduced briefly in the <a href="/decision_tree/">previous post</a> represents a powerful approach for making predictions based on exploring how many variables can predict a particular target. Decision trees are easy to interpret and visualize and can potentially uncover patterns in our data that can not be easily identified through traditional regression methods. However, even small changes in the data can lead to different results and they are not very reproducible on future data. </p>
+<p>Now, let's move on to a related machine learning method, known as Random Forest. This data mining algorithm is a versatile method capable of performing both regression and classification tasks. It can handle a large number of features, and it is helpful for estimating which of our variables are important in the underlying data being modeled.<br />
+It belongs to a larger class of machine learning algorithms called ensemble methods which involve the combination of several models to solve a single prediction problem. Random forest aggregates classification (or regression) trees by growing multiple trees (decision tree forest). It works by generating multiple models which make predictions independently, then those predictions are combined into a single prediction. The trees generated are used to collectively rank the importance of variables in predicting our target of interest rather than being interpreted themselves. Thus we get a sense of the most important predictive variables but not necessarily their relationships to one another. To classify a new object based on attributes, each tree gives a classification, the tree “votes” for that class. The forest chooses the classification having the most votes over all the trees in the forest. By trying lots of decision tree variations we can examine which variables are working best or worst in each tree (feature selection). When a certain tree uses one variable and another doesn't, we can compare the effect of the inclusion/exclusion of that variable. 
+Random forest is great for classification. It can be used to make predictions for categories with multiple possible values. </p>
+<p>Random forest can be prone to overfitting, especially when working with relatively small datasets, such as the extract from the <a href="https://gapminder.org">Gapminder</a> dataset we are going to use to generate a random forest. </p>
+<h3>Running a Random Forest</h3>
+<p>Lets take a look at the results of the random forest analysis performed to evaluate the importance of a series of explanatory variables in predicting our binary, categorical response variable (<code>u5_abovemedian</code>, converted from child mortality rate using the global median of the under5mort variable as a cut point).
+The following explanatory variables were included as possible contributors to the random forest model: <em>mean years in school for women, per capita expenditure on health, income per person, estimated HIV prevalence, urban rate, mean age at 1st marriage of women, corruption perception index, access to improved sanitation facilities, access to improved drinking water sources and teen fertility rate</em>.</p>
 <div class="highlight"><pre>Shape of the training and test samples
-(67, 8)
-(45, 8)
-(67,)
-(45,)
+(63, 10)
+(43, 10)
+(63,)
+(43,)
 </pre></div>
 
 
-<h3>Running a Classification Tree</h3>
-<p>Decision tree analysis was performed to test nonlinear relationships among a series of explanatory variables and a binary, categorical response variable. All possible separations or cut-points are tested and the separation yielding the minimum impurity or error is selected, and subgroups showing similar outcomes but different explanatory variable combinations are generated.
-The following explanatory variables were included as possible contributors to a classification tree model evaluating under-five child mortality (response variable): mean years in school for women,  income per person, estimated HIV prevalence, urban rate, mean age at 1st marriage of women,  access to improved sanitation facilities, access to improved drinking water sources and teen fertility rate.
-The following image is the decision tree that our model generated on the training set.</p>
-<p><img alt="decision_tree" src="https://ernogolya.github.io/images/MachineLearning/decision_tree.png" /></p>
-<p>The resulting tree starts with the split on income per person. If the value for income per person is less than or equal to 2068.54, then the observations move to the left side of the split and include 33 of the 67 countries in the training sample. From this node, another split is made on urban rate, such that among those 33 countries on the left side, 30 countries reported 58.53% or less urban rate while only 3 are above that level. To the left of that split we see that all the 30 countries have child mortality above the global median. To the right of that split a further subdivision was made with the age of first marriage variable. Here 1 country has ageofmarriage &lt;= 22.12 years value, and has child mortality above the world average. On the other hand, those countries above 22.12 years of age of marriage are below the global median child mortality rate.</p>
-<p>Following down the right side of the tree, we can see that child mortality rate is below the global average in those countries where HIV rate &lt;= 3.45 and  access to improved drinking water sources is above 82.5%. Countries with larger HIV rate or hivrate &lt;= 3.45 but below the cutoff point (82.5) of  improved drinking water sources are more likely to have under-five mortality rate above the average.</p>
-<h3>Model Accuracy</h3>
-<p>The confusion matrix shows the correct and incorrect classifications of our decision tree. The diagonal 19 and 19 represents the number of true negative for child mortality, and the number
-of true positives, respectively. The 3, on the bottom left, represents the number of false negatives, classifying countries with child mortality above the global average as countries below the median. The number of false positives on the top right is 4, classifying a country as having child mortality rate above the average while it isn't.</p>
+<p>Much of the code is similar to the code we had written for individual decision trees. The figure above shows the shape of the training and test samples. 63 observations, 60% of the dataset is used as training set. The remaining 40% or 43 observations are used as test set. There are 10 predictors or response variables used in this example. The Random Forest Classifier is initialized with 30 estimators, that is, the random forest is comprised of 30 trees.</p>
 <div class="highlight"><pre>Confusion matrix
-[[19  4]
- [ 3 19]]
-
-Accuracy score
-0.844444444444
+[[24  0]
+ [ 2 17]]
 </pre></div>
 
 
-<p>The accuracy score is approximately  0.84, which suggests that the decision tree model has classified 84% of the sample correctly.</p>
-<h4>Confusion Matrix</h4>
-<p><img alt="confusion_matrix" src="https://ernogolya.github.io/images/MachineLearning/confusion_matrix.png" /></p>
+<p>The figure above shows the output of confusion matrix. The diagonal 24, 17 reflects the number of true negatives and true positives respectively. The diagonal 2, 0 reflects the false negatives and false positives for the categorized variable child mortality.</p>
+<div class="highlight"><pre>Accuracy score
+0.953488372093
+</pre></div>
+
+
+<p>The overall accuracy for the forest is 0.95. So 95% of the countries were classified correctly as child mortality rate being above or below the world average.</p>
+<h3>Relative importance of features</h3>
+<p>The most helpful information to be obtained from a forest is the measured importance for each explanatory variable (feature), based on how many splits each has produced in the 30 tree ensemble. </p>
+<div class="highlight"><pre>Feature ranking:
+1. sanit_pc: (0.154530)
+2. watersource_pc: (0.151709)
+3. incomeperperson: (0.134865)
+4. healthexpend: (0.132546)
+5. womenschool: (0.127546)
+6. ageofmarriage: (0.082550)
+7. corrupt_perc: (0.070926)
+8. teenfertility: (0.060741)
+9. urbanrate: (0.053461)
+10. hivrate: (0.031126)
+</pre></div>
+
+
+<p><img alt="feature_importance" src="https://ernogolya.github.io/images/MachineLearning/feature_importance.png" /></p>
+<p>The table and graph show the generated feature importance scores calculated from the forest of trees that we have grown. As we can see the variables with the highest important score are access to improved sanitation facilities (0.15), access to improved drinking water sources (0.15) and income per person (0.13) while the variable with the lowest important score is estimated HIV prevalence at 0.031. </p>
+<h3>Correct classification rate for different number of trees</h3>
+<p>To determine what growing larger number of trees brings us in terms of correct classification, we can use code that builds different numbers of trees, and provides the correct classification rate for each. We have used 30 trees in our random forest experiment to achieve this. The figure below shows the accuracy score plotted against the number of trees. </p>
+<p><img alt="accuracy_of_trees" src="https://ernogolya.github.io/images/MachineLearning/accuracy_of_trees.png" /></p>
+<p>As we can see, with only one tree the accuracy is about 84%, and it climbs up to 95% (at about 12-13 trees), with the subsequent growing of trees adding no more to the overall accuracy of the model.</p>
 <h3>Python code</h3>
 <div class="highlight"><pre><span class="c"># -*- coding: utf-8 -*-</span>
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Created on Aug 24 2016</span>
-<span class="sd">@author: Ernő Gólya</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="c">#</span>
+<span class="c"># Created on Aug 29 2016</span>
+<span class="c"># @author: Ernő Gólya</span>
+
+<span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
 <span class="kn">from</span> <span class="nn">pandas</span> <span class="kn">import</span> <span class="n">Series</span><span class="p">,</span> <span class="n">DataFrame</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pylab</span> <span class="kn">as</span> <span class="nn">plt</span>
 <span class="kn">from</span> <span class="nn">sklearn.cross_validation</span> <span class="kn">import</span> <span class="n">train_test_split</span>
 <span class="kn">from</span> <span class="nn">sklearn.tree</span> <span class="kn">import</span> <span class="n">DecisionTreeClassifier</span>
 <span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">classification_report</span>
 <span class="kn">import</span> <span class="nn">sklearn.metrics</span>
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">datasets</span>
+<span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="kn">import</span> <span class="n">ExtraTreesClassifier</span>
 
-<span class="c">#pd.set_option(&#39;display.float_format&#39;, lambda x:&#39;%f&#39;%x)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">1234567890</span><span class="p">)</span>
 
+<span class="c"># data management</span>
 <span class="n">inp_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">&quot;custom_gapminder_3.csv&quot;</span><span class="p">)</span>
 
-<span class="n">inp_data1</span> <span class="o">=</span> <span class="n">inp_data</span><span class="p">[[</span><span class="s">&#39;under5mort&#39;</span><span class="p">,</span> 
-                     <span class="s">&#39;womenschool&#39;</span><span class="p">,</span>
-                     <span class="s">&#39;incomeperperson&#39;</span><span class="p">,</span>
-                     <span class="s">&#39;hivrate&#39;</span><span class="p">,</span>
-                     <span class="s">&#39;urbanrate&#39;</span><span class="p">,</span>
-                     <span class="s">&#39;ageofmarriage&#39;</span><span class="p">,</span>
-                     <span class="s">&#39;sanit_pc&#39;</span><span class="p">,</span>
-                     <span class="s">&#39;watersource_pc&#39;</span><span class="p">,</span>
-                     <span class="s">&#39;teenfertility&#39;</span><span class="p">]]</span>
+<span class="n">variables</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;under5mort&#39;</span><span class="p">,</span> <span class="s">&#39;womenschool&#39;</span><span class="p">,</span> <span class="s">&#39;healthexpend&#39;</span><span class="p">,</span> <span class="s">&#39;incomeperperson&#39;</span><span class="p">,</span> <span class="s">&#39;hivrate&#39;</span><span class="p">,</span> <span class="s">&#39;urbanrate&#39;</span><span class="p">,</span>
+                     <span class="s">&#39;ageofmarriage&#39;</span><span class="p">,</span> <span class="s">&#39;corrupt_perc&#39;</span><span class="p">,</span> <span class="s">&#39;sanit_pc&#39;</span><span class="p">,</span> <span class="s">&#39;watersource_pc&#39;</span><span class="p">,</span> <span class="s">&#39;teenfertility&#39;</span><span class="p">]</span>
+
+<span class="n">inp_data1</span> <span class="o">=</span> <span class="n">inp_data</span><span class="p">[</span><span class="n">variables</span><span class="p">]</span>
 
 <span class="n">data</span> <span class="o">=</span> <span class="n">inp_data1</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
-<span class="n">data</span><span class="p">[</span><span class="s">&quot;incomeperperson&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;incomeperperson&quot;</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;coerce&#39;</span><span class="p">)</span>
-<span class="n">data</span><span class="p">[</span><span class="s">&quot;under5mort&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;under5mort&quot;</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;coerce&#39;</span><span class="p">)</span>
-<span class="n">data</span><span class="p">[</span><span class="s">&quot;womenschool&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;womenschool&quot;</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;coerce&#39;</span><span class="p">)</span>
-<span class="n">data</span><span class="p">[</span><span class="s">&quot;hivrate&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;hivrate&quot;</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;coerce&#39;</span><span class="p">)</span>
-<span class="n">data</span><span class="p">[</span><span class="s">&quot;urbanrate&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;urbanrate&quot;</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;coerce&#39;</span><span class="p">)</span>
-<span class="n">data</span><span class="p">[</span><span class="s">&quot;ageofmarriage&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;ageofmarriage&quot;</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;raise&#39;</span><span class="p">)</span>
-<span class="n">data</span><span class="p">[</span><span class="s">&quot;sanit_pc&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;sanit_pc&quot;</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;raise&#39;</span><span class="p">)</span>
-<span class="n">data</span><span class="p">[</span><span class="s">&quot;watersource_pc&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;watersource_pc&quot;</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;raise&#39;</span><span class="p">)</span>
-<span class="n">data</span><span class="p">[</span><span class="s">&quot;teenfertility&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;teenfertility&quot;</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;raise&#39;</span><span class="p">)</span>
+<span class="c"># convert selected variables to numeric</span>
+<span class="k">for</span> <span class="n">variable</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">:</span>
+    <span class="n">data</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">variable</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;coerce&#39;</span><span class="p">)</span>
 
+<span class="c"># delete observations with missing value(s)</span>
 <span class="n">data2</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
 
 <span class="c"># create u5_abovemedian variable (value = 1 if under5mort &gt; under5median, othervise value = 0)</span>
@@ -161,17 +165,18 @@ Accuracy score
         <span class="k">return</span> <span class="mi">1</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="mi">0</span>
+
 <span class="n">data3</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 <span class="n">data3</span><span class="p">[</span><span class="s">&#39;u5_abovemedian&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data3</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">u5_abovemedian</span><span class="p">(</span><span class="n">row</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
-<span class="n">predictors</span> <span class="o">=</span> <span class="n">data3</span><span class="p">[[</span><span class="s">&#39;womenschool&#39;</span><span class="p">,</span>
- <span class="s">&#39;incomeperperson&#39;</span><span class="p">,</span>
- <span class="s">&#39;hivrate&#39;</span><span class="p">,</span>
- <span class="s">&#39;urbanrate&#39;</span><span class="p">,</span>
- <span class="s">&#39;ageofmarriage&#39;</span><span class="p">,</span>
- <span class="s">&#39;sanit_pc&#39;</span><span class="p">,</span>
- <span class="s">&#39;watersource_pc&#39;</span><span class="p">,</span>
- <span class="s">&#39;teenfertility&#39;</span><span class="p">]]</span>
+<span class="k">print</span> <span class="s">&quot;Median of child mortality rate&quot;</span>
+<span class="k">print</span> <span class="n">under5median</span><span class="p">,</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span>
+
+<span class="c"># create list of predictors</span>
+<span class="n">pred_variables</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">variables</span> <span class="k">if</span> <span class="n">n</span> <span class="o">!=</span> <span class="s">&#39;under5mort&#39;</span><span class="p">]</span>
+
+<span class="c"># split dataset into training and testing sets</span>
+<span class="n">predictors</span> <span class="o">=</span> <span class="n">data3</span><span class="p">[</span><span class="n">pred_variables</span><span class="p">]</span>
 <span class="n">targets</span> <span class="o">=</span> <span class="n">data3</span><span class="o">.</span><span class="n">u5_abovemedian</span>
 <span class="n">pred_train</span><span class="p">,</span> <span class="n">pred_test</span><span class="p">,</span> <span class="n">tar_train</span><span class="p">,</span> <span class="n">tar_test</span>  <span class="o">=</span>   <span class="n">train_test_split</span><span class="p">(</span><span class="n">predictors</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=.</span><span class="mi">4</span><span class="p">)</span>
 
@@ -181,87 +186,88 @@ Accuracy score
 <span class="k">print</span> <span class="n">tar_train</span><span class="o">.</span><span class="n">shape</span>
 <span class="k">print</span> <span class="n">tar_test</span><span class="o">.</span><span class="n">shape</span>
 
-<span class="n">classifier</span> <span class="o">=</span> <span class="n">DecisionTreeClassifier</span><span class="p">()</span>
+<span class="c"># build model on training set</span>
+<span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="kn">import</span> <span class="n">RandomForestClassifier</span>
+<span class="n">classifier</span> <span class="o">=</span> <span class="n">RandomForestClassifier</span><span class="p">(</span><span class="n">n_estimators</span> <span class="o">=</span> <span class="mi">30</span><span class="p">)</span>
 <span class="n">classifier</span> <span class="o">=</span> <span class="n">classifier</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">pred_train</span><span class="p">,</span><span class="n">tar_train</span><span class="p">)</span>
-
 <span class="n">predictions</span> <span class="o">=</span> <span class="n">classifier</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">pred_test</span><span class="p">)</span>
 
+<span class="c"># print confusion matrix and accuracy score</span>
 <span class="k">print</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">Confusion matrix&quot;</span>
 <span class="n">cm</span> <span class="o">=</span> <span class="n">sklearn</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">confusion_matrix</span><span class="p">(</span><span class="n">tar_test</span><span class="p">,</span> <span class="n">predictions</span><span class="p">)</span>
 <span class="k">print</span> <span class="n">cm</span>
 <span class="k">print</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">Accuracy score&quot;</span>
 <span class="k">print</span> <span class="n">sklearn</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">accuracy_score</span><span class="p">(</span><span class="n">tar_test</span><span class="p">,</span> <span class="n">predictions</span><span class="p">)</span>
+<span class="k">print</span> <span class="s">&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">tree</span>
-<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span> <span class="k">as</span> <span class="n">StringIO</span>
-<span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">Image</span>
-<span class="kn">from</span> <span class="nn">IPython</span> <span class="kn">import</span> <span class="n">display</span>
-<span class="n">out</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">()</span>
-<span class="n">tree</span><span class="o">.</span><span class="n">export_graphviz</span><span class="p">(</span><span class="n">classifier</span><span class="p">,</span> <span class="n">out_file</span><span class="o">=</span><span class="n">out</span><span class="p">,</span> <span class="n">feature_names</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;womenschool&#39;</span><span class="p">,</span>
- <span class="s">&#39;incomeperperson&#39;</span><span class="p">,</span>
- <span class="s">&#39;hivrate&#39;</span><span class="p">,</span>
- <span class="s">&#39;urbanrate&#39;</span><span class="p">,</span>
- <span class="s">&#39;ageofmarriage&#39;</span><span class="p">,</span>
- <span class="s">&#39;sanit_pc&#39;</span><span class="p">,</span>
- <span class="s">&#39;watersource_pc&#39;</span><span class="p">,</span>
- <span class="s">&#39;teenfertility&#39;</span><span class="p">],</span> <span class="n">filled</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-<span class="kn">import</span> <span class="nn">pydotplus</span>
-<span class="n">graph</span> <span class="o">=</span> <span class="n">pydotplus</span><span class="o">.</span><span class="n">graph_from_dot_data</span><span class="p">(</span><span class="n">out</span><span class="o">.</span><span class="n">getvalue</span><span class="p">())</span>
-<span class="n">display</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">create_png</span><span class="p">())</span>
+<span class="c"># fit an Extra Trees model to the data</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">ExtraTreesClassifier</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">pred_train</span><span class="p">,</span> <span class="n">tar_train</span><span class="p">)</span>
 
-<span class="k">print</span> <span class="n">data3</span><span class="o">.</span><span class="n">dtypes</span>
-<span class="k">print</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">Description of variables&quot;</span>
-<span class="n">data3</span><span class="p">[[</span><span class="s">&#39;under5mort&#39;</span><span class="p">,</span> <span class="s">&#39;womenschool&#39;</span><span class="p">,</span> <span class="s">&#39;incomeperperson&#39;</span><span class="p">,</span> <span class="s">&#39;hivrate&#39;</span><span class="p">,</span> <span class="s">&#39;urbanrate&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
-<span class="n">data3</span><span class="p">[[</span><span class="s">&#39;u5_abovemedian&#39;</span><span class="p">,</span> <span class="s">&#39;ageofmarriage&#39;</span><span class="p">,</span> <span class="s">&#39;sanit_pc&#39;</span><span class="p">,</span> <span class="s">&#39;watersource_pc&#39;</span><span class="p">,</span> <span class="s">&#39;teenfertility&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
-</pre></div>
+<span class="c"># display the relative importance of each attribute</span>
+<span class="k">print</span> <span class="s">&quot;Relative importance of features&quot;</span>
+<span class="k">print</span> <span class="n">model</span><span class="o">.</span><span class="n">feature_importances_</span>
+<span class="k">print</span> <span class="s">&quot;&quot;</span>
 
+<span class="c"># Running a different number of trees and see the effect</span>
+<span class="c"># of that on the accuracy of the prediction</span>
+<span class="n">trees</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+<span class="n">accuracy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
 
-<h4>*Description of Variables</h4>
-<div class="highlight"><pre>under5mort         float64
-womenschool        float64
-incomeperperson    float64
-hivrate            float64
-urbanrate          float64
-ageofmarriage      float64
-sanit_pc           float64
-watersource_pc     float64
-teenfertility      float64
-u5_abovemedian       int64
-dtype: object
+<span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">trees</span><span class="p">)):</span>
+    <span class="n">classifier</span> <span class="o">=</span> <span class="n">RandomForestClassifier</span><span class="p">(</span><span class="n">n_estimators</span> <span class="o">=</span> <span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">classifier</span> <span class="o">=</span> <span class="n">classifier</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">pred_train</span><span class="p">,</span> <span class="n">tar_train</span><span class="p">)</span>
+    <span class="n">predictions</span> <span class="o">=</span> <span class="n">classifier</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">pred_test</span><span class="p">)</span>
+    <span class="n">accuracy</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">sklearn</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">accuracy_score</span><span class="p">(</span><span class="n">tar_test</span><span class="p">,</span> <span class="n">predictions</span><span class="p">)</span>
 
-       under5mort  womenschool  incomeperperson     hivrate   urbanrate
-count  112.000000   112.000000       112.000000  112.000000  112.000000
-mean    42.924107     8.683929      7625.846701    2.221161   53.821964
-std     43.080591     3.566954     11702.931523    4.929565   22.559999
-min      2.400000     1.300000       115.305996    0.060000   10.400000
-25%      8.125000     5.700000       554.610504    0.100000   36.835000
-50%     24.250000     9.150000      1918.152900    0.400000   56.580000
-75%     65.125000    11.900000      6335.202562    1.300000   70.545000
-max    208.800000    14.700000     52301.587179   25.900000  100.000000
+<span class="c"># print the feature ranking</span>
+<span class="n">importances</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">feature_importances_</span>
+<span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">importances</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;Feature ranking:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">predictors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+    <span class="k">print</span> <span class="s">&quot;</span><span class="si">%d</span><span class="s">. </span><span class="si">%s</span><span class="s">: (</span><span class="si">%f</span><span class="s">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">f</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">predictors</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">indices</span><span class="p">[</span><span class="n">f</span><span class="p">]],</span> <span class="n">importances</span><span class="p">[</span><span class="n">indices</span><span class="p">[</span><span class="n">f</span><span class="p">]])</span>
+<span class="n">indices_rev</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">importances</span><span class="p">)</span>
+<span class="n">feature_names</span> <span class="o">=</span> <span class="n">predictors</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">indices_rev</span><span class="p">]</span>
 
-       u5_abovemedian  ageofmarriage    sanit_pc  watersource_pc  \
-count      112.000000     112.000000  112.000000      112.000000   
-mean         0.500000      23.909548   69.196429       86.419643   
-std          0.502247       3.694327   31.640959       15.724909   
-min          0.000000      17.600199    9.000000       40.000000   
-25%          0.000000      21.240263   39.000000       79.750000   
-50%          0.500000      22.995199   81.000000       92.000000   
-75%          1.000000      26.569345   99.000000       99.000000   
-max          1.000000      33.202919  100.000000      100.000000   
+<span class="c"># plot the feature importances of the forest</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">opacity</span> <span class="o">=</span> <span class="mf">0.2</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&quot;Feature importances&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">predictors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">importances</span><span class="p">[</span><span class="n">indices_rev</span><span class="p">],</span> <span class="n">align</span><span class="o">=</span><span class="s">&quot;center&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">opacity</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">predictors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">feature_names</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="s">&#39;horizontal&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">predictors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;Relative Importance&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>    
 
-       teenfertility  
-count     112.000000  
-mean       53.729405  
-std        43.758964  
-min         4.000000  
-25%        15.375000  
-50%        43.000000  
-75%        76.000000  
-max       199.000000  
+<span class="k">print</span> <span class="s">&quot;&quot;</span>
+
+<span class="n">fig</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">trees</span><span class="p">,</span> <span class="n">accuracy</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;Trees&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;Accuracy&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Accuracy of Trees&#39;</span><span class="p">);</span>
 </pre></div></div>
         <hr />
     </div>
 		
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="https://ernogolya.github.io/decision_tree/"><h2>Machine Learning for Data Analysis: Decision Trees</h2></a>
+        <div class= "well small"> p 26 augusztus 2016
+
+by <a class="url fn" href="https://ernogolya.github.io/author/erno-golya.html">Ernő Gólya</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>Decision tree is a type of supervised learning algorithm that is mostly used in classification problems. It is a type of data mining method that allows us to explore the presence of potentially complicated interactions within our data by creating subgroups.</p> <a class="btn btn-info xsmall" href="https://ernogolya.github.io/decision_tree/">read more</a></div>
+    </div>	
+				
 
  
         
@@ -314,24 +320,6 @@ by <a class="url fn" href="https://ernogolya.github.io/author/erno-golya.html">E
 
  </div>
         <div class="summary"><p>This time I will test and interpret this relationship using basic linear regression analysis for the two variable. Simple linear regression is a statistical method that allows us to describe data and explain the relationship between two quantitative variables</p> <a class="btn btn-info xsmall" href="https://ernogolya.github.io/basic_linear_regression/">read more</a></div>
-    </div>	
-				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="https://ernogolya.github.io/describing_data/"><h2>Regression Modeling in Practice: Describing Data</h2></a>
-        <div class= "well small"> v 07 augusztus 2016
-
-by <a class="url fn" href="https://ernogolya.github.io/author/erno-golya.html">Ernő Gólya</a>
- 
-
-
- </div>
-        <div class="summary"><p>My sample provides values for under-five child mortality rate (used as response variable), mean years in school for women, per capita total expenditure on health and income per person (explanatory variables, moderators) for 167 countries from 2009 and 2010.</p> <a class="btn btn-info xsmall" href="https://ernogolya.github.io/describing_data/">read more</a></div>
     </div>	
 				
 <div class="pagination">
@@ -399,7 +387,7 @@ by <a class="url fn" href="https://ernogolya.github.io/author/erno-golya.html">E
     </div>     </div> 
 <footer>
 <br />
-<p><a href="https://ernogolya.github.io">ernogolya</a> &copy; Ernő Gólya 2016</p>
+<p><a href="https://ernogolya.github.io">deviate from the norm</a> &copy; Ernő Gólya 2016</p>
 </footer>
 
 </div> <!-- /container -->
