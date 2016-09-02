@@ -59,8 +59,8 @@
 
     <div class='article'>
         <div class="content-title">
-            <a href="https://ernogolya.github.io/random_forest/"><h1>Machine Learning for Data Analysis: Random Forests</h1></a>
-k 30 augusztus 2016
+            <a href="https://ernogolya.github.io/lasso/"><h1>Machine Learning for Data Analysis: Lasso Regression</h1></a>
+p 02 szeptember 2016
 
 by <a class="url fn" href="https://ernogolya.github.io/author/erno-golya.html">Ernő Gólya</a>
  
@@ -69,187 +69,199 @@ by <a class="url fn" href="https://ernogolya.github.io/author/erno-golya.html">E
  
         </div>
         
-        <div><p>The decision tree method introduced briefly in the <a href="/decision_tree/">previous post</a> represents a powerful approach for making predictions based on exploring how many variables can predict a particular target. Decision trees are easy to interpret and visualize and can potentially uncover patterns in our data that can not be easily identified through traditional regression methods. However, even small changes in the data can lead to different results and they are not very reproducible on future data. </p>
-<p>Now, let's move on to a related machine learning method, known as Random Forest. This data mining algorithm is a versatile method capable of performing both regression and classification tasks. It can handle a large number of features, and it is helpful for estimating which of our variables are important in the underlying data being modeled.<br />
-It belongs to a larger class of machine learning algorithms called ensemble methods which involve the combination of several models to solve a single prediction problem. Random forest aggregates classification (or regression) trees by growing multiple trees (decision tree forest). It works by generating multiple models which make predictions independently, then those predictions are combined into a single prediction. The trees generated are used to collectively rank the importance of variables in predicting our target of interest rather than being interpreted themselves. Thus we get a sense of the most important predictive variables but not necessarily their relationships to one another. To classify a new object based on attributes, each tree gives a classification, the tree “votes” for that class. The forest chooses the classification having the most votes over all the trees in the forest. By trying lots of decision tree variations we can examine which variables are working best or worst in each tree (feature selection). When a certain tree uses one variable and another doesn't, we can compare the effect of the inclusion/exclusion of that variable. 
-Random forest is great for classification. It can be used to make predictions for categories with multiple possible values. </p>
-<p>Random forest can be prone to overfitting, especially when working with relatively small datasets, such as the extract from the <a href="https://gapminder.org">Gapminder</a> dataset we are going to use to generate a random forest. </p>
-<h3>Running a Random Forest</h3>
-<p>Lets take a look at the results of the random forest analysis performed to evaluate the importance of a series of explanatory variables in predicting our binary, categorical response variable (<code>u5_abovemedian</code>, converted from child mortality rate using the global median of the under5mort variable as a cut point).
-The following explanatory variables were included as possible contributors to the random forest model: <em>mean years in school for women, per capita expenditure on health, income per person, estimated HIV prevalence, urban rate, mean age at 1st marriage of women, corruption perception index, access to improved sanitation facilities, access to improved drinking water sources and teen fertility rate</em>.</p>
+        <div><p>LASSO (Least Absolute Shrinkage and Selection Operator) regression analysis is a supervised machine learning method for linear regression models that involves penalizing the absolute size of the regression coefficients. The goal of lasso regression is to obtain the subset of predictors that minimizes prediction error for a quantitative response variable. Penalizing the parameters (imposing a constraint on the model estimates) causes regression coefficients for some variables to shrink towards zero. The larger the penalty applied, the further estimates are shrunk towards zero. Variables with a regression coefficient equal to zero after the shrinkage process are excluded from the model. Variables with non-zero regression coefficients are most strongly associated with the response variable. This is helpful when we want some automatic feature selection, or when dealing with highly correlated predictors. 
+When the relationship between the response variable and the predictors is linear and we have a large number of observations, then OLS regression parameter estimates will have low bias and low variance. However, if we have a relatively small number of observations and a large number of predictors, then the variance of the OLS perimeter estimates will be higher. In this case, Lasso Regression is useful because shrinking the regression coefficient can reduce variance without a significant increase in bias. 
+Lasso Regression can also increase model interpretability, by removing unimportant variables from the model. </p>
+<h3>Running a Lasso Regression Analysis</h3>
+<p>To demonstrate how lasso regression works, let's create a model using the <a href="https://gapminder.org">gapminder</a> dataset in which our goal is to identify a set of variables that best predicts the <strong>under-five child mortality rate</strong> in a country.</p>
+<p>The quantitative response variable measures child mortality per 1,000 live births. The response values range from 2.4 to 208.8. Quantitative predictors include <em>mean years in school for women, per capita expenditure on health, income per person, estimated HIV prevalence, urban rate, mean age at 1st marriage of women, corruption perception index, access to improved sanitation facilities, access to improved drinking water sources, teen fertility rate and alcohol consumption</em>.</p>
+<p>Let's see how we test a Lasso regression model in Python. After deleting observations with missing data on any of the variables using the <em>.dropna()</em> function, we will have 105 countries left in our dataset. In order to have the predictive variables on the same scale (meaning that all the predictors get the same penalty), we standardize the predictors by using the <em>preprocessing.scale()</em> function to have a mean equal to zero and a standard deviation equal to one. Then we use the <em>train_test_split()</em> function to randomly split the dataset into a training dataset consisting of 70% of the total observations (N=73) and a test data set with the other 30% of the observations(N=32). </p>
 <div class="highlight"><pre>Shape of the training and test samples
-(63, 10)
-(43, 10)
-(63,)
-(43,)
+(73, 11)
+(32, 11)
+(73,)
+(32,)
 </pre></div>
 
 
-<p>Much of the code is similar to the code we had written for individual decision trees. The figure above shows the shape of the training and test samples. 63 observations, 60% of the dataset is used as training set. The remaining 40% or 43 observations are used as test set. There are 10 predictors or response variables used in this example. The Random Forest Classifier is initialized with 30 estimators, that is, the random forest is comprised of 30 trees.</p>
-<div class="highlight"><pre>Confusion matrix
-[[24  0]
- [ 2 17]]
+<p>LASSO Regression has a couple of different model selection algorithms. In this example, we will use the LAR Algorithm (Least Angle Regression) with the <em>LassoLarsCV()</em> function. This algorithm starts with no predictors in the model and adds a predictor at each step, first adding a predictor that is most correlated with the response variable and moving it towards the least score estimate
+until there is another predictor.  Then it adds the next predictor to the model and starts the least square estimation process over again with both variables. The LAR algorithm continues with this process until it has tested all the predictors, shrinking parameter estimates and removing predictors with coefficients that have shrunk to zero. 
+We use k-fold cross validation with ten random folds from the training dataset to select the best fitting model and obtain a more accurate estimate of our model’s test error rate by adding the cv=10 parameter to the LassoLarsCV function. 
+The first fold of the training dataset is treated as a validation set, and the model is estimated
+using the remaining nine folds. At each step of the estimation process, when a new predictor is added to the model, the mean-square error for the validation fold is calculated for each
+of the other nine folds and then averaged. The model that produces the lowest mean-square error is selected as the best model to validate using the test dataset. </p>
+<div class="highlight"><pre>Regression coefficients of predictors
+
+      Variable Name  Reg. Coeff
+0           hivrate    6.150202
+1         urbanrate   -3.667812
+2       womenschool  -11.880371
+3      healthexpend    2.665338
+4   incomeperperson    3.432357
+5          sanit_pc  -12.617347
+6    watersource_pc   -2.668104
+7     ageofmarriage   -2.918323
+8     teenfertility    7.218451
+9    alcconsumption    0.000000
+10     corrupt_perc   -3.986865
 </pre></div>
 
 
-<p>The figure above shows the output of confusion matrix. The diagonal 24, 17 reflects the number of true negatives and true positives respectively. The diagonal 2, 0 reflects the false negatives and false positives for the categorized variable child mortality.</p>
-<div class="highlight"><pre>Accuracy score
-0.953488372093
+<p>Predictors with regression coefficients that do not have a value of zero are included in the selected model while variables with regression coefficients equal to zero are removed. The results show that of the 11 variables, 10 were retained in the final model, while 1 variable (alcohol consumption) was removed. During the estimation process, <strong>access to improved sanitation facilities</strong> and <strong>mean years in school for women</strong> were most strongly associated with child mortality (negative association), followed by <strong>teen fertility rate</strong> and <strong>estimated HIV prevalence</strong> showing the strongest positive relationship with the target variable. Other predictors associated with child mortality included per capita expenditure on health, income per person, urban rate, mean age at 1st marriage of women, corruption perception index and access to improved drinking water sources. These 10 variables accounted for 88.35% of the variance in the under-five mortality response variable.</p>
+<h3>Coefficient Progression</h3>
+<p>We can visualize the progression of the regression coefficients through the model selection process  by plotting the change in the regression coefficient by values of the penalty parameter at each step of the selection process. The result can be seen in the graph below. </p>
+<p><img alt="lasso_paths" src="https://ernogolya.github.io/images/MachineLearning/lasso_paths.png" /></p>
+<p>This plot shows the relative importance of the predictor selected at any step of the selection process, how the reggression coefficients changed with the addition of a new predictor at each step, as well as the steps at which each variable entered the model.
+As we know from the list of the regression coefficients, access to improved sanitation facilities, the blue line, has the largest (absolute) regression coefficient. It has entered into the model first, followed by mean years in school for women, the other blue line at step two, teen fertility, the red  line at step three and so on. </p>
+<h3>MSE for each fold</h3>
+<p>The following plot shows the change in the mean square error for the change in the penalty parameter alpha at each step in the selection process. </p>
+<p><img alt="mse_folds" src="https://ernogolya.github.io/images/MachineLearning/mse_folds.png" /></p>
+<p>The average mean square error across all cross validation folds is plotted as the thick black line. We can see the variability across the individual cross-validation folds in the training dataset. The change in the mean square error as variables are added to the model follows the same pattern for each fold. Initially it decreases rapidly and then levels off to a point at which adding more predictors doesn't lead to much reduction in the mean square error. </p>
+<h3>MSE and R-square results</h3>
+<p>We can also calculate the average mean square error and the R-square for the proportion of variance in child mortality, that is explained by the selected model in the training set and in the test set when the selected model is applied to the test data. </p>
+<div class="highlight"><pre>Training data MSE
+201.798852341
+
+Test data MSE
+811.948455593
 </pre></div>
 
 
-<p>The overall accuracy for the forest is 0.95. So 95% of the countries were classified correctly as child mortality rate being above or below the world average.</p>
-<h3>Relative importance of features</h3>
-<p>The most helpful information to be obtained from a forest is the measured importance for each explanatory variable (feature), based on how many splits each has produced in the 30 tree ensemble. </p>
-<div class="highlight"><pre>Feature ranking:
-1. sanit_pc: (0.154530)
-2. watersource_pc: (0.151709)
-3. incomeperperson: (0.134865)
-4. healthexpend: (0.132546)
-5. womenschool: (0.127546)
-6. ageofmarriage: (0.082550)
-7. corrupt_perc: (0.070926)
-8. teenfertility: (0.060741)
-9. urbanrate: (0.053461)
-10. hivrate: (0.031126)
+<p>MSE, representing the difference between the actual observations and the observation values predicted by the model, is used to determine the extent to which the model fits the data and whether the removal or some explanatory variables, simplifying the model, is possible without significantly harming the model's predictive ability.
+The mean square error for the <strong>test set (MSE=201.79)</strong> is much higher than that of the <strong>training set (MSE=811.94)</strong>, suggesting that it is likely that the selected model badly overfit the data (we have created a model that tests well in sample, but has little predictive value when tested out of sample). The selected model is less accurate in predicting under-five mortality in the test data. </p>
+<p>Given the fact that the sample dataset is fairly small (105 observations), including 11 predictors in the model considerably increases it's complexity. The new more complicated function "overfits" the data, and the complex overfitted model will likely perform worse on validation data outside the training dataset. If some variables are removed, we may get a different output which may have a better test mean squared error.</p>
+<div class="highlight"><pre>Training data R-square
+0.883500155514
+
+Test data R-square
+0.649046008446
 </pre></div>
 
 
-<p><img alt="feature_importance" src="https://ernogolya.github.io/images/MachineLearning/feature_importance.png" /></p>
-<p>The table and graph show the generated feature importance scores calculated from the forest of trees that we have grown. As we can see the variables with the highest important score are access to improved sanitation facilities (0.15), access to improved drinking water sources (0.15) and income per person (0.13) while the variable with the lowest important score is estimated HIV prevalence at 0.031. </p>
-<h3>Correct classification rate for different number of trees</h3>
-<p>To determine what growing larger number of trees brings us in terms of correct classification, we can use code that builds different numbers of trees, and provides the correct classification rate for each. We have used 30 trees in our random forest experiment to achieve this. The figure below shows the accuracy score plotted against the number of trees. </p>
-<p><img alt="accuracy_of_trees" src="https://ernogolya.github.io/images/MachineLearning/accuracy_of_trees.png" /></p>
-<p>As we can see, with only one tree the accuracy is about 84%, and it climbs up to 95% (at about 12-13 trees), with the subsequent growing of trees adding no more to the overall accuracy of the model.</p>
+<p>The R-square values are 0.88 and 0.64, indicating that the <strong>selected model explained 88% and 64% of the variance</strong> in child mortality for the training and test sets, respectively. We can see hat the model we obtained from the training dataset could explain 64% of the child mortality rate variance for the countries in the test dataset.</p>
 <h3>Python code</h3>
 <div class="highlight"><pre><span class="c"># -*- coding: utf-8 -*-</span>
 <span class="c">#</span>
-<span class="c"># Created on Aug 29 2016</span>
+<span class="c"># Created on Sept 01 2016</span>
 <span class="c"># @author: Ernő Gólya</span>
 
 <span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
-<span class="kn">from</span> <span class="nn">pandas</span> <span class="kn">import</span> <span class="n">Series</span><span class="p">,</span> <span class="n">DataFrame</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pylab</span> <span class="kn">as</span> <span class="nn">plt</span>
 <span class="kn">from</span> <span class="nn">sklearn.cross_validation</span> <span class="kn">import</span> <span class="n">train_test_split</span>
-<span class="kn">from</span> <span class="nn">sklearn.tree</span> <span class="kn">import</span> <span class="n">DecisionTreeClassifier</span>
-<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">classification_report</span>
-<span class="kn">import</span> <span class="nn">sklearn.metrics</span>
-<span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">datasets</span>
-<span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="kn">import</span> <span class="n">ExtraTreesClassifier</span>
-
-<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">1234567890</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LassoLarsCV</span>
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">preprocessing</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">mean_squared_error</span>
 
 <span class="c"># data management</span>
-<span class="n">inp_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">&quot;custom_gapminder_3.csv&quot;</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">&quot;custom_gapminder_3.csv&quot;</span><span class="p">)</span>
 
 <span class="n">variables</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;under5mort&#39;</span><span class="p">,</span> <span class="s">&#39;womenschool&#39;</span><span class="p">,</span> <span class="s">&#39;healthexpend&#39;</span><span class="p">,</span> <span class="s">&#39;incomeperperson&#39;</span><span class="p">,</span> <span class="s">&#39;hivrate&#39;</span><span class="p">,</span> <span class="s">&#39;urbanrate&#39;</span><span class="p">,</span>
-                     <span class="s">&#39;ageofmarriage&#39;</span><span class="p">,</span> <span class="s">&#39;corrupt_perc&#39;</span><span class="p">,</span> <span class="s">&#39;sanit_pc&#39;</span><span class="p">,</span> <span class="s">&#39;watersource_pc&#39;</span><span class="p">,</span> <span class="s">&#39;teenfertility&#39;</span><span class="p">]</span>
+           <span class="s">&#39;ageofmarriage&#39;</span><span class="p">,</span> <span class="s">&#39;corrupt_perc&#39;</span><span class="p">,</span> <span class="s">&#39;sanit_pc&#39;</span><span class="p">,</span> <span class="s">&#39;watersource_pc&#39;</span><span class="p">,</span> <span class="s">&#39;teenfertility&#39;</span><span class="p">,</span> <span class="s">&#39;alcconsumption&#39;</span><span class="p">]</span>
 
-<span class="n">inp_data1</span> <span class="o">=</span> <span class="n">inp_data</span><span class="p">[</span><span class="n">variables</span><span class="p">]</span>
-
-<span class="n">data</span> <span class="o">=</span> <span class="n">inp_data1</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">variables</span><span class="p">]</span>
 
 <span class="c"># convert selected variables to numeric</span>
 <span class="k">for</span> <span class="n">variable</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">:</span>
     <span class="n">data</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">variable</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;coerce&#39;</span><span class="p">)</span>
 
 <span class="c"># delete observations with missing value(s)</span>
-<span class="n">data2</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
-
-<span class="c"># create u5_abovemedian variable (value = 1 if under5mort &gt; under5median, othervise value = 0)</span>
-<span class="n">under5median</span> <span class="o">=</span> <span class="n">data2</span><span class="p">[</span><span class="s">&#39;under5mort&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">median</span><span class="p">()</span>
-<span class="k">def</span> <span class="nf">u5_abovemedian</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="s">&#39;under5mort&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">under5median</span><span class="p">:</span>
-        <span class="k">return</span> <span class="mi">1</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="mi">0</span>
-
-<span class="n">data3</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-<span class="n">data3</span><span class="p">[</span><span class="s">&#39;u5_abovemedian&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data3</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">u5_abovemedian</span><span class="p">(</span><span class="n">row</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-
-<span class="k">print</span> <span class="s">&quot;Median of child mortality rate&quot;</span>
-<span class="k">print</span> <span class="n">under5median</span><span class="p">,</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="n">data1</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+<span class="n">data2</span> <span class="o">=</span> <span class="n">data1</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
 <span class="c"># create list of predictors</span>
 <span class="n">pred_variables</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">variables</span> <span class="k">if</span> <span class="n">n</span> <span class="o">!=</span> <span class="s">&#39;under5mort&#39;</span><span class="p">]</span>
 
-<span class="c"># split dataset into training and testing sets</span>
-<span class="n">predictors</span> <span class="o">=</span> <span class="n">data3</span><span class="p">[</span><span class="n">pred_variables</span><span class="p">]</span>
-<span class="n">targets</span> <span class="o">=</span> <span class="n">data3</span><span class="o">.</span><span class="n">u5_abovemedian</span>
-<span class="n">pred_train</span><span class="p">,</span> <span class="n">pred_test</span><span class="p">,</span> <span class="n">tar_train</span><span class="p">,</span> <span class="n">tar_test</span>  <span class="o">=</span>   <span class="n">train_test_split</span><span class="p">(</span><span class="n">predictors</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=.</span><span class="mi">4</span><span class="p">)</span>
+<span class="c"># standardize predictors to have mean=0 and sd=1</span>
+<span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">pred_variables</span><span class="p">:</span>
+    <span class="n">data2</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span> <span class="o">=</span> <span class="n">preprocessing</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">data2</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s">&#39;float64&#39;</span><span class="p">))</span>
 
+<span class="c"># create separate data sets for predictor variables and target variable</span>
+<span class="n">predictors</span> <span class="o">=</span> <span class="n">data2</span><span class="p">[</span><span class="n">pred_variables</span><span class="p">]</span>
+<span class="n">targets</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">under5mort</span>
+
+<span class="c"># split dataset into training and testing sets</span>
+<span class="n">pred_train</span><span class="p">,</span> <span class="n">pred_test</span><span class="p">,</span> <span class="n">tar_train</span><span class="p">,</span> <span class="n">tar_test</span>  <span class="o">=</span>   <span class="n">train_test_split</span><span class="p">(</span><span class="n">predictors</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span>
+
+<span class="c"># specify the lasso regression model</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">LassoLarsCV</span><span class="p">(</span><span class="n">cv</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">precompute</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">pred_train</span><span class="p">,</span><span class="n">tar_train</span><span class="p">)</span>
+
+<span class="c"># print variable names and regression coefficients</span>
+<span class="n">d</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">predictors</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">coef_</span><span class="p">))</span>
+<span class="k">print</span> <span class="s">&quot;{:&lt;20} {:&lt;25}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&#39;Variable Name&#39;</span><span class="p">,</span><span class="s">&#39;Regression Coefficient&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">num</span> <span class="o">=</span> <span class="n">v</span>
+    <span class="k">print</span> <span class="s">&quot;{:&lt;20} {:&lt;25}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">num</span><span class="p">)</span>
+
+<span class="c"># another way to print variable names and regression coefficients</span>
+<span class="n">rc_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;Variable Name&#39;</span><span class="p">,</span> <span class="s">&#39;Reg. Coeff&#39;</span><span class="p">])</span>
+<span class="k">print</span> <span class="n">rc_data</span>
+
+<span class="c"># plot coefficient progression</span>
+<span class="n">m_log_alphas</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">alphas_</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">m_log_alphas</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">coef_path_</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">alpha_</span><span class="p">),</span> <span class="n">linestyle</span><span class="o">=</span><span class="s">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;alpha CV&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;Regression Coefficients&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;-log(alpha)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Regression Coefficients Progression for Lasso Paths&#39;</span><span class="p">);</span>
+
+<span class="c"># plot mean square error for each fold</span>
+<span class="n">m_log_alphascv</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">cv_alphas_</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">m_log_alphascv</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">cv_mse_path_</span><span class="p">,</span> <span class="s">&#39;:&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">m_log_alphascv</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">cv_mse_path_</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">),</span> <span class="s">&#39;k&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;Average across the folds&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">alpha_</span><span class="p">),</span> <span class="n">linestyle</span><span class="o">=</span><span class="s">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;alpha CV&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;-log(alpha)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;Mean squared error&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Mean squared error on each fold&#39;</span><span class="p">);</span>
+
+<span class="c"># MSE from training and test data</span>
+<span class="n">train_error</span> <span class="o">=</span> <span class="n">mean_squared_error</span><span class="p">(</span><span class="n">tar_train</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">pred_train</span><span class="p">))</span>
+<span class="n">test_error</span> <span class="o">=</span> <span class="n">mean_squared_error</span><span class="p">(</span><span class="n">tar_test</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">pred_test</span><span class="p">))</span>
+<span class="k">print</span> <span class="s">&#39;Training data MSE&#39;</span>
+<span class="k">print</span> <span class="n">train_error</span>
+<span class="k">print</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">Test data MSE&#39;</span>
+<span class="k">print</span> <span class="n">test_error</span>
+
+<span class="c"># R-square from training and test data</span>
+<span class="n">rsquared_train</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">pred_train</span><span class="p">,</span> <span class="n">tar_train</span><span class="p">)</span>
+<span class="n">rsquared_test</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">pred_test</span><span class="p">,</span> <span class="n">tar_test</span><span class="p">)</span>
+<span class="k">print</span> <span class="s">&#39;Training data R-square&#39;</span>
+<span class="k">print</span> <span class="n">rsquared_train</span>
+<span class="k">print</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">Test data R-square&#39;</span>
+<span class="k">print</span> <span class="n">rsquared_test</span>
+
+<span class="c"># print sape of training and test samples</span>
 <span class="k">print</span> <span class="s">&quot;Shape of the training and test samples&quot;</span>
 <span class="k">print</span> <span class="n">pred_train</span><span class="o">.</span><span class="n">shape</span>
 <span class="k">print</span> <span class="n">pred_test</span><span class="o">.</span><span class="n">shape</span>
 <span class="k">print</span> <span class="n">tar_train</span><span class="o">.</span><span class="n">shape</span>
 <span class="k">print</span> <span class="n">tar_test</span><span class="o">.</span><span class="n">shape</span>
-
-<span class="c"># build model on training set</span>
-<span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="kn">import</span> <span class="n">RandomForestClassifier</span>
-<span class="n">classifier</span> <span class="o">=</span> <span class="n">RandomForestClassifier</span><span class="p">(</span><span class="n">n_estimators</span> <span class="o">=</span> <span class="mi">30</span><span class="p">)</span>
-<span class="n">classifier</span> <span class="o">=</span> <span class="n">classifier</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">pred_train</span><span class="p">,</span><span class="n">tar_train</span><span class="p">)</span>
-<span class="n">predictions</span> <span class="o">=</span> <span class="n">classifier</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">pred_test</span><span class="p">)</span>
-
-<span class="c"># print confusion matrix and accuracy score</span>
-<span class="k">print</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">Confusion matrix&quot;</span>
-<span class="n">cm</span> <span class="o">=</span> <span class="n">sklearn</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">confusion_matrix</span><span class="p">(</span><span class="n">tar_test</span><span class="p">,</span> <span class="n">predictions</span><span class="p">)</span>
-<span class="k">print</span> <span class="n">cm</span>
-<span class="k">print</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">Accuracy score&quot;</span>
-<span class="k">print</span> <span class="n">sklearn</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">accuracy_score</span><span class="p">(</span><span class="n">tar_test</span><span class="p">,</span> <span class="n">predictions</span><span class="p">)</span>
-<span class="k">print</span> <span class="s">&quot;&quot;</span>
-
-<span class="c"># fit an Extra Trees model to the data</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">ExtraTreesClassifier</span><span class="p">()</span>
-<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">pred_train</span><span class="p">,</span> <span class="n">tar_train</span><span class="p">)</span>
-
-<span class="c"># display the relative importance of each attribute</span>
-<span class="k">print</span> <span class="s">&quot;Relative importance of features&quot;</span>
-<span class="k">print</span> <span class="n">model</span><span class="o">.</span><span class="n">feature_importances_</span>
-<span class="k">print</span> <span class="s">&quot;&quot;</span>
-
-<span class="c"># Running a different number of trees and see the effect</span>
-<span class="c"># of that on the accuracy of the prediction</span>
-<span class="n">trees</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
-<span class="n">accuracy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
-
-<span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">trees</span><span class="p">)):</span>
-    <span class="n">classifier</span> <span class="o">=</span> <span class="n">RandomForestClassifier</span><span class="p">(</span><span class="n">n_estimators</span> <span class="o">=</span> <span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="n">classifier</span> <span class="o">=</span> <span class="n">classifier</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">pred_train</span><span class="p">,</span> <span class="n">tar_train</span><span class="p">)</span>
-    <span class="n">predictions</span> <span class="o">=</span> <span class="n">classifier</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">pred_test</span><span class="p">)</span>
-    <span class="n">accuracy</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">sklearn</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">accuracy_score</span><span class="p">(</span><span class="n">tar_test</span><span class="p">,</span> <span class="n">predictions</span><span class="p">)</span>
-
-<span class="c"># print the feature ranking</span>
-<span class="n">importances</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">feature_importances_</span>
-<span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">importances</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-<span class="k">print</span><span class="p">(</span><span class="s">&quot;Feature ranking:&quot;</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">predictors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
-    <span class="k">print</span> <span class="s">&quot;</span><span class="si">%d</span><span class="s">. </span><span class="si">%s</span><span class="s">: (</span><span class="si">%f</span><span class="s">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">f</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">predictors</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">indices</span><span class="p">[</span><span class="n">f</span><span class="p">]],</span> <span class="n">importances</span><span class="p">[</span><span class="n">indices</span><span class="p">[</span><span class="n">f</span><span class="p">]])</span>
-<span class="n">indices_rev</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">importances</span><span class="p">)</span>
-<span class="n">feature_names</span> <span class="o">=</span> <span class="n">predictors</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">indices_rev</span><span class="p">]</span>
-
-<span class="c"># plot the feature importances of the forest</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
-<span class="n">opacity</span> <span class="o">=</span> <span class="mf">0.2</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&quot;Feature importances&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">predictors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">importances</span><span class="p">[</span><span class="n">indices_rev</span><span class="p">],</span> <span class="n">align</span><span class="o">=</span><span class="s">&quot;center&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">opacity</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">predictors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">feature_names</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="s">&#39;horizontal&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">predictors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;Relative Importance&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>    
-
-<span class="k">print</span> <span class="s">&quot;&quot;</span>
-
-<span class="n">fig</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">trees</span><span class="p">,</span> <span class="n">accuracy</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;Trees&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;Accuracy&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Accuracy of Trees&#39;</span><span class="p">);</span>
 </pre></div></div>
         <hr />
     </div>
 		
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="https://ernogolya.github.io/random_forest/"><h2>Machine Learning for Data Analysis: Random Forests</h2></a>
+        <div class= "well small"> k 30 augusztus 2016
+
+by <a class="url fn" href="https://ernogolya.github.io/author/erno-golya.html">Ernő Gólya</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>Random Forest is a versatile method capable of performing both regression and classification tasks. It can handle a large number of features, and it is helpful for estimating which of our variables are important in the underlying data being modeled.</p> <a class="btn btn-info xsmall" href="https://ernogolya.github.io/random_forest/">read more</a></div>
+    </div>	
+				
 
  
         
