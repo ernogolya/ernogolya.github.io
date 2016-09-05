@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>deviate from the norm - data science</title>
+    <title>deviate from the form - data science</title>
     <meta name="description" content="">
     <meta name="author" content="Ernő Gólya">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -34,7 +34,7 @@
              <span class="icon-bar"></span>
          </a>
 
-        <a class="brand" href="https://ernogolya.github.io">deviate from the norm</a>
+        <a class="brand" href="https://ernogolya.github.io">deviate from the form</a>
 
         <div class="nav-collapse">
         <ul class="nav">
@@ -59,8 +59,8 @@
 
     <div class='article'>
         <div class="content-title">
-            <a href="https://ernogolya.github.io/lasso/"><h1>Machine Learning for Data Analysis: Lasso Regression</h1></a>
-p 02 szeptember 2016
+            <a href="https://ernogolya.github.io/k_means_cluster/"><h1>Machine Learning for Data Analysis: K-Means Cluster Analysis</h1></a>
+v 04 szeptember 2016
 
 by <a class="url fn" href="https://ernogolya.github.io/author/erno-golya.html">Ernő Gólya</a>
  
@@ -69,80 +69,128 @@ by <a class="url fn" href="https://ernogolya.github.io/author/erno-golya.html">E
  
         </div>
         
-        <div><p>LASSO (Least Absolute Shrinkage and Selection Operator) regression analysis is a supervised machine learning method for linear regression models that involves penalizing the absolute size of the regression coefficients. The goal of lasso regression is to obtain the subset of predictors that minimizes prediction error for a quantitative response variable. Penalizing the parameters (imposing a constraint on the model estimates) causes regression coefficients for some variables to shrink towards zero. The larger the penalty applied, the further estimates are shrunk towards zero. Variables with a regression coefficient equal to zero after the shrinkage process are excluded from the model. Variables with non-zero regression coefficients are most strongly associated with the response variable. This is helpful when we want some automatic feature selection, or when dealing with highly correlated predictors. 
-When the relationship between the response variable and the predictors is linear and we have a large number of observations, then OLS regression parameter estimates will have low bias and low variance. However, if we have a relatively small number of observations and a large number of predictors, then the variance of the OLS perimeter estimates will be higher. In this case, Lasso Regression is useful because shrinking the regression coefficient can reduce variance without a significant increase in bias. 
-Lasso Regression can also increase model interpretability, by removing unimportant variables from the model. </p>
-<h3>Running a Lasso Regression Analysis</h3>
-<p>To demonstrate how lasso regression works, let's create a model using the <a href="https://gapminder.org">gapminder</a> dataset in which our goal is to identify a set of variables that best predicts the <strong>under-five child mortality rate</strong> in a country.</p>
-<p>The quantitative response variable measures child mortality per 1,000 live births. The response values range from 2.4 to 208.8. Quantitative predictors include <em>mean years in school for women, per capita expenditure on health, income per person, estimated HIV prevalence, urban rate, mean age at 1st marriage of women, corruption perception index, access to improved sanitation facilities, access to improved drinking water sources, teen fertility rate and alcohol consumption</em>.</p>
-<p>Let's see how we test a Lasso regression model in Python. After deleting observations with missing data on any of the variables using the <em>.dropna()</em> function, we will have 105 countries left in our dataset. In order to have the predictive variables on the same scale (meaning that all the predictors get the same penalty), we standardize the predictors by using the <em>preprocessing.scale()</em> function to have a mean equal to zero and a standard deviation equal to one. Then we use the <em>train_test_split()</em> function to randomly split the dataset into a training dataset consisting of 70% of the total observations (N=73) and a test data set with the other 30% of the observations(N=32). </p>
-<div class="highlight"><pre>Shape of the training and test samples
-(73, 11)
-(32, 11)
-(73,)
-(32,)
+        <div><p>Cluster analysis is an unsupervised machine learning method that partitions the observations in a dataset into a smaller set of clusters where each observation belongs to only one cluster. The goal of clustering is to group observations into a user-specified number (k) of subsets based on their similarity of responses on multiple variables. The correct choice of k is often ambiguous, with interpretations depending on the shape and scale of the distribution of points in a dataset and our desired clustering resolution.
+Our goal is to obtain clusters that have less variance within clusters and more variance between clusters. In other words, we want observations within clusters to be more similar to each other in their pattern of response on the clustering variables than they are to observations in other clusters. More variance between clusters means the clusters are distinct, there is little or no overlap between them. </p>
+<p>One of the most commonly used clustering algorithms is k-means cluster analysis, which is conducted by creating a space that has as many dimensions as the number of input variables. The distance between observations in this space is used to determine how the data points are grouped. 
+The most common way to determine how close observations are to each other is drawing a straight line between pairs of observations, and calculating the distance between them based on the length of the line (Euclidean distance). 
+K-means uses k centroids (points which are the center of a cluster) to define clusters. A point is considered to be in a particular cluster if it is closer to that cluster's centroid than any other centroid. K-means finds the best centroids by alternating between assigning data points to clusters based on the current centroids and chosing centroids based on the current assignment of data points to clusters. </p>
+<h2>Running a K-Means Cluster Analysis</h2>
+<p>We run a k-means cluster analysis to identify subgroups of countries based on their similarity of responses on 9 variables that represent characteristics that could have an impact on under-five child mortality. Our goal may be to develop a few targeted interventions to improve child mortality statistics of specific groups of countries based on the characteristics of countries in the clusters. 
+To do this we use a subset of the variables from the <a href="https://gapminder.org">gapminder</a> dataset. 
+Basic data management tasks include deleting observations with missing data on any of the variables, creating a dataset that includes only our clustering variables, splitting it into training and test datasets and standardizing clustering variables. </p>
+<p>We validate the clusters by excluding under-five mortality rate from the cluster analysis in order to find out if there are differences between the clusters in child mortality. If we do find differences, then we have some evidence that the clusters are valid in terms of identifying subgroups of countries. The specific patterns of child mortality rate related to characteristics on the clustering variables might lead to proposed actions that are more successful in decreasing child mortality rate. </p>
+<h3>Results of a K-Means Cluster Analysis</h3>
+<p>A k-means cluster analysis was run to identify underlying subgroups of countries based on their similarity of responses on 9 variables that represent characteristics that could have an impact on under-five child mortality rate. Clustering variables include <em>mean years in school for women, per capita expenditure on health, income per person, estimated HIV prevalence, urban rate, mean age at 1st marriage of women, access to improved sanitation facilities, access to improved drinking water sources and teen fertility rate</em>. All clustering variables were standardized to have a mean of 0 and a standard deviation of 1. 
+Data were randomly split into a training set that included 70% of the observations (N=74) and a test set that included 30% of the observations (N=32). For simplicity, analysis was conducted only on the training dataset.</p>
+<h4>The Elbow Method</h4>
+<p>After running a series of k-means cluster analyses on the training data specifying k=1-9 clusters, using Euclidean distance, the variance in the clustering variables that was accounted for by the clusters was plotted for each of the nine cluster solutions in an elbow curve to provide guidance for choosing the optimal number of clusters. </p>
+<h5>Figure 1. Elbow curve of average distance values for the nine cluster solutions</h5>
+<p><img alt="k_elbow" src="https://ernogolya.github.io/images/MachineLearning/k_elbow.png" /></p>
+<p>If we plot the average distance explained by the clusters against the number of clusters, the first clusters will add much information, but at some point the marginal gain will drop, giving an angle in the graph. The number of clusters is chosen at this point (elbow).
+The elbow curve in Figure 1 is quite conclusive, suggesting that the 3-cluster solution might be evaluated.
+The average distance decreases as the number of clusters increases. Since the goal of cluster analysis is to minimize the distance between observations and the centroids of their assigned clusters we want to choose the fewest number of clusters that provides a low average distance. The bend at 3 clusters shows where the average distance value decreases abruptly, that is, it is leveling off such that adding more clusters doesn't decrease the average distance as much. 
+The results presented below are for an interpretation of this 3-cluster solution. </p>
+<h4>Canonical Discriminant Analysis</h4>
+<p>We can plot the clusters in a scatterplot to see whether or not they overlap with each other in terms of their locations in the p dimensional space. However with 9 clustering variables this would mean 9 dimensions. This would be impossible to visualize in a scatterplot, but we use the canonical discriminate analysis, which is a data reduction technique that creates a smaller number of variables that are linear combinations of the clustering variables. Canonical discriminant analysis helps us to reduce the 9 clustering variable down a few variables that accounted for most of the variance in the clustering variables. The scatterplot (Figure 2) shows reasonably clear separation of the 3 clusters for the first two canonical variables.
+Clusters are distinct and do not overlap with the other clusters, observations in clusters are slightly dispersed suggesting relatively higher variance within clusters.  The results of the elbow curve and this plot indicate that the 3-cluster solution is a good solution.</p>
+<h5>Figure 2. Plot of the first two canonical variables for the clustering variables by cluster.</h5>
+<p><img alt="canonical_vars" src="https://ernogolya.github.io/images/MachineLearning/canonical_vars.png" /></p>
+<div class="highlight"><pre>Cluster num., number of observations, color:
+0    24    blue
+1    32    green
+2    18    red
 </pre></div>
 
 
-<p>LASSO Regression has a couple of different model selection algorithms. In this example, we will use the LAR Algorithm (Least Angle Regression) with the <em>LassoLarsCV()</em> function. This algorithm starts with no predictors in the model and adds a predictor at each step, first adding a predictor that is most correlated with the response variable and moving it towards the least score estimate
-until there is another predictor.  Then it adds the next predictor to the model and starts the least square estimation process over again with both variables. The LAR algorithm continues with this process until it has tested all the predictors, shrinking parameter estimates and removing predictors with coefficients that have shrunk to zero. 
-We use k-fold cross validation with ten random folds from the training dataset to select the best fitting model and obtain a more accurate estimate of our model’s test error rate by adding the cv=10 parameter to the LassoLarsCV function. 
-The first fold of the training dataset is treated as a validation set, and the model is estimated
-using the remaining nine folds. At each step of the estimation process, when a new predictor is added to the model, the mean-square error for the validation fold is calculated for each
-of the other nine folds and then averaged. The model that produces the lowest mean-square error is selected as the best model to validate using the test dataset. </p>
-<div class="highlight"><pre>Regression coefficients of predictors
+<h4>Pattern of Means</h4>
+<p>Next we can take a look at the pattern of means on the clustering variables for each cluster to see whether they are distinct and meaningful.</p>
+<div class="highlight"><pre>Number of countries per clusters
+1    32
+0    24
+2    18
 
-      Variable Name  Reg. Coeff
-0           hivrate    6.150202
-1         urbanrate   -3.667812
-2       womenschool  -11.880371
-3      healthexpend    2.665338
-4   incomeperperson    3.432357
-5          sanit_pc  -12.617347
-6    watersource_pc   -2.668104
-7     ageofmarriage   -2.918323
-8     teenfertility    7.218451
-9    alcconsumption    0.000000
-10     corrupt_perc   -3.986865
+Clustering variable means by cluster
+             index  womenschool  healthexpend  incomeperperson     hivrate  
+cluster                                                                    
+0        79.833333    -1.160504     -0.574122        -0.634139    0.423666   
+1        76.562500     0.243558     -0.390768        -0.369349   -0.134883   
+2        70.333333     1.095218      1.764662         1.779003   -0.410184   
+
+         urbanrate  ageofmarriage  sanit_pc  watersource_pc  teenfertility  
+cluster                                                                     
+0        -0.982331      -0.991616 -1.329619       -1.405727       1.127897  
+1         0.068667      -0.033505  0.402721        0.456666      -0.191938  
+2         1.096177       1.350225  0.937958        0.842825      -0.907623  
 </pre></div>
 
 
-<p>Predictors with regression coefficients that do not have a value of zero are included in the selected model while variables with regression coefficients equal to zero are removed. The results show that of the 11 variables, 10 were retained in the final model, while 1 variable (alcohol consumption) was removed. During the estimation process, <strong>access to improved sanitation facilities</strong> and <strong>mean years in school for women</strong> were most strongly associated with child mortality (negative association), followed by <strong>teen fertility rate</strong> and <strong>estimated HIV prevalence</strong> showing the strongest positive relationship with the target variable. Other predictors associated with child mortality included per capita expenditure on health, income per person, urban rate, mean age at 1st marriage of women, corruption perception index and access to improved drinking water sources. These 10 variables accounted for 88.35% of the variance in the under-five mortality response variable.</p>
-<h3>Coefficient Progression</h3>
-<p>We can visualize the progression of the regression coefficients through the model selection process  by plotting the change in the regression coefficient by values of the penalty parameter at each step of the selection process. The result can be seen in the graph below. </p>
-<p><img alt="lasso_paths" src="https://ernogolya.github.io/images/MachineLearning/lasso_paths.png" /></p>
-<p>This plot shows the relative importance of the predictor selected at any step of the selection process, how the reggression coefficients changed with the addition of a new predictor at each step, as well as the steps at which each variable entered the model.
-As we know from the list of the regression coefficients, access to improved sanitation facilities, the blue line, has the largest (absolute) regression coefficient. It has entered into the model first, followed by mean years in school for women, the other blue line at step two, teen fertility, the red  line at step three and so on. </p>
-<h3>MSE for each fold</h3>
-<p>The following plot shows the change in the mean square error for the change in the penalty parameter alpha at each step in the selection process. </p>
-<p><img alt="mse_folds" src="https://ernogolya.github.io/images/MachineLearning/mse_folds.png" /></p>
-<p>The average mean square error across all cross validation folds is plotted as the thick black line. We can see the variability across the individual cross-validation folds in the training dataset. The change in the mean square error as variables are added to the model follows the same pattern for each fold. Initially it decreases rapidly and then levels off to a point at which adding more predictors doesn't lead to much reduction in the mean square error. </p>
-<h3>MSE and R-square results</h3>
-<p>We can also calculate the average mean square error and the R-square for the proportion of variance in child mortality, that is explained by the selected model in the training set and in the test set when the selected model is applied to the test data. </p>
-<div class="highlight"><pre>Training data MSE
-201.798852341
+<p>The means on the clustering variables show that, compared to the other clusters, countries in <strong>cluster 0 (blue)</strong> are part of the most disadvantaged areas in terms of the scores of those factors that may have the most significant impact on child mortality. They have the lowest levels of <em>mean years in school for women, per capita expenditure on health, income per person, urban rate, mean age at 1st marriage of women, access to improved sanitation facilities and access to improved drinking water sources</em>. They also have the highest levels of <em>estimated HIV prevalence and teen fertility rate</em>.</p>
+<p><strong>Cluster 1 (green)</strong> appears to include those countries that have moderate levels on all of the clustering variables.</p>
+<p>On the other hand, <strong>cluster 2 (red)</strong> clearly includes countries with the most favorable indicator data. Countries in cluster 2 have the highest level of <em>mean years in school for women, per capita expenditure on health, income per person, urban rate, mean age at 1st marriage of women, access to improved sanitation facilities and access to improved drinking water sources</em>. They also have the lowest levels of <em>estimated HIV prevalence and teen fertility rate</em>. These countries are likely to have the lowest child mortality rates.</p>
+<h4>ANOVA - How the clusters differ on under-five mortality</h4>
+<p>In order to externally validate the clusters, an Analysis of Variance (ANOVA) was conducted to test for significant differences between the clusters on under-five child mortality rate. A tukey test was used for post hoc comparisons between the clusters. </p>
+<pre>
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:             under5mort   R-squared:                       0.745
+Model:                            OLS   Adj. R-squared:                  0.738
+Method:                 Least Squares   F-statistic:                     103.8
+Date:                Sun, 04 Sep 2016   Prob (F-statistic):           8.34e-22
+Time:                        10:23:45   Log-Likelihood:                -330.43
+No. Observations:                  74   AIC:                             666.9
+Df Residuals:                      71   BIC:                             673.8
+Df Model:                           2                                         
+Covariance Type:            nonrobust                                         
+===================================================================================
+                      coef    std err          t      P>|t|      [95.0% Conf. Int.]
+-----------------------------------------------------------------------------------
+Intercept          92.8000      4.384     21.167      0.000        84.058   101.542
+C(cluster)[T.1]   -67.3437      5.800    -11.612      0.000       -78.908   -55.780
+C(cluster)[T.2]   -88.1333      6.697    -13.160      0.000      -101.486   -74.780
+==============================================================================
+Omnibus:                       18.534   Durbin-Watson:                   1.704
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):               26.638
+Skew:                           1.016   Prob(JB):                     1.64e-06
+Kurtosis:                       5.123   Cond. No.                         3.86
+==============================================================================
 
-Test data MSE
-811.948455593
+Warnings:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+</pre>
+
+<p>Results indicate significant differences between the clusters on child mortality with an <strong>F(2, 74)=103.8 and a p&lt;.0001</strong>. The tukey post hoc comparisons show significant differences between all clusters on child mortality. 
+Countries in <strong>cluster 0</strong> has the highest under-five mortality rate <strong>(mean=92.8, sd=31.08)</strong>, and <strong>cluster 2</strong> has the lowest under-five mortality rate <strong>(mean=4.66, sd=1.49)</strong>.</p>
+<div class="highlight"><pre>Means for under-five mortality by cluster
+         under5mort
+cluster            
+0         92.800000
+1         25.456250
+2          4.666667
+
+Standard deviations for under-five mortality by cluster
+         under5mort
+cluster            
+0         31.089436
+1         18.389231
+2          1.495877
+
+
+
+Multiple Comparison of Means - Tukey HSD,FWER=0.05
+================================================
+group1 group2 meandiff   lower    upper   reject
+------------------------------------------------
+  0      1    -67.3438  -81.2272 -53.4603  True 
+  0      2    -88.1333 -104.1646 -72.1021  True 
+  1      2    -20.7896  -35.9377 -5.6414   True 
+------------------------------------------------
 </pre></div>
 
 
-<p>MSE, representing the difference between the actual observations and the observation values predicted by the model, is used to determine the extent to which the model fits the data and whether the removal or some explanatory variables, simplifying the model, is possible without significantly harming the model's predictive ability.
-The mean square error for the <strong>test set (MSE=201.79)</strong> is much higher than that of the <strong>training set (MSE=811.94)</strong>, suggesting that it is likely that the selected model badly overfit the data (we have created a model that tests well in sample, but has little predictive value when tested out of sample). The selected model is less accurate in predicting under-five mortality in the test data. </p>
-<p>Given the fact that the sample dataset is fairly small (105 observations), including 11 predictors in the model considerably increases it's complexity. The new more complicated function "overfits" the data, and the complex overfitted model will likely perform worse on validation data outside the training dataset. If some variables are removed, we may get a different output which may have a better test mean squared error.</p>
-<div class="highlight"><pre>Training data R-square
-0.883500155514
-
-Test data R-square
-0.649046008446
-</pre></div>
-
-
-<p>The R-square values are 0.88 and 0.64, indicating that the <strong>selected model explained 88% and 64% of the variance</strong> in child mortality for the training and test sets, respectively. We can see hat the model we obtained from the training dataset could explain 64% of the child mortality rate variance for the countries in the test dataset.</p>
-<h3>Python code</h3>
+<h3>Python Code</h3>
 <div class="highlight"><pre><span class="c"># -*- coding: utf-8 -*-</span>
 <span class="c">#</span>
-<span class="c"># Created on Sept 01 2016</span>
+<span class="c"># Created on Sept 03 2016</span>
 <span class="c"># @author: Ernő Gólya</span>
 
 <span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
@@ -150,16 +198,17 @@ Test data R-square
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pylab</span> <span class="kn">as</span> <span class="nn">plt</span>
 <span class="kn">from</span> <span class="nn">sklearn.cross_validation</span> <span class="kn">import</span> <span class="n">train_test_split</span>
-<span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LassoLarsCV</span>
 <span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">preprocessing</span>
-<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">mean_squared_error</span>
+<span class="kn">from</span> <span class="nn">sklearn.cluster</span> <span class="kn">import</span> <span class="n">KMeans</span>
 
 <span class="c"># data management</span>
 <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">&quot;custom_gapminder_3.csv&quot;</span><span class="p">)</span>
 
-<span class="n">variables</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;under5mort&#39;</span><span class="p">,</span> <span class="s">&#39;womenschool&#39;</span><span class="p">,</span> <span class="s">&#39;healthexpend&#39;</span><span class="p">,</span> <span class="s">&#39;incomeperperson&#39;</span><span class="p">,</span> <span class="s">&#39;hivrate&#39;</span><span class="p">,</span> <span class="s">&#39;urbanrate&#39;</span><span class="p">,</span>
-           <span class="s">&#39;ageofmarriage&#39;</span><span class="p">,</span> <span class="s">&#39;corrupt_perc&#39;</span><span class="p">,</span> <span class="s">&#39;sanit_pc&#39;</span><span class="p">,</span> <span class="s">&#39;watersource_pc&#39;</span><span class="p">,</span> <span class="s">&#39;teenfertility&#39;</span><span class="p">,</span> <span class="s">&#39;alcconsumption&#39;</span><span class="p">]</span>
 
+<span class="n">variables</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;under5mort&#39;</span><span class="p">,</span><span class="s">&#39;womenschool&#39;</span><span class="p">,</span> <span class="s">&#39;healthexpend&#39;</span><span class="p">,</span> <span class="s">&#39;incomeperperson&#39;</span><span class="p">,</span> <span class="s">&#39;hivrate&#39;</span><span class="p">,</span> <span class="s">&#39;urbanrate&#39;</span><span class="p">,</span>
+                     <span class="s">&#39;ageofmarriage&#39;</span><span class="p">,</span> <span class="s">&#39;sanit_pc&#39;</span><span class="p">,</span> <span class="s">&#39;watersource_pc&#39;</span><span class="p">,</span> <span class="s">&#39;teenfertility&#39;</span><span class="p">,]</span>
+
+<span class="c"># subset with selected variables</span>
 <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">variables</span><span class="p">]</span>
 
 <span class="c"># convert selected variables to numeric</span>
@@ -167,83 +216,146 @@ Test data R-square
     <span class="n">data</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">variable</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s">&#39;coerce&#39;</span><span class="p">)</span>
 
 <span class="c"># delete observations with missing value(s)</span>
-<span class="n">data1</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
-<span class="n">data2</span> <span class="o">=</span> <span class="n">data1</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">data_nona</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
 
-<span class="c"># create list of predictors</span>
-<span class="n">pred_variables</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">variables</span> <span class="k">if</span> <span class="n">n</span> <span class="o">!=</span> <span class="s">&#39;under5mort&#39;</span><span class="p">]</span>
+<span class="c"># subset clustering variables</span>
+<span class="n">cluster</span> <span class="o">=</span> <span class="n">data_nona</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">ix</span><span class="p">[:,</span><span class="mi">1</span><span class="p">:]</span>
 
-<span class="c"># standardize predictors to have mean=0 and sd=1</span>
-<span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">pred_variables</span><span class="p">:</span>
-    <span class="n">data2</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span> <span class="o">=</span> <span class="n">preprocessing</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">data2</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s">&#39;float64&#39;</span><span class="p">))</span>
+<span class="c"># subset for under5mort ANOVA</span>
+<span class="n">u5m_data</span> <span class="o">=</span> <span class="n">data_nona</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">ix</span><span class="p">[:,</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]</span>
 
-<span class="c"># create separate data sets for predictor variables and target variable</span>
-<span class="n">predictors</span> <span class="o">=</span> <span class="n">data2</span><span class="p">[</span><span class="n">pred_variables</span><span class="p">]</span>
-<span class="n">targets</span> <span class="o">=</span> <span class="n">data2</span><span class="o">.</span><span class="n">under5mort</span>
+<span class="c"># standardize clustering variables to have mean=0 and sd=1</span>
+<span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+    <span class="n">cluster</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span> <span class="o">=</span> <span class="n">preprocessing</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">cluster</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s">&#39;float64&#39;</span><span class="p">))</span>
 
-<span class="c"># split dataset into training and testing sets</span>
-<span class="n">pred_train</span><span class="p">,</span> <span class="n">pred_test</span><span class="p">,</span> <span class="n">tar_train</span><span class="p">,</span> <span class="n">tar_test</span>  <span class="o">=</span>   <span class="n">train_test_split</span><span class="p">(</span><span class="n">predictors</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span>
+<span class="c"># split dataset into train and test sets</span>
+<span class="n">clus_train</span><span class="p">,</span> <span class="n">clus_test</span>  <span class="o">=</span>   <span class="n">train_test_split</span><span class="p">(</span><span class="n">cluster</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span>
 
-<span class="c"># specify the lasso regression model</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">LassoLarsCV</span><span class="p">(</span><span class="n">cv</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">precompute</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">pred_train</span><span class="p">,</span><span class="n">tar_train</span><span class="p">)</span>
+<span class="c"># k-means cluster analysis for 1-9 clusters</span>
+<span class="kn">from</span> <span class="nn">scipy.spatial.distance</span> <span class="kn">import</span> <span class="n">cdist</span>
+<span class="n">clusters</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">meandist</span> <span class="o">=</span> <span class="p">[]</span>
 
-<span class="c"># print variable names and regression coefficients</span>
-<span class="n">d</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">predictors</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">coef_</span><span class="p">))</span>
-<span class="k">print</span> <span class="s">&quot;{:&lt;20} {:&lt;25}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&#39;Variable Name&#39;</span><span class="p">,</span><span class="s">&#39;Regression Coefficient&#39;</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    <span class="n">num</span> <span class="o">=</span> <span class="n">v</span>
-    <span class="k">print</span> <span class="s">&quot;{:&lt;20} {:&lt;25}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">num</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">clusters</span><span class="p">:</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span> <span class="o">=</span> <span class="n">k</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">clus_train</span><span class="p">)</span>
+    <span class="n">clusassign</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">clus_train</span><span class="p">)</span>
+    <span class="n">meandist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">cdist</span><span class="p">(</span><span class="n">clus_train</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">cluster_centers_</span><span class="p">,</span> <span class="s">&#39;euclidean&#39;</span><span class="p">),</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">))</span> <span class="o">/</span> <span class="n">clus_train</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
-<span class="c"># another way to print variable names and regression coefficients</span>
-<span class="n">rc_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;Variable Name&#39;</span><span class="p">,</span> <span class="s">&#39;Reg. Coeff&#39;</span><span class="p">])</span>
-<span class="k">print</span> <span class="n">rc_data</span>
-
-<span class="c"># plot coefficient progression</span>
-<span class="n">m_log_alphas</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">alphas_</span><span class="p">)</span>
+<span class="c"># Plot average distance from observations from the cluster centroid</span>
+<span class="c"># to use the Elbow Method to identify number of clusters to choose</span>
 <span class="n">fig</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">m_log_alphas</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">coef_path_</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">alpha_</span><span class="p">),</span> <span class="n">linestyle</span><span class="o">=</span><span class="s">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;alpha CV&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;Regression Coefficients&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;-log(alpha)&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Regression Coefficients Progression for Lasso Paths&#39;</span><span class="p">);</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">clusters</span><span class="p">,</span> <span class="n">meandist</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;Number of clusters&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;Average distance&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Selecting k with the Elbow Method&#39;</span><span class="p">);</span>
 
-<span class="c"># plot mean square error for each fold</span>
-<span class="n">m_log_alphascv</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">cv_alphas_</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">m_log_alphascv</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">cv_mse_path_</span><span class="p">,</span> <span class="s">&#39;:&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">m_log_alphascv</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">cv_mse_path_</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">),</span> <span class="s">&#39;k&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;Average across the folds&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">alpha_</span><span class="p">),</span> <span class="n">linestyle</span><span class="o">=</span><span class="s">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;alpha CV&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;-log(alpha)&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;Mean squared error&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Mean squared error on each fold&#39;</span><span class="p">);</span>
+<span class="c"># interpret 3 cluster solution</span>
+<span class="n">model3</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">model3</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">clus_train</span><span class="p">)</span>
+<span class="n">clusassign</span> <span class="o">=</span> <span class="n">model3</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">clus_train</span><span class="p">)</span>
 
-<span class="c"># MSE from training and test data</span>
-<span class="n">train_error</span> <span class="o">=</span> <span class="n">mean_squared_error</span><span class="p">(</span><span class="n">tar_train</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">pred_train</span><span class="p">))</span>
-<span class="n">test_error</span> <span class="o">=</span> <span class="n">mean_squared_error</span><span class="p">(</span><span class="n">tar_test</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">pred_test</span><span class="p">))</span>
-<span class="k">print</span> <span class="s">&#39;Training data MSE&#39;</span>
-<span class="k">print</span> <span class="n">train_error</span>
-<span class="k">print</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">Test data MSE&#39;</span>
-<span class="k">print</span> <span class="n">test_error</span>
+<span class="c"># plot clusters</span>
+<span class="kn">from</span> <span class="nn">sklearn.decomposition</span> <span class="kn">import</span> <span class="n">PCA</span>
+<span class="n">pca_2</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">plot_columns</span> <span class="o">=</span> <span class="n">pca_2</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">clus_train</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="n">plot_columns</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span> <span class="o">=</span> <span class="n">plot_columns</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">c</span> <span class="o">=</span> <span class="n">model3</span><span class="o">.</span><span class="n">labels_</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;Canonical variable 1&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;Canonical variable 2&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;Scatterplot of Canonical Variables for 3 Clusters&#39;</span><span class="p">);</span>
 
-<span class="c"># R-square from training and test data</span>
-<span class="n">rsquared_train</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">pred_train</span><span class="p">,</span> <span class="n">tar_train</span><span class="p">)</span>
-<span class="n">rsquared_test</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">pred_test</span><span class="p">,</span> <span class="n">tar_test</span><span class="p">)</span>
-<span class="k">print</span> <span class="s">&#39;Training data R-square&#39;</span>
-<span class="k">print</span> <span class="n">rsquared_train</span>
-<span class="k">print</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">Test data R-square&#39;</span>
-<span class="k">print</span> <span class="n">rsquared_test</span>
+<span class="c"># BEGIN multiple steps to merge cluster assignment with clustering variables</span>
+<span class="c"># to examine cluster variable means by cluster</span>
 
-<span class="c"># print sape of training and test samples</span>
-<span class="k">print</span> <span class="s">&quot;Shape of the training and test samples&quot;</span>
-<span class="k">print</span> <span class="n">pred_train</span><span class="o">.</span><span class="n">shape</span>
-<span class="k">print</span> <span class="n">pred_test</span><span class="o">.</span><span class="n">shape</span>
-<span class="k">print</span> <span class="n">tar_train</span><span class="o">.</span><span class="n">shape</span>
-<span class="k">print</span> <span class="n">tar_test</span><span class="o">.</span><span class="n">shape</span>
+<span class="c"># create a unique identifier variable from the index for the </span>
+<span class="c"># cluster training data to merge with the cluster assignment variable</span>
+<span class="n">clus_train</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="c"># create a list that has the new index variable</span>
+<span class="n">cluslist</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">clus_train</span><span class="p">[</span><span class="s">&#39;index&#39;</span><span class="p">])</span>
+
+<span class="c"># create a list of cluster assignments</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">model3</span><span class="o">.</span><span class="n">labels_</span><span class="p">)</span>
+
+<span class="c"># combine index variable list with cluster assignment list into a dictionary</span>
+<span class="n">dclus</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">cluslist</span><span class="p">,</span> <span class="n">labels</span><span class="p">))</span>
+
+<span class="c"># convert dclus dictionary to a dataframe</span>
+<span class="n">newclus</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">dclus</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s">&#39;index&#39;</span><span class="p">)</span>
+
+<span class="c"># rename the cluster assignment column</span>
+<span class="n">newclus</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;cluster&#39;</span><span class="p">]</span>
+
+<span class="c"># now do the same for the cluster assignment variable</span>
+<span class="c"># create a unique identifier variable from the index for the </span>
+<span class="c"># cluster assignment dataframe to merge with cluster training data</span>
+<span class="n">newclus</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="c"># merge the cluster assignment dataframe with the cluster training</span>
+<span class="c"># variable dataframe by the index variable</span>
+<span class="n">merged_train</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">clus_train</span><span class="p">,</span> <span class="n">newclus</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s">&#39;index&#39;</span><span class="p">)</span>
+
+<span class="c"># cluster frequencies</span>
+<span class="n">merged_train</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+
+<span class="c"># END multiple steps to merge cluster assignment with clustering variables</span>
+<span class="c"># to examine cluster variable means by cluster</span>
+
+<span class="c"># calculate clustering variable means by cluster</span>
+<span class="n">clustergrp</span> <span class="o">=</span> <span class="n">merged_train</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s">&#39;cluster&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="k">print</span> <span class="s">&quot;Clustering variable means by cluster&quot;</span>
+<span class="k">print</span> <span class="n">clustergrp</span>
+
+<span class="c"># validate clusters in training data by examining cluster differences in</span>
+<span class="c"># under5mort using ANOVA</span>
+<span class="c"># split GPA data into train and test sets</span>
+<span class="c"># merge under5mort with clustering variables and cluster assignment data</span>
+<span class="n">u5m_train</span><span class="p">,</span> <span class="n">u5m_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">u5m_data</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span>
+<span class="n">u5m_train1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">u5m_train</span><span class="p">)</span>
+<span class="n">u5m_train1</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">merged_train_all</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">u5m_train1</span><span class="p">,</span> <span class="n">merged_train</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s">&#39;index&#39;</span><span class="p">)</span>
+<span class="n">sub1</span> <span class="o">=</span> <span class="n">merged_train_all</span><span class="p">[[</span><span class="s">&#39;under5mort&#39;</span><span class="p">,</span> <span class="s">&#39;cluster&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+
+<span class="kn">import</span> <span class="nn">statsmodels.formula.api</span> <span class="kn">as</span> <span class="nn">smf</span>
+<span class="kn">import</span> <span class="nn">statsmodels.stats.multicomp</span> <span class="kn">as</span> <span class="nn">multi</span>
+
+<span class="n">u5mod</span> <span class="o">=</span> <span class="n">smf</span><span class="o">.</span><span class="n">ols</span><span class="p">(</span><span class="n">formula</span><span class="o">=</span><span class="s">&#39;under5mort ~ C(cluster)&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">sub1</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="k">print</span> <span class="n">u5mod</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+
+<span class="k">print</span> <span class="s">&#39;Means for under-five mortality by cluster&#39;</span>
+<span class="n">m1</span> <span class="o">=</span> <span class="n">sub1</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s">&#39;cluster&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="k">print</span> <span class="n">m1</span>
+<span class="k">print</span> <span class="s">&quot;&quot;</span>
+<span class="k">print</span> <span class="p">(</span><span class="s">&#39;Standard deviations for under-five mortality by cluster&#39;</span><span class="p">)</span>
+<span class="n">m2</span> <span class="o">=</span> <span class="n">sub1</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s">&#39;cluster&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+<span class="k">print</span> <span class="n">m2</span>
+<span class="k">print</span> <span class="s">&quot;</span><span class="se">\n\n</span><span class="s">&quot;</span>
+<span class="n">mc1</span> <span class="o">=</span> <span class="n">multi</span><span class="o">.</span><span class="n">MultiComparison</span><span class="p">(</span><span class="n">sub1</span><span class="p">[</span><span class="s">&#39;under5mort&#39;</span><span class="p">],</span> <span class="n">sub1</span><span class="p">[</span><span class="s">&#39;cluster&#39;</span><span class="p">])</span>
+<span class="n">res1</span> <span class="o">=</span> <span class="n">mc1</span><span class="o">.</span><span class="n">tukeyhsd</span><span class="p">()</span>
+<span class="k">print</span> <span class="n">res1</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
 </pre></div></div>
         <hr />
     </div>
 		
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="https://ernogolya.github.io/lasso/"><h2>Machine Learning for Data Analysis: Lasso Regression</h2></a>
+        <div class= "well small"> p 02 szeptember 2016
+
+by <a class="url fn" href="https://ernogolya.github.io/author/erno-golya.html">Ernő Gólya</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>Lasso regression analysis is a supervised machine learning method for linear regression models that involves penalizing the absolute size of the regression coefficients. The goal is to obtain the subset of predictors that minimizes prediction error for the response variable.</p> <a class="btn btn-info xsmall" href="https://ernogolya.github.io/lasso/">read more</a></div>
+    </div>	
+				
 
  
         
@@ -298,24 +410,6 @@ by <a class="url fn" href="https://ernogolya.github.io/author/erno-golya.html">E
         <div class="summary"><p>Logistic regression is another form of the linear regression model, so the basic idea is the same as a multiple regression analysis. But, unlike the multiple regression model, the logistic regression model is designed to test binary response variables.</p> <a class="btn btn-info xsmall" href="https://ernogolya.github.io/logistic_regression/">read more</a></div>
     </div>	
 				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="https://ernogolya.github.io/multiple_regression/"><h2>Regression Modeling in Practice: Multiple Regression Model</h2></a>
-        <div class= "well small"> v 21 augusztus 2016
-
-by <a class="url fn" href="https://ernogolya.github.io/author/erno-golya.html">Ernő Gólya</a>
- 
-
-
- </div>
-        <div class="summary"><p>The results of my linear regression model indicated that the level of female education in a country was significantly and negatively associated with the number of children dying under the age of five. But what other variables might explain more of this association and the variability in child mortality?</p> <a class="btn btn-info xsmall" href="https://ernogolya.github.io/multiple_regression/">read more</a></div>
-    </div>	
-				
 <div class="pagination">
 <ul>
     <li class="prev disabled"><a href="#">&larr; Previous</a></li>
@@ -323,6 +417,7 @@ by <a class="url fn" href="https://ernogolya.github.io/author/erno-golya.html">E
     <li class="active"><a href="https://ernogolya.github.io/tag/data-science.html">1</a></li>
     <li class=""><a href="https://ernogolya.github.io/tag/data-science2.html">2</a></li>
     <li class=""><a href="https://ernogolya.github.io/tag/data-science3.html">3</a></li>
+    <li class=""><a href="https://ernogolya.github.io/tag/data-science4.html">4</a></li>
 
     <li class="next"><a href="https://ernogolya.github.io/tag/data-science2.html">Next &rarr;</a></li>
 
@@ -381,7 +476,7 @@ by <a class="url fn" href="https://ernogolya.github.io/author/erno-golya.html">E
     </div>     </div> 
 <footer>
 <br />
-<p><a href="https://ernogolya.github.io">deviate from the norm</a> &copy; Ernő Gólya 2016</p>
+<p><a href="https://ernogolya.github.io">deviate from the form</a> &copy; Ernő Gólya 2016</p>
 </footer>
 
 </div> <!-- /container -->
